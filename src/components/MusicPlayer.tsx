@@ -24,6 +24,8 @@ import {
   SongWrapper,
   TimeDisplay,
   ToolButton,
+  ToolParent,
+  ToolWrapper,
   Volume,
   VolumeWrapper,
 } from "./MusicPlayerStyles";
@@ -59,26 +61,34 @@ const MusicPlayer: React.FC = () => {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
+  const fadeOut = (callback: () => void) => {
+    setFadingOut(true);
+    setTimeout(() => {
+      callback();
+      setFadingOut(false);
+    }, 500);
+  };
+
   const togglePlayPause = useCallback(() => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch(() => setIsPlaying(false));
-    }
-    setIsPlaying(!isPlaying);
+    fadeOut(() => {
+      if (!audioRef.current) return;
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play().catch(() => setIsPlaying(false));
+      }
+      setIsPlaying(!isPlaying);
+    });
   }, [isPlaying]);
 
   const changeAlbum = (delta: number) => {
-    setFadingOut(true);
-    setTimeout(() => {
+    fadeOut(() => {
       setSelectedAlbumIndex(
         (prev) => (prev + delta + albums.length) % albums.length,
       );
       setSelectedSongIndex(0);
-      setFadingOut(false);
       setIsPlaying(false);
-    }, 500);
+    });
   };
 
   const toggleLoop = () => {
@@ -95,21 +105,25 @@ const MusicPlayer: React.FC = () => {
   };
 
   const changeSong = (delta: number) => {
+    setFadingOut(true);
     const currentAlbum = albums[selectedAlbumIndex];
 
-    if (isShuffle && currentAlbum.songs.length > 1) {
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * currentAlbum.songs.length);
-      } while (randomIndex === selectedSongIndex);
-      setSelectedSongIndex(randomIndex);
-    } else {
-      setSelectedSongIndex(
-        (prev) =>
-          (prev + delta + currentAlbum.songs.length) %
-          currentAlbum.songs.length,
-      );
-    }
+    setTimeout(() => {
+      if (isShuffle && currentAlbum.songs.length > 1) {
+        let randomIndex;
+        do {
+          randomIndex = Math.floor(Math.random() * currentAlbum.songs.length);
+        } while (randomIndex === selectedSongIndex);
+        setSelectedSongIndex(randomIndex);
+      } else {
+        setSelectedSongIndex(
+          (prev) =>
+            (prev + delta + currentAlbum.songs.length) %
+            currentAlbum.songs.length,
+        );
+      }
+      setFadingOut(false);
+    }, 500);
   };
 
   const handleProgressBarClick = (
@@ -178,18 +192,9 @@ const MusicPlayer: React.FC = () => {
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (audio && isLooping) {
-      audio.loop = isLooping;
-    }
     if (!audio) return;
 
     const newSource = getFilePath(currentSong?.songName);
-
-    const updateProgress = () => {
-      setCurrentTime(audio.currentTime);
-      setDuration(audio.duration);
-    };
-
     if (prevSongRef.current !== currentSong?.songName) {
       if (audio.src !== newSource) {
         audio.src = newSource;
@@ -197,6 +202,10 @@ const MusicPlayer: React.FC = () => {
       prevSongRef.current = currentSong?.songName;
     }
 
+    const updateProgress = () => {
+      setCurrentTime(audio.currentTime);
+      setDuration(audio.duration);
+    };
     const handleSongEnd = () => {
       changeSong(1);
     };
@@ -206,6 +215,7 @@ const MusicPlayer: React.FC = () => {
     if (isPlaying) {
       audio.play().catch(() => setIsPlaying(false));
     }
+    audio.loop = isLooping;
 
     return () => {
       audio.removeEventListener("ended", handleSongEnd);
@@ -223,7 +233,11 @@ const MusicPlayer: React.FC = () => {
         preload="metadata"
       ></audio>
       <SongWrapper
-        $path={getFilePath("Album_Image.png")}
+        $path={
+          currentSong?.songName && isPlaying
+            ? getFilePath(currentSong?.songName.replace(/\.mp3$/, ".png"))
+            : getFilePath("Album_Image.png")
+        }
         $isFadingOut={fadingOut}
       >
         <PlayerControls>
@@ -241,15 +255,13 @@ const MusicPlayer: React.FC = () => {
             src={getFilePath("Album_Cover.png")}
           />
         </AlbumCover>
+        <div>
+          {isPlaying &&
+            currentSong?.songName.replace(/_/g, " ").replace(/\.mp3$/, "")}
+        </div>
       </SongWrapper>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            paddingTop: "0.5rem",
-          }}
-        >
+      <ToolParent>
+        <ToolWrapper>
           <VolumeWrapper>
             <VolumeIcon />
           </VolumeWrapper>
@@ -262,22 +274,16 @@ const MusicPlayer: React.FC = () => {
             onChange={handleVolumeChange}
             style={{ marginLeft: "10px", width: "100px" }}
           />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            paddingTop: "0.5rem",
-          }}
-        >
+        </ToolWrapper>
+        <ToolWrapper>
           <ToolButton onClick={toggleLoop} $isActive={isLooping}>
             <LoopIcon /> Repeat
           </ToolButton>
           <ToolButton onClick={toggleShuffle} $isActive={isShuffle}>
             <ShuffleIcon /> Random
           </ToolButton>
-        </div>
-      </div>
+        </ToolWrapper>
+      </ToolParent>
       <ProgressBarContainer onClick={handleProgressBarClick}>
         <ProgressBar $progress={progress} />
       </ProgressBarContainer>

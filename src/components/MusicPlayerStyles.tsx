@@ -34,6 +34,17 @@ export const PlayerControls = styled.div<{ $noMargin?: boolean }>`
   margin: ${({ $noMargin }) => ($noMargin ? "0 0 2rem 0" : "1rem")};
 `;
 
+export const ToolParent = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const ToolWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding-top: 0.5rem;
+`;
+
 export const ToolButton = styled.button<{ $isActive?: boolean }>`
   margin-left: 10px;
   padding: 5px 10px;
@@ -346,6 +357,10 @@ export const SongWrapper = styled.div<{
   $isFadingOut?: boolean;
 }>`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 300px;
   border-bottom: 2px solid ${({ theme }) => theme.colors.accent};
