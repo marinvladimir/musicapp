@@ -1,0 +1,36 @@
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #1e1e2f;
+  color: #e0e0ff;
+  font-family: "Nunito", sans-serif;
+}
+
+h1 {
+  font-family: "Pacifico", cursive;
+  font-style: normal;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 1.2;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+p,
+a,
+span,
+li {
+  font-family: "Nunito", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
