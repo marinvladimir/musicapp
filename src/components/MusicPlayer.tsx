@@ -33,6 +33,7 @@ import { useCartContext } from "../states/CartContext";
 import Spinner from "../helperComponents/Spinner";
 import PlaylistItemComponent from "./PlaylistItemComponent";
 import { API_BASE_URL } from "../config";
+import { fadeOut, formatTime, getFilePath } from "../utils";
 
 const MusicPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -52,25 +53,8 @@ const MusicPlayer: React.FC = () => {
   const currentSong = currentAlbum?.songs[selectedSongIndex];
   const progress = (currentTime / duration) * 100;
 
-  const getFilePath = (type: string) =>
-    `backend/assets/music/${albums[selectedAlbumIndex]?.albumName}/${type}`;
-
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-  };
-
-  const fadeOut = (callback: () => void) => {
-    setFadingOut(true);
-    setTimeout(() => {
-      callback();
-      setFadingOut(false);
-    }, 500);
-  };
-
   const togglePlayPause = useCallback(() => {
-    fadeOut(() => {
+    fadeOut(setFadingOut, () => {
       if (!audioRef.current) return;
       if (isPlaying) {
         audioRef.current.pause();
@@ -82,7 +66,7 @@ const MusicPlayer: React.FC = () => {
   }, [isPlaying]);
 
   const changeAlbum = (delta: number) => {
-    fadeOut(() => {
+    fadeOut(setFadingOut, () => {
       setSelectedAlbumIndex(
         (prev) => (prev + delta + albums.length) % albums.length,
       );
@@ -140,7 +124,7 @@ const MusicPlayer: React.FC = () => {
     }
   };
 
-  const addToCart = async (song: { songName: string; songUrl: string }) => {
+  const addToCart = async (song: { songName: string; songUrl: string, price: number }) => {
     try {
       await fetch(`${API_BASE_URL}/api/cart`, {
         method: "POST",
@@ -149,9 +133,10 @@ const MusicPlayer: React.FC = () => {
           sessionId: sessionId,
           songName: song.songName,
           songUrl: song.songUrl,
+          price: song.price,
         }),
       });
-      setCart((prevCart) => [...prevCart, song.songName]);
+      setCart((prevCart) => [...prevCart, { songName: song.songName, price: song.price }]);
     } catch (error) {
       console.error("Error adding song to cart:", error);
     }
@@ -167,14 +152,14 @@ const MusicPlayer: React.FC = () => {
           songName: songName,
         }),
       });
-      setCart((prevCart) => prevCart.filter((item) => item !== songName));
+      setCart((prevCart) => prevCart.filter((item) => item.songName !== songName));
     } catch (error) {
       console.error("Error removing song from cart:", error);
     }
   };
 
-  const toggleCartItem = (song: { songName: string; songUrl: string }) => {
-    const isAlreadyInCart = cart.includes(song.songName);
+  const toggleCartItem = (song: { songName: string; songUrl: string, price: number }) => {
+    const isAlreadyInCart = cart.some(item => item.songName === song.songName);
     if (isAlreadyInCart) {
       removeFromCart(song.songName);
     } else {
@@ -194,7 +179,10 @@ const MusicPlayer: React.FC = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const newSource = getFilePath(currentSong?.songName);
+    const newSource = getFilePath(
+      currentSong?.songName,
+      albums[selectedAlbumIndex]?.albumName,
+    );
     if (prevSongRef.current !== currentSong?.songName) {
       if (audio.src !== newSource) {
         audio.src = newSource;
@@ -229,14 +217,23 @@ const MusicPlayer: React.FC = () => {
     <MusicWrapper>
       <audio
         ref={audioRef}
-        src={getFilePath(currentSong?.songName)}
+        src={getFilePath(
+          currentSong?.songName,
+          albums[selectedAlbumIndex]?.albumName,
+        )}
         preload="metadata"
       ></audio>
       <SongWrapper
         $path={
           currentSong?.songName && isPlaying
-            ? getFilePath(currentSong?.songName.replace(/\.mp3$/, ".png"))
-            : getFilePath("Album_Image.png")
+            ? getFilePath(
+                currentSong?.songName.replace(/\.mp3$/, ".png"),
+                albums[selectedAlbumIndex]?.albumName,
+              )
+            : getFilePath(
+                "Album_Image.png",
+                albums[selectedAlbumIndex]?.albumName,
+              )
         }
         $isFadingOut={fadingOut}
       >
@@ -252,7 +249,10 @@ const MusicPlayer: React.FC = () => {
         <AlbumCover>
           <AlbumImage
             $active={isPlaying}
-            src={getFilePath("Album_Cover.png")}
+            src={getFilePath(
+              "Album_Cover.png",
+              albums[selectedAlbumIndex]?.albumName,
+            )}
           />
         </AlbumCover>
         <div>
@@ -277,10 +277,10 @@ const MusicPlayer: React.FC = () => {
         </ToolWrapper>
         <ToolWrapper>
           <ToolButton onClick={toggleLoop} $isActive={isLooping}>
-            <LoopIcon /> Repeat
+            <LoopIcon /> <span>Repeat</span>
           </ToolButton>
           <ToolButton onClick={toggleShuffle} $isActive={isShuffle}>
-            <ShuffleIcon /> Random
+            <ShuffleIcon /> <span>Random</span>
           </ToolButton>
         </ToolWrapper>
       </ToolParent>

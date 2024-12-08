@@ -37,12 +37,28 @@ export const PlayerControls = styled.div<{ $noMargin?: boolean }>`
 export const ToolParent = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 export const ToolWrapper = styled.div`
   display: flex;
   align-items: center;
   padding-top: 0.5rem;
+
+  span {
+    line-height: 1;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    span {
+      display: none;
+    }
+  }
 `;
 
 export const ToolButton = styled.button<{ $isActive?: boolean }>`
@@ -127,6 +143,16 @@ export const ButtonArrow = styled.button<{ $side?: string }>`
     transition: color 0.2s ease;
   }
 `;
+
+export const CartDetails = styled.div`
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column-reverse;
+    font-size: 0.75rem;
+    gap: 0.5rem;
+`
 
 export const CartButton = styled.button<{ $filled: boolean }>`
   color: ${({ theme, $filled }) =>
@@ -288,6 +314,7 @@ export const SongDetails = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1rem;
   }
 `;
 

@@ -14,6 +14,7 @@ declare module "../config" {
 
 interface ImportMetaEnv {
   VITE_API_BASE_URL: string;
+  VITE_FILE_BASE_PATH: string;
 }
 
 interface ImportMeta {

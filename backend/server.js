@@ -4,9 +4,10 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import pkg from 'pg';
-import cron from "node-cron"
-const { Pool } = pkg;
+import cron from "node-cron";
+import router from './router.js';
 
+const { Pool } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -32,17 +33,17 @@ cron.schedule("0 0 * * *", async () => {
   }
 });
 
-
 const initializeDatabase = async () => {
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS cart (
-id SERIAL PRIMARY KEY,
-  session_id VARCHAR(255) NOT NULL,
-  song_name VARCHAR(255) NOT NULL,
-  song_url VARCHAR(255) NOT NULL,
-  last_accessed TIMESTAMP NOT NULL,
-  CONSTRAINT unique_session_song UNIQUE (session_id, song_name)
+        id SERIAL PRIMARY KEY,
+        session_id VARCHAR(255) NOT NULL,
+        price DECIMAL(10, 2) NOT NULL,
+        song_name VARCHAR(255) NOT NULL,
+        song_url VARCHAR(255) NOT NULL,
+        last_accessed TIMESTAMP NOT NULL,
+        CONSTRAINT unique_session_song UNIQUE (session_id, song_name)
       );
     `);
     console.log("Database initialized successfully.");
@@ -55,8 +56,13 @@ app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(express.static("assets"));
 
+app.use(router);
+
 app.get("/api/albums", (req, res) => {
   try {
+    const pricesPath = path.join(__dirname, 'assets/music/prices.json');
+    const prices = JSON.parse(fs.readFileSync(pricesPath, 'utf8'));
+
     const albums = fs.readdirSync(MUSIC_FOLDER).reduce((result, album) => {
       const albumPath = path.join(MUSIC_FOLDER, album);
       if (fs.statSync(albumPath).isDirectory()) {
@@ -64,12 +70,15 @@ app.get("/api/albums", (req, res) => {
         const mp3Files = files.filter((file) => file.endsWith(".mp3"));
         const imageFiles = files.filter((file) => file.match(/\.(jpg|jpeg|png)$/i));
 
+        const albumPrices = prices[album] || {}; // Get prices for the current album
+
         const songs = mp3Files.map((song) => {
           const image = imageFiles.find((img) => img.startsWith(song.replace(".mp3", "")));
           return {
             songName: song,
             songUrl: `/assets/music/${album}/${song}`,
             imageUrl: image ? `/assets/music/${album}/${image}` : null,
+            price: albumPrices[song] || 1.99, // Default price if no price is set
           };
         });
 
@@ -84,15 +93,16 @@ app.get("/api/albums", (req, res) => {
   }
 });
 
+
 app.post("/api/cart", async (req, res) => {
-  const { sessionId, songName, songUrl } = req.body;
+  const { sessionId, songName, songUrl, price } = req.body;
   try {
     await pool.query(
-      `INSERT INTO cart (session_id, song_name, song_url, last_accessed) 
-       VALUES ($1, $2, $3, NOW())
+      `INSERT INTO cart (session_id, song_name, song_url, price, last_accessed) 
+       VALUES ($1, $2, $3, $4, NOW())
        ON CONFLICT (session_id, song_name) 
-       DO UPDATE SET last_accessed = NOW()`,
-      [sessionId, songName, songUrl]
+       DO UPDATE SET last_accessed = NOW(), price = $4`,
+      [sessionId, songName, songUrl, price]
     );
     res.status(201).json({ message: "Song added to cart." });
   } catch (error) {
@@ -100,7 +110,6 @@ app.post("/api/cart", async (req, res) => {
     res.status(500).json({ error: "Failed to update cart." });
   }
 });
-
 
 app.get("/api/cart", async (req, res) => {
   const { sessionId } = req.query;
@@ -116,7 +125,6 @@ app.get("/api/cart", async (req, res) => {
   }
 });
 
-
 app.delete("/api/cart", async (req, res) => {
   const { sessionId, songName } = req.body;
   try {
@@ -130,7 +138,6 @@ app.delete("/api/cart", async (req, res) => {
     res.status(500).json({ error: "Failed to remove song from cart." });
   }
 });
-
 
 const PORT = 5000;
 app.listen(PORT, async () => {
