@@ -182,37 +182,37 @@ const MusicPlayer: React.FC = () => {
       audio.loop = isLooping;
     }
     if (!audio) return;
-  
+
     const newSource = getFilePath(currentSong?.songName);
 
     const updateProgress = () => {
       setCurrentTime(audio.currentTime);
       setDuration(audio.duration);
     };
-  
+
     if (prevSongRef.current !== currentSong?.songName) {
       if (audio.src !== newSource) {
         audio.src = newSource;
       }
       prevSongRef.current = currentSong?.songName;
     }
-  
+
     const handleSongEnd = () => {
       changeSong(1);
     };
-  
+
     audio.addEventListener("ended", handleSongEnd);
     audio.addEventListener("timeupdate", updateProgress);
     if (isPlaying) {
       audio.play().catch(() => setIsPlaying(false));
     }
-  
+
     return () => {
       audio.removeEventListener("ended", handleSongEnd);
       audio.removeEventListener("timeupdate", updateProgress);
     };
   }, [selectedSongIndex, currentSong, isPlaying, isShuffle, isLooping]);
-  
+
   return isLoading ? (
     <Spinner />
   ) : (
@@ -273,12 +273,7 @@ const MusicPlayer: React.FC = () => {
           <ToolButton onClick={toggleLoop} $isActive={isLooping}>
             <LoopIcon /> Repeat
           </ToolButton>
-          <ToolButton
-            onClick={
-              toggleShuffle
-            }
-            $isActive={isShuffle}
-          >
+          <ToolButton onClick={toggleShuffle} $isActive={isShuffle}>
             <ShuffleIcon /> Random
           </ToolButton>
         </div>
