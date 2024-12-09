@@ -243,10 +243,7 @@ const MusicPlayer: React.FC = () => {
       <SongWrapper
         $path={
           currentSong?.songName && isPlaying
-            ? getFilePath(
-                currentSong?.songName.replace(/\.mp3$/, ".png"),
-                albums[selectedAlbumIndex]?.albumName,
-              )
+            ? currentSong?.imageUrl
             : getFilePath(
                 "Album_Image.png",
                 albums[selectedAlbumIndex]?.albumName,
@@ -266,7 +263,7 @@ const MusicPlayer: React.FC = () => {
         <AlbumCover>
           <AlbumImage
             $active={isPlaying}
-            src={getFilePath(
+            src={albums[selectedAlbumIndex]?.albumName && getFilePath(
               "Album_Cover.png",
               albums[selectedAlbumIndex]?.albumName,
             )}
