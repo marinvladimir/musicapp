@@ -195,10 +195,10 @@ const MusicPlayer: React.FC = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const newSource = getFilePath(
+    const newSource = currentSong ? getFilePath(
       currentSong?.songName,
       albums[selectedAlbumIndex]?.albumName,
-    );
+    ) : '';
     if (prevSongRef.current !== currentSong?.songName) {
       if (audio.src !== newSource) {
         audio.src = newSource;
