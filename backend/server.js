@@ -58,7 +58,7 @@ const initializeDatabase = async () => {
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "https://musicmarna.netlify.app/" 
+    "https://musicmarna.netlify.app" 
   ],
 };
 
