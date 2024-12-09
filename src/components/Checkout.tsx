@@ -99,7 +99,7 @@ const Checkout: React.FC = () => {
         </StyledParagraph>
         <StyledParagraph>
           <span>Total Price:</span>
-          <span>${calculateTotal()}</span>
+          <span>€{calculateTotal()}</span>
         </StyledParagraph>
         <CheckoutButton onClick={handleCheckout}>
           Proceed to Checkout
