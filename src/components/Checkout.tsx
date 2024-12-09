@@ -20,54 +20,38 @@ const Checkout: React.FC = () => {
 
   const handleCheckout = async () => {
     try {
-      // Prepare the updated cart
       const updatedCart = cart.map((item) => ({
         name: item.songName,
-        price: item.price * 100
+        price: item.price * 100,
       }));
-  
-      console.log("Sending cart data:", updatedCart);
+
       const response = await fetch(
         `${API_BASE_URL}/.netlify/functions/createCheckout`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ cart: updatedCart }),
-        }
+        },
       );
-  
-      console.log("Received response:", response);
 
       const data = await response.json();
-      console.log("Response JSON data:", data);
-      if (!response.ok) {
+
+      if (!response.ok)
         throw new Error(data.error || "Failed to create checkout session");
-      }
-  
+
       const { sessionId } = data;
-  
+
       if (!sessionId) {
-        throw new Error("Failed to create Stripe session");
+        throw new Error('Failed to create Stripe session');
       }
-  
-      console.log("Stripe session created. Session ID:", sessionId);
+
       const stripe = await stripePromise;
       if (!stripe) throw new Error("Stripe failed to load");
-  
-      const redirectResult = await stripe.redirectToCheckout({ sessionId });
-      console.log("Stripe redirect result:", redirectResult);
+      await stripe.redirectToCheckout({ sessionId });
     } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error during checkout:", error.message, error.stack);
-      } else if (typeof error === "object" && error !== null) {
-        console.error("Error during checkout (object):", JSON.stringify(error, null, 2));
-      } else {
-        console.error("Error during checkout (unknown):", error);
-      }
-      alert(`Checkout failed: ${error instanceof Error ? error.message : error}`);
+      console.error("Error during checkout:", error);
     }
   };
-  
 
   const calculateTotal = () => {
     return cart.reduce(

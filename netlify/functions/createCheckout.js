@@ -16,16 +16,10 @@ export async function handler(event) {
   try {
     const { cart } = JSON.parse(event.body);
 
-    console.log('Received cart:', cart);
-
     const products = await stripe.products.list();
-    console.log('Fetched Stripe products:', products.data);
-
     const lineItems = cart.map((item) => {
-      const product = products.data.find((p) => p.name === item.name);
+      const product = products.data.find(p => p.name === item.name);
       if (!product) {
-        console.error('Product not found:', item.name);
-        console.error('Available products:', products.data.map((p) => p.name));
         throw new Error(`Product not found for ${item.name}`);
       }
 
@@ -35,11 +29,9 @@ export async function handler(event) {
           product: product.id,
           unit_amount: item.price,
         },
-        quantity: item.quantity || 1,
+        quantity: 1,
       };
     });
-
-    console.log('Created line items:', lineItems);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -48,8 +40,6 @@ export async function handler(event) {
       success_url: `${process.env.VITE_APP_BACKEND_ENDPOINT}/#/success`,
       cancel_url: `${process.env.VITE_APP_BACKEND_ENDPOINT}/#/cancel`,
     });
-
-    console.log('Created Stripe session:', session.id);
 
     return {
       statusCode: 200,
