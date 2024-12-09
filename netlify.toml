@@ -1,2 +1,8 @@
 [build]
 functions = "netlify/functions"
+
+[[headers]]
+for = "/assets/music/*"
+[headers.values]
+Access-Control-Allow-Origin = "*"
+Access-Control-Allow-Methods = "GET"

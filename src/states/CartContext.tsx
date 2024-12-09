@@ -36,7 +36,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         const [albumsResponse, cartResponse] = await Promise.all([
           //fetch(`${API_BASE_URL}/api/albums`),
           fetch("http://localhost:8888/.netlify/functions/albums"),
-          fetch(`${API_BASE_URL}/api/cart?sessionId=${sessionId}`),
+          fetch(`http://localhost:8888/.netlify/functions/getCart?sessionId=${sessionId}`),
         ]);
         const albumsData: Album[] = await albumsResponse.json();
         const cartData: { song_name: string; price: number }[] =

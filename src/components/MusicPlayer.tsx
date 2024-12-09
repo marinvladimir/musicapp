@@ -232,12 +232,11 @@ const MusicPlayer: React.FC = () => {
     <MusicWrapper>
       <audio
         ref={audioRef}
-        src={getFilePath(
-          currentSong?.songName,
-          albums[selectedAlbumIndex]?.albumName,
-        )}
         preload="metadata"
-      ></audio>
+      >
+ <source src={currentSong?.songUrl} type="audio/mpeg" />
+
+      </audio>
       <SongWrapper
         $path={
           currentSong?.songName && isPlaying
