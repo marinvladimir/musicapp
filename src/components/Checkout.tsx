@@ -13,8 +13,9 @@ import { loadStripe } from "@stripe/stripe-js";
 
 const Checkout: React.FC = () => {
   const { cart, sessionId, setCart } = useCartContext();
+  const STRIPE_KEY = import.meta.env.STRIPE_KEY;
   const stripePromise = loadStripe(
-    "pk_test_51QTknkGP3M8LVAgv6KXcu3yVYcbMSzEC22DgD54G5LVR7sAnWIdUsUpTadshMivwFkklUEPpZvODGefpBss6thZt00qH4RNc9E",
+    `${STRIPE_KEY}`,
   );
 
   const handleCheckout = async () => {

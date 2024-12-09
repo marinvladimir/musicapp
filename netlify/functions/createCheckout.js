@@ -29,7 +29,7 @@ export async function handler(event) {
           product: product.id,
           unit_amount: item.price,
         },
-        quantity: products.data.length,
+        quantity: 1,
       };
     });
 
