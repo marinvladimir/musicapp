@@ -16,7 +16,7 @@ export async function handler(event) {
   try {
     const { cart } = JSON.parse(event.body);
 
-    const products = await stripe.products.list();
+    const products = await stripe.products.list({ limit: 200 });
     const lineItems = cart.map((item) => {
       const product = products.data.find(p => p.name === item.name);
       if (!product) {
