@@ -226,6 +226,30 @@ const MusicPlayer: React.FC = () => {
     };
   }, [selectedSongIndex, currentSong, isPlaying, isShuffle, isLooping]);
 
+  fetch('https://musicmarna.netlify.app/assets/music/Echoes_Of_Distant_Melodies/Dance_In_The_Park.mp3', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'audio/mpeg',
+    },
+    mode: 'cors', 
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch audio');
+      }
+      return response.blob();
+    })
+    .then(blob => {
+      const audioURL = URL.createObjectURL(blob);
+      const audio = new Audio(audioURL);
+      audio.play();
+    })
+    .catch(error => {
+      console.error('Error loading the audio:', error);
+    });
+  
+  
+
   return isLoading ? (
     <Spinner />
   ) : (
@@ -234,7 +258,7 @@ const MusicPlayer: React.FC = () => {
         ref={audioRef}
         preload="metadata"
       >
- <source src={currentSong?.songUrl} type="audio/mpeg" />
+ <source src="https://musicmarna.netlify.app/assets/music/Echoes_Of_Distant_Melodies/Dance_In_The_Park.mp3" type="audio/mpeg" />
 
       </audio>
       <SongWrapper
