@@ -1,11 +1,9 @@
 import express from "express";
 import cors from "cors";
-import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import pkg from 'pg';
 import cron from "node-cron";
-import router from './router.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -15,7 +13,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const MUSIC_FOLDER = path.join(__dirname, "assets/music");
 
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -65,8 +62,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "assets")));
-
-app.use(router);
 
 const PORT = 5000;
 app.listen(PORT, async () => {
