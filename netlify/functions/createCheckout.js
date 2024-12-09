@@ -1,9 +1,4 @@
-import Stripe from 'stripe';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const stripe = new Stripe(`${process.env.VITE_STRIPE_SECRET_KEY}`);
+const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
 
 export async function handler(event) {
   if (event.httpMethod !== 'POST') {
@@ -15,7 +10,10 @@ export async function handler(event) {
 
   try {
     const { cart } = JSON.parse(event.body);
+
     const products = await stripe.products.list();
+    console.log('Stripe products:', products.data);
+    console.log('Cart items:', cart);
 
     const lineItems = cart.map((item) => {
       const product = products.data.find(p => p.name === item.name);
@@ -27,7 +25,7 @@ export async function handler(event) {
         price_data: {
           currency: 'usd',
           product: product.id,
-          unit_amount: item.price,
+          unit_amount: item.price * 100,
         },
         quantity: 1,
       };
@@ -51,10 +49,10 @@ export async function handler(event) {
       },
     };
   } catch (error) {
-    console.error('Error creating Stripe session:', error);
+    console.error('Error creating Stripe session:', error.message, error.stack);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to create checkout session' }),
+      body: JSON.stringify({ error: error.message || 'Failed to create checkout session' }),
     };
   }
 }
