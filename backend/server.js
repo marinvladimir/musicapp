@@ -68,37 +68,6 @@ app.use(express.static(path.join(__dirname, "assets")));
 
 app.use(router);
 
-app.post("/api/cart", async (req, res) => {
-  const { sessionId, songName, songUrl, price } = req.body;
-  try {
-    await pool.query(
-      `INSERT INTO cart (session_id, song_name, song_url, price, last_accessed) 
-       VALUES ($1, $2, $3, $4, NOW())
-       ON CONFLICT (session_id, song_name) 
-       DO UPDATE SET last_accessed = NOW(), price = $4`,
-      [sessionId, songName, songUrl, price]
-    );
-    res.status(201).json({ message: "Song added to cart." });
-  } catch (error) {
-    console.error("Error updating cart:", error);
-    res.status(500).json({ error: "Failed to update cart." });
-  }
-});
-
-app.delete("/api/cart", async (req, res) => {
-  const { sessionId, songName } = req.body;
-  try {
-    const result = await pool.query(
-      "DELETE FROM cart WHERE session_id = $1 AND song_name = $2",
-      [sessionId, songName]
-    );
-    res.json({ message: "Song removed from cart." });
-  } catch (error) {
-    console.error("Error removing song from cart:", error);
-    res.status(500).json({ error: "Failed to remove song from cart." });
-  }
-});
-
 const PORT = 5000;
 app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);

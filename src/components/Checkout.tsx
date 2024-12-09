@@ -58,7 +58,7 @@ const Checkout: React.FC = () => {
 
   const removeFromCart = async (songName: string) => {
     try {
-      await fetch(`${API_BASE_URL}/api/cart`, {
+      await fetch(`${API_BASE_URL}/.netlify/functions/deleteCart`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
