@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 require('dotenv').config(); 
 
-const stripe = new Stripe('sk_test_51QTknkGP3M8LVAgvBbHT699uux9mVfXu5lXVPWMmnKrccLuKJYz7xP2FhIVWOcp24XrclAZjb1HzdZ5OIY2NsJfO00DQm0Yv0T');
+const stripe = new Stripe(`${process.env.VITE_STRIPE_SECRET_KEY}`);
 
 export async function handler(event) {
   if (event.httpMethod !== 'POST') {
