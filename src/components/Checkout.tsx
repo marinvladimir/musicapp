@@ -27,7 +27,7 @@ const Checkout: React.FC = () => {
         price: item.price * 100,
       }));
 
-      const response = await fetch(`${API_BASE_URL}/.netlify/functions/create-checkout-session`, {
+      const response = await fetch(`${API_BASE_URL}/.netlify/functions/createCheckout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cart: updatedCart }),
