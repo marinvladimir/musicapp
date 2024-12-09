@@ -7,9 +7,9 @@ import {
 
 const VideoCarousel: React.FC = () => {
   const videoClips = [
-    "/src/assets/videos/music1.gif",
-    "/src/assets/videos/music2.gif",
-    "/src/assets/videos/music3.gif",
+    "/assets/videos/music1.gif",
+    "/assets/videos/music2.gif",
+    "/assets/videos/music3.gif",
   ];
 
   const [currentVideo, setCurrentVideo] = useState(0);

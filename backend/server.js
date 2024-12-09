@@ -70,15 +70,15 @@ app.get("/api/albums", (req, res) => {
         const mp3Files = files.filter((file) => file.endsWith(".mp3"));
         const imageFiles = files.filter((file) => file.match(/\.(jpg|jpeg|png)$/i));
 
-        const albumPrices = prices[album] || {}; // Get prices for the current album
+        const albumPrices = prices[album] || {};
 
         const songs = mp3Files.map((song) => {
           const image = imageFiles.find((img) => img.startsWith(song.replace(".mp3", "")));
           return {
             songName: song,
-            songUrl: `/assets/music/${album}/${song}`,
+            songUrl: `https://musicmarna.netlify.app/assets/music/demos/${album}/${song}`,
             imageUrl: image ? `/assets/music/${album}/${image}` : null,
-            price: albumPrices[song] || 1.99, // Default price if no price is set
+            price: albumPrices[song] || 1.99, 
           };
         });
 
