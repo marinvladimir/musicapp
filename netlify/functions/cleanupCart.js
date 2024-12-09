@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 exports.handler = async (event, context) => {
@@ -9,7 +9,7 @@ exports.handler = async (event, context) => {
     const { data, error } = await supabase
       .from('cart')
       .delete()
-      .lt('last_accessed', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()); // 30 days ago
+      .lt('last_accessed', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()); // every 30 days schedule
 
     if (error) {
       return {

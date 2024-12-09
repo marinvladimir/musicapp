@@ -1,13 +1,7 @@
-const { Pool } = require('pg');
+const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 exports.handler = async (event, context) => {
   const { sessionId, songName, songUrl, price } = JSON.parse(event.body);
@@ -20,13 +14,21 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    await pool.query(
-      `INSERT INTO cart (session_id, song_name, song_url, price, last_accessed) 
-       VALUES ($1, $2, $3, $4, NOW())
-       ON CONFLICT (session_id, song_name) 
-       DO UPDATE SET last_accessed = NOW(), price = $4`,
-      [sessionId, songName, songUrl, price]
-    );
+    const { data, error } = await supabase
+      .from('cart')
+      .upsert([
+        {
+          session_id: sessionId,
+          song_name: songName,
+          song_url: songUrl,
+          price: price,
+          last_accessed: new Date().toISOString(),
+        },
+      ], { onConflict: ['session_id', 'song_name'] }); 
+
+    if (error) {
+      throw error;
+    }
 
     return {
       statusCode: 201,

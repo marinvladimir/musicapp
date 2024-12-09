@@ -1,13 +1,7 @@
-const { Pool } = require('pg');
+const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 exports.handler = async (event, context) => {
   const { sessionId, songName } = JSON.parse(event.body); 
@@ -20,10 +14,15 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    await pool.query(
-      'DELETE FROM cart WHERE session_id = $1 AND song_name = $2',
-      [sessionId, songName]
-    );
+    const { data, error } = await supabase
+      .from('cart')
+      .delete()
+      .eq('session_id', sessionId)
+      .eq('song_name', songName);
+
+    if (error) {
+      throw error;
+    }
 
     return {
       statusCode: 200,
