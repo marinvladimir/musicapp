@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { FacebookIcon, InstagramIcon, YouTubeIcon } from "../icons/icons";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  YouTubeIcon,
+} from "../icons/icons";
 import { NavLink } from "react-router-dom";
 import {
   BurgerContainer,
@@ -47,7 +52,15 @@ const Header: React.FC = () => {
         </TitleWrapper>
         <NavWrapper>
           <a
-            href="https://www.instagram.com"
+            href="https://www.facebook.com/marnavlado/"
+            aria-label="Facebook"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FacebookIcon />
+          </a>
+          <a
+            href="https://www.instagram.com/neclord_marna35/"
             aria-label="Instagram"
             target="_blank"
             rel="noopener noreferrer"
@@ -55,7 +68,7 @@ const Header: React.FC = () => {
             <InstagramIcon />
           </a>
           <a
-            href="https://www.youtube.com"
+            href="https://www.youtube.com/@Vlado54565"
             aria-label="YouTube"
             target="_blank"
             rel="noopener noreferrer"
@@ -63,12 +76,12 @@ const Header: React.FC = () => {
             <YouTubeIcon />
           </a>
           <a
-            href="https://www.facebook.com"
+            href="https://www.linkedin.com/in/marin-vladimir-76b9b4170/"
             aria-label="Facebook"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FacebookIcon />
+            <LinkedInIcon />
           </a>
         </NavWrapper>
       </HeaderWrapper>
