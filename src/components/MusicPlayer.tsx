@@ -195,10 +195,12 @@ const MusicPlayer: React.FC = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const newSource = currentSong ? getFilePath(
-      currentSong?.songName,
-      albums[selectedAlbumIndex]?.albumName,
-    ) : '';
+    const newSource = currentSong
+      ? getFilePath(
+          currentSong?.songName,
+          albums[selectedAlbumIndex]?.albumName,
+        )
+      : "";
     if (prevSongRef.current !== currentSong?.songName) {
       if (audio.src !== newSource) {
         audio.src = newSource;
@@ -231,12 +233,12 @@ const MusicPlayer: React.FC = () => {
     <Spinner />
   ) : (
     <MusicWrapper>
-      <audio ref={audioRef} preload="metadata">
-        <source
-          src={currentSong?.songUrl && currentSong?.songUrl}
-          type="audio/mpeg"
-        />
-      </audio>
+      {currentSong && (
+        <audio ref={audioRef} preload="metadata">
+          <source src={currentSong.songUrl} type="audio/mpeg" />
+        </audio>
+      )}
+
       <SongWrapper
         $path={
           currentSong?.songName && isPlaying
