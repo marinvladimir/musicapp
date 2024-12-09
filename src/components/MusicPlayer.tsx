@@ -244,7 +244,7 @@ const MusicPlayer: React.FC = () => {
         $path={
           currentSong?.songName && isPlaying
             ? currentSong?.imageUrl
-            : getFilePath(
+            : albums[selectedAlbumIndex]?.albumName && getFilePath(
                 "Album_Image.png",
                 albums[selectedAlbumIndex]?.albumName,
               )
