@@ -53,11 +53,11 @@ export const StyledOrderSummary = styled(OrderSummary)`
   color: ${({ theme }) => theme.colors.textPrimary};
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border: 1px solid ${({ theme }) => theme.colors.blueBorder};
-  padding: ${({ theme }) => theme.spacing.large};
+  padding: ${({ theme }) => theme.spacing.medium};
   border-radius: 12px;
   transition: box-shadow 0.3s;
   justify-self: center;
-  width: 50%;
+  width: 80%;
 
   &:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
@@ -131,6 +131,10 @@ export const StyledCartItem = styled(CartItem)`
     background-color 0.3s,
     box-shadow 0.3s;
   margin-bottom: ${({ theme }) => theme.spacing.small};
+
+  @media (max-width: 512px) {
+    flex-direction: column;
+  }
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.darkBlue};
