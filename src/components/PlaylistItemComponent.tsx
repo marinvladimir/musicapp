@@ -31,7 +31,7 @@ const PlaylistItemComponent: React.FC<{
         onClick={() => setSelectedIndex(index)}
       >
         <SongDetails>
-          <SongCover src={`backend/${song.imageUrl}`} />
+          <SongCover src={`${song.imageUrl}`} />
           <SongName>
             {index + 1}.{" "}
             {song.songName.replace(/_/g, " ").replace(/\.mp3$/, "")}
