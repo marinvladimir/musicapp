@@ -26,7 +26,7 @@ exports.handler = async (event, context) => {
         return {
           songName: song,
           songUrl: `${albumBaseUrl}/${song}`, 
-          imageUrl: `${albumBaseUrl}/${song.replace('.mp3', '.jpg')}`,  
+          imageUrl: `${albumBaseUrl}/${song.replace('.mp3', '.png')}`,  
           price: songPrice
         };
       });
