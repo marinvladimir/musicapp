@@ -6,6 +6,9 @@ import { fileURLToPath } from "url";
 import pkg from 'pg';
 import cron from "node-cron";
 import router from './router.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const { Pool } = pkg;
 const __filename = fileURLToPath(import.meta.url);
@@ -15,11 +18,11 @@ const app = express();
 const MUSIC_FOLDER = path.join(__dirname, "assets/music");
 
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "music", 
-  password: "postgres", 
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
 
 cron.schedule("0 0 * * *", async () => {
@@ -52,9 +55,16 @@ const initializeDatabase = async () => {
   }
 };
 
-app.use(cors({ origin: "http://localhost:5173" }));
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "https://musicmarna.netlify.app/" 
+  ],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.static("assets"));
+app.use(express.static(path.join(__dirname, "assets")));
 
 app.use(router);
 

@@ -38,7 +38,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
           fetch(`${API_BASE_URL}/api/cart?sessionId=${sessionId}`),
         ]);
         const albumsData: Album[] = await albumsResponse.json();
-        console.log(albumsData);
         const cartData: { song_name: string; price: number }[] =
           await cartResponse.json();
         setAlbums(albumsData);
