@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Album, CartContextType, CartProviderProps } from "../types/global";
+import { API_BASE_URL } from "../config";
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -33,9 +34,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       setIsLoading(true);
       try {
         const [albumsResponse, cartResponse] = await Promise.all([
-          //fetch(`${API_BASE_URL}/api/albums`),
-          fetch("http://localhost:8888/.netlify/functions/albums"),
-          fetch(`http://localhost:8888/.netlify/functions/getCart?sessionId=${sessionId}`),
+          fetch(`${API_BASE_URL}/.netlify/functions/albums`),
+          fetch(`${API_BASE_URL}/.netlify/functions/getCart?sessionId=${sessionId}`),
         ]);
         const albumsData: Album[] = await albumsResponse.json();
         const cartData: { song_name: string; price: number }[] =
