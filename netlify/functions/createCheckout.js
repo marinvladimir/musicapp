@@ -25,7 +25,7 @@ export async function handler(event) {
 
       return {
         price_data: {
-          currency: 'eur',
+          currency: 'usd',
           product: product.id,
           unit_amount: item.price,
         },
