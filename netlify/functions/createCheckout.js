@@ -20,7 +20,7 @@ export async function handler(event) {
     const lineItems = cart.map((item) => {
       const product = products.data.find(p => p.name === item.name);
       if (!product) {
-        throw new Error(`Product not found for ${item.name}`);
+        throw new Error(`Product not found for ${item.name}, ${products}, ${cart}`);
       }
 
       return {
@@ -37,8 +37,8 @@ export async function handler(event) {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${process.env.VITE_APP_BACKEND_ENDPOINT}/success`,
-      cancel_url: `${process.env.VITE_APP_BACKEND_ENDPOINT}/cancel`,
+      success_url: `${process.env.VITE_APP_BACKEND_ENDPOINT}/#/success`,
+      cancel_url: `${process.env.VITE_APP_BACKEND_ENDPOINT}/#/cancel`,
     });
 
     return {
