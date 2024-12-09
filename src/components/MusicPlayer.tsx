@@ -64,11 +64,6 @@ const MusicPlayer: React.FC = () => {
       }
       setIsPlaying(!isPlaying);
     });
-    if (audioRef.current) {
-      audioRef.current.addEventListener('error', (e) => {
-        console.error('Error loading audio:', e);
-      });
-    }
   }, [isPlaying, currentSong?.songUrl]);
 
   const changeAlbum = (delta: number) => {
