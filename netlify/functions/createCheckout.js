@@ -12,9 +12,6 @@ export async function handler(event) {
     const { cart } = JSON.parse(event.body);
 
     const products = await stripe.products.list();
-    console.log('Stripe products:', products.data);
-    console.log('Cart items:', cart);
-
     const lineItems = cart.map((item) => {
       const product = products.data.find(p => p.name === item.name);
       if (!product) {

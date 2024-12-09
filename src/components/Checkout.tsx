@@ -18,8 +18,6 @@ const Checkout: React.FC = () => {
     `${STRIPE_KEY}`,
   );
 
-  console.log(`${STRIPE_KEY}`)
-
   const handleCheckout = async () => {
     try {
       const updatedCart = cart.map((item) => ({
@@ -46,7 +44,7 @@ const Checkout: React.FC = () => {
       if (!sessionId) {
         throw new Error('Failed to create Stripe session');
       }
-      
+
       const stripe = await stripePromise;
       if (!stripe) throw new Error("Stripe failed to load");
       const { error } = await stripe.redirectToCheckout({ sessionId });
