@@ -1,13 +1,7 @@
-const { Pool } = require('pg');
-require('dotenv').config(); 
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 exports.handler = async (event, context) => {
   const { sessionId } = event.queryStringParameters;
@@ -19,12 +13,20 @@ exports.handler = async (event, context) => {
     };
   }
 
+  await supabase.rpc('create_cart_table');
   try {
-    const result = await pool.query('SELECT * FROM cart WHERE session_id = $1', [sessionId]);
+    const { data, error } = await supabase
+      .from('cart')
+      .select('*')
+      .eq('session_id', sessionId);
+
+    if (error) {
+      throw error;
+    }
 
     return {
       statusCode: 200,
-      body: JSON.stringify(result.rows),
+      body: JSON.stringify(data),
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
