@@ -68,42 +68,6 @@ app.use(express.static(path.join(__dirname, "assets")));
 
 app.use(router);
 
-app.get("/api/albums", (req, res) => {
-  try {
-    const pricesPath = path.join(__dirname, 'assets/music/prices.json');
-    const prices = JSON.parse(fs.readFileSync(pricesPath, 'utf8'));
-
-    const albums = fs.readdirSync(MUSIC_FOLDER).reduce((result, album) => {
-      const albumPath = path.join(MUSIC_FOLDER, album);
-      if (fs.statSync(albumPath).isDirectory()) {
-        const files = fs.readdirSync(albumPath);
-        const mp3Files = files.filter((file) => file.endsWith(".mp3"));
-        const imageFiles = files.filter((file) => file.match(/\.(jpg|jpeg|png)$/i));
-
-        const albumPrices = prices[album] || {};
-
-        const songs = mp3Files.map((song) => {
-          const image = imageFiles.find((img) => img.startsWith(song.replace(".mp3", "")));
-          return {
-            songName: song,
-            songUrl: `https://musicmarna.netlify.app/assets/music/demos/${album}/${song}`,
-            imageUrl: image ? `/assets/music/${album}/${image}` : null,
-            price: albumPrices[song] || 1.99, 
-          };
-        });
-
-        result.push({ albumName: album, songs });
-      }
-      return result;
-    }, []);
-    res.json(albums);
-  } catch (error) {
-    console.error("Error reading albums:", error);
-    res.status(500).send("Error fetching album data.");
-  }
-});
-
-
 app.post("/api/cart", async (req, res) => {
   const { sessionId, songName, songUrl, price } = req.body;
   try {
@@ -118,20 +82,6 @@ app.post("/api/cart", async (req, res) => {
   } catch (error) {
     console.error("Error updating cart:", error);
     res.status(500).json({ error: "Failed to update cart." });
-  }
-});
-
-app.get("/api/cart", async (req, res) => {
-  const { sessionId } = req.query;
-  try {
-    const result = await pool.query(
-      "SELECT * FROM cart WHERE session_id = $1",
-      [sessionId]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error fetching cart:", error);
-    res.status(500).json({ error: "Failed to fetch cart." });
   }
 });
 

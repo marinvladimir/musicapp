@@ -10,9 +10,10 @@ exports.handler = async (event, context) => {
 
     const albumNames = ['Echoes_Of_Distant_Melodies', 'Lights_Of_Inspiration', 'The_Everlasting_Blue'];
 
+    //TODO change this
     const albums = albumNames.reduce((result, album) => {
-      const albumPrices = prices[album] || {};  // Prices for the specific album
-      const albumBaseUrl = `${MUSIC_URL_BASE}/${album}`; // URL base for this album
+      const albumPrices = prices[album] || {};
+      const albumBaseUrl = `${MUSIC_URL_BASE}/${album}`;
 
       const songs = [
         "Dance_In_The_Park.mp3", "Emotional_Mixture.mp3", "Eternal_Chords.mp3", 
