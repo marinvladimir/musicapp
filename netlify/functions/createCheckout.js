@@ -20,7 +20,7 @@ export async function handler(event) {
     const lineItems = cart.map((item) => {
       const product = products.data.find(p => p.name === item.name);
       if (!product) {
-        throw new Error(`Product not found for ${item.name}, ${products}, ${cart}`);
+        throw new Error(`Product not found for ${item.name}, ${products.data}`);
       }
 
       return {
