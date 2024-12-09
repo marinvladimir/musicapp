@@ -227,24 +227,22 @@ const MusicPlayer: React.FC = () => {
     };
   }, [selectedSongIndex, currentSong, isPlaying, isShuffle, isLooping]);
 
-  
-
   return isLoading ? (
     <Spinner />
   ) : (
     <MusicWrapper>
-      <audio
-        ref={audioRef}
-        preload="metadata"
-      >
- <source src={currentSong?.songUrl} type="audio/mpeg" />
-
+      <audio ref={audioRef} preload="metadata">
+        <source
+          src={currentSong?.songUrl && currentSong?.songUrl}
+          type="audio/mpeg"
+        />
       </audio>
       <SongWrapper
         $path={
           currentSong?.songName && isPlaying
             ? currentSong?.imageUrl
-            : albums[selectedAlbumIndex]?.albumName && getFilePath(
+            : albums[selectedAlbumIndex]?.albumName &&
+              getFilePath(
                 "Album_Image.png",
                 albums[selectedAlbumIndex]?.albumName,
               )
@@ -263,10 +261,13 @@ const MusicPlayer: React.FC = () => {
         <AlbumCover>
           <AlbumImage
             $active={isPlaying}
-            src={albums[selectedAlbumIndex]?.albumName && getFilePath(
-              "Album_Cover.png",
-              albums[selectedAlbumIndex]?.albumName,
-            )}
+            src={
+              albums[selectedAlbumIndex]?.albumName &&
+              getFilePath(
+                "Album_Cover.png",
+                albums[selectedAlbumIndex]?.albumName,
+              )
+            }
           />
         </AlbumCover>
         <div>

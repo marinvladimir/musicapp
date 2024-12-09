@@ -1,5 +1,4 @@
-const BASE_PATH =
-  import.meta.env.VITE_FILE_BASE_PATH || "assets/music";
+const BASE_PATH = import.meta.env.VITE_FILE_BASE_PATH || "assets/music";
 export const getFilePath = (type: string, albumName: string) =>
   `${BASE_PATH}/${albumName}/${type}`;
 
