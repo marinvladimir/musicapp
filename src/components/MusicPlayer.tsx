@@ -124,7 +124,11 @@ const MusicPlayer: React.FC = () => {
     }
   };
 
-  const addToCart = async (song: { songName: string; songUrl: string, price: number }) => {
+  const addToCart = async (song: {
+    songName: string;
+    songUrl: string;
+    price: number;
+  }) => {
     try {
       await fetch(`${API_BASE_URL}/api/cart`, {
         method: "POST",
@@ -136,7 +140,10 @@ const MusicPlayer: React.FC = () => {
           price: song.price,
         }),
       });
-      setCart((prevCart) => [...prevCart, { songName: song.songName, price: song.price }]);
+      setCart((prevCart) => [
+        ...prevCart,
+        { songName: song.songName, price: song.price },
+      ]);
     } catch (error) {
       console.error("Error adding song to cart:", error);
     }
@@ -152,14 +159,22 @@ const MusicPlayer: React.FC = () => {
           songName: songName,
         }),
       });
-      setCart((prevCart) => prevCart.filter((item) => item.songName !== songName));
+      setCart((prevCart) =>
+        prevCart.filter((item) => item.songName !== songName),
+      );
     } catch (error) {
       console.error("Error removing song from cart:", error);
     }
   };
 
-  const toggleCartItem = (song: { songName: string; songUrl: string, price: number }) => {
-    const isAlreadyInCart = cart.some(item => item.songName === song.songName);
+  const toggleCartItem = (song: {
+    songName: string;
+    songUrl: string;
+    price: number;
+  }) => {
+    const isAlreadyInCart = cart.some(
+      (item) => item.songName === song.songName,
+    );
     if (isAlreadyInCart) {
       removeFromCart(song.songName);
     } else {

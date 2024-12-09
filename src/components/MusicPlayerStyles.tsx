@@ -145,14 +145,13 @@ export const ButtonArrow = styled.button<{ $side?: string }>`
 `;
 
 export const CartDetails = styled.div`
-    display: flex
-;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column-reverse;
-    font-size: 0.75rem;
-    gap: 0.5rem;
-`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column-reverse;
+  font-size: 0.75rem;
+  gap: 0.5rem;
+`;
 
 export const CartButton = styled.button<{ $filled: boolean }>`
   color: ${({ theme, $filled }) =>

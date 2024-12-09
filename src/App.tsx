@@ -11,6 +11,8 @@ import CheckoutPage from "./pages/CheckoutPage";
 import { useCartContext } from "./states/CartContext";
 import { PageWrapper } from "./AppStyles";
 import Cart from "./components/Cart";
+import CancelPage from "./pages/CancelPage";
+import SuccessPage from "./pages/SuccessPage";
 
 const App: React.FC = () => {
   const { cart } = useCartContext();
@@ -24,6 +26,8 @@ const App: React.FC = () => {
             <Route path="/music" element={<MusicPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/cancel" element={<CancelPage />} />
+            <Route path="/success" element={<SuccessPage />} />
           </Routes>
           <Cart cart={cart} isVisible={cart?.length > 0} />
           <Footer />

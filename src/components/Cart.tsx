@@ -3,10 +3,10 @@ import { CartCount, CartWrapper } from "../AppStyles";
 import { CartIcon } from "../icons/icons";
 import { CartButton } from "./MusicPlayerStyles";
 
-const Cart: React.FC<{ cart: string[]; isVisible: boolean }> = ({
-  cart,
-  isVisible,
-}) => {
+const Cart: React.FC<{
+  cart: { songName: string; price: number }[];
+  isVisible: boolean;
+}> = ({ cart, isVisible }) => {
   const navigate = useNavigate();
 
   const handleCartClick = () => {

@@ -15,11 +15,15 @@ interface CartContextType {
   cart: {
     songName: string;
     price: number;
-}[];
-  setCart: React.Dispatch<React.SetStateAction<{
-    songName: string;
-    price: number;
-}[]>>;
+  }[];
+  setCart: React.Dispatch<
+    React.SetStateAction<
+      {
+        songName: string;
+        price: number;
+      }[]
+    >
+  >;
   albums: Album[];
   setAlbums: React.Dispatch<React.SetStateAction<Album[]>>;
   isLoading: Boolean;

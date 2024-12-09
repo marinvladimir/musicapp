@@ -14,7 +14,7 @@ export const useCartContext = () => {
 };
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [cart, setCart] = useState<{ songName: string, price: number }[]>([]);
+  const [cart, setCart] = useState<{ songName: string; price: number }[]>([]);
   const [albums, setAlbums] = useState<Album[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -39,19 +39,24 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         ]);
         const albumsData: Album[] = await albumsResponse.json();
         console.log(albumsData);
-        const cartData: { song_name: string, price: number }[] = await cartResponse.json();
+        const cartData: { song_name: string; price: number }[] =
+          await cartResponse.json();
         setAlbums(albumsData);
-        setCart(cartData.map((item) => ({ songName: item.song_name, price: item.price })));
+        setCart(
+          cartData.map((item) => ({
+            songName: item.song_name,
+            price: item.price,
+          })),
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     fetchData();
   }, [sessionId]);
-  
 
   return (
     <CartContext.Provider
