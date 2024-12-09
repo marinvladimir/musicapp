@@ -1,0 +1,167 @@
+[
+  {
+    "albumName": "Echoes_Of_Distant_Melodies",
+    "songs": [
+      {
+        "songName": "Dance_In_The_Park.mp3",
+        "songUrl": "/assets/music/Echoes_Of_Distant_Melodies/Dance_In_The_Park.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_Distant_Melodies/Dance_In_The_Park.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Emotional_Mixture.mp3",
+        "songUrl": "/assets/music/Echoes_Of_Distant_Melodies/Emotional_Mixture.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_Distant_Melodies/Emotional_Mixture.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Eternal_Chords.mp3",
+        "songUrl": "/assets/music/Echoes_Of_Distant_Melodies/Eternal_Chords.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_Distant_Melodies/Eternal_Chords.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Forest_Festival.mp3",
+        "songUrl": "/assets/music/Echoes_Of_Distant_Melodies/Forest_Festival.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_Distant_Melodies/Forest_Festival.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Friendly_Crowd_Ballad.mp3",
+        "songUrl": "/assets/music/Echoes_Of_Distant_Melodies/Friendly_Crowd_Ballad.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_Distant_Melodies/Friendly_Crowd_Ballad.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Snowfall_In_Town_Center.mp3",
+        "songUrl": "/assets/music/Echoes_Of_Distant_Melodies/Snowfall_In_Town_Center.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_Distant_Melodies/Snowfall_In_Town_Center.png",
+        "price": 0.99
+      },
+      {
+        "songName": "The_Lookout.mp3",
+        "songUrl": "/assets/music/Echoes_Of_Distant_Melodies/The_Lookout.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_Distant_Melodies/The_Lookout.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Town_Square.mp3",
+        "songUrl": "/assets/music/Echoes_Of_Distant_Melodies/Town_Square.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_Distant_Melodies/Town_Square.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Winter_Atmosphere.mp3",
+        "songUrl": "/assets/music/Echoes_Of_Distant_Melodies/Winter_Atmosphere.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_Distant_Melodies/Winter_Atmosphere.png",
+        "price": 0.99
+      }
+    ]
+  },
+  {
+    "albumName": "Lights_Of_Inspiration",
+    "songs": [
+      {
+        "songName": "Rain_Drops.mp3",
+        "songUrl": "/assets/music/Lights_Of_Inspiration/Rain_Drops.mp3",
+        "imageUrl": "/assets/music/Lights_Of_Inspiration/Rain_Drops.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Sea_Waves.mp3",
+        "songUrl": "/assets/music/Lights_Of_Inspiration/Sea_Waves.mp3",
+        "imageUrl": "/assets/music/Lights_Of_Inspiration/Sea_Waves.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Spring_Is_Outside.mp3",
+        "songUrl": "/assets/music/Lights_Of_Inspiration/Spring_Is_Outside.mp3",
+        "imageUrl": "/assets/music/Lights_Of_Inspiration/Spring_Is_Outside.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Summer_Heat.mp3",
+        "songUrl": "/assets/music/Lights_Of_Inspiration/Summer_Heat.mp3",
+        "imageUrl": "/assets/music/Lights_Of_Inspiration/Summer_Heat.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Sunset_Covered_With_Snow.mp3",
+        "songUrl": "/assets/music/Lights_Of_Inspiration/Sunset_Covered_With_Snow.mp3",
+        "imageUrl": "/assets/music/Lights_Of_Inspiration/Sunset_Covered_With_Snow.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Underwater_Palace.mp3",
+        "songUrl": "/assets/music/Lights_Of_Inspiration/Underwater_Palace.mp3",
+        "imageUrl": "/assets/music/Lights_Of_Inspiration/Underwater_Palace.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Warm_Welcome.mp3",
+        "songUrl": "/assets/music/Lights_Of_Inspiration/Warm_Welcome.mp3",
+        "imageUrl": "/assets/music/Lights_Of_Inspiration/Warm_Welcome.png",
+        "price": 0.99
+      },
+      {
+        "songName": "Waterfall.mp3",
+        "songUrl": "/assets/music/Lights_Of_Inspiration/Waterfall.mp3",
+        "imageUrl": "/assets/music/Lights_Of_Inspiration/Waterfall.png",
+        "price": 0.99
+      }
+    ]
+  },
+  {
+    "albumName": "The_Everlasting_Blue",
+    "songs": [
+      {
+        "songName": "A_Bed_of_Roses.mp3",
+        "songUrl": "/assets/music/The_Everlasting_Blue/A_Bed_of_Roses.mp3",
+        "imageUrl": "/assets/music/The_Everlasting_Blue/A_Bed_of_Roses.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Hail_Holy_Queen.mp3",
+        "songUrl": "/assets/music/The_Everlasting_Blue/Hail_Holy_Queen.mp3",
+        "imageUrl": "/assets/music/The_Everlasting_Blue/Hail_Holy_Queen.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Starry_Night_in_the_Desert.mp3",
+        "songUrl": "/assets/music/The_Everlasting_Blue/Starry_Night_in_the_Desert.mp3",
+        "imageUrl": "/assets/music/The_Everlasting_Blue/Starry_Night_in_the_Desert.png",
+        "price": 1.99
+      },
+      {
+        "songName": "The_Boy_That_Rain_Follows.mp3",
+        "songUrl": "/assets/music/The_Everlasting_Blue/The_Boy_That_Rain_Follows.mp3",
+        "imageUrl": "/assets/music/The_Everlasting_Blue/The_Boy_That_Rain_Follows.png",
+        "price": 1.99
+      },
+      {
+        "songName": "The_Falling_Star.mp3",
+        "songUrl": "/assets/music/The_Everlasting_Blue/The_Falling_Star.mp3",
+        "imageUrl": "/assets/music/The_Everlasting_Blue/The_Falling_Star.png",
+        "price": 1.99
+      },
+      {
+        "songName": "The_Heart_Of_Glass_That_Slipped_From_My_Hands.mp3",
+        "songUrl": "/assets/music/The_Everlasting_Blue/The_Heart_Of_Glass_That_Slipped_From_My_Hands.mp3",
+        "imageUrl": "/assets/music/The_Everlasting_Blue/The_Heart_Of_Glass_That_Slipped_From_My_Hands.png",
+        "price": 1.99
+      },
+      {
+        "songName": "The_Night_In_The_Supermarket.mp3",
+        "songUrl": "/assets/music/The_Everlasting_Blue/The_Night_In_The_Supermarket.mp3",
+        "imageUrl": "/assets/music/The_Everlasting_Blue/The_Night_In_The_Supermarket.png",
+        "price": 1.99
+      },
+      {
+        "songName": "The_Place_From_Dreams.mp3",
+        "songUrl": "/assets/music/The_Everlasting_Blue/The_Place_From_Dreams.mp3",
+        "imageUrl": "/assets/music/The_Everlasting_Blue/The_Place_From_Dreams.png",
+        "price": 1.99
+      }
+    ]
+  }
+]

@@ -7,3 +7,6 @@ for = "/assets/music/*"
 Access-Control-Allow-Origin = "*"
 Access-Control-Allow-Methods = "GET"
 Access-Control-Allow-Headers = "Content-Type"
+
+[functions]
+  external_node_modules = ["dotenv"]
