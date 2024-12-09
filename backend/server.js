@@ -2,25 +2,15 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-import pkg from 'pg';
 import cron from "node-cron";
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { Pool } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
 
 cron.schedule("0 0 * * *", async () => {
   try {
@@ -55,7 +45,6 @@ const initializeDatabase = async () => {
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "http://localhost:8888",
     "https://musicmarna.netlify.app" 
   ],
 };

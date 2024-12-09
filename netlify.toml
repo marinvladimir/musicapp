@@ -10,3 +10,5 @@ Access-Control-Allow-Headers = "Content-Type"
 
 [functions]
   external_node_modules = ["dotenv"]
+  name = "cleanupCart"
+  schedule = "0 0 * * *"
