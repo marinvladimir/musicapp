@@ -8,7 +8,8 @@ for = "/assets/music/*"
   Access-Control-Allow-Methods = "GET"
   Access-Control-Allow-Headers = "Content-Type"
 
-[[functions]]
-  name = "cleanupCart"
+[functions]
   external_node_modules = ["dotenv"]
+
+[[functions.cleanupCart]]
   schedule = "0 0 * * *"
