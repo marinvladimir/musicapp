@@ -38,7 +38,7 @@ const PlaylistItemComponent: React.FC<{
           </SongName>
         </SongDetails>
         <CartDetails>
-          {song.price + "$"}
+          {song.price + "€"}
           <CartButton
             $filled={cart.some((item) => item.songName === song.songName)}
             onClick={() =>
