@@ -1,14 +1,14 @@
 [build]
-functions = "netlify/functions"
+  functions = "netlify/functions"
 
 [[headers]]
 for = "/assets/music/*"
 [headers.values]
-Access-Control-Allow-Origin = "*"
-Access-Control-Allow-Methods = "GET"
-Access-Control-Allow-Headers = "Content-Type"
+  Access-Control-Allow-Origin = "*"
+  Access-Control-Allow-Methods = "GET"
+  Access-Control-Allow-Headers = "Content-Type"
 
-[functions]
-  external_node_modules = ["dotenv"]
+[[functions]]
   name = "cleanupCart"
+  external_node_modules = ["dotenv"]
   schedule = "0 0 * * *"
