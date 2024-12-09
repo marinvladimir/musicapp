@@ -11,5 +11,5 @@ for = "/assets/music/*"
 [functions]
   external_node_modules = ["dotenv"]
 
-[[functions.cleanupCart]]
+[functions.cleanupCart]
   schedule = "0 0 * * *"
