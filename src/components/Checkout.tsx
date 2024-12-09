@@ -13,10 +13,12 @@ import { loadStripe } from "@stripe/stripe-js";
 
 const Checkout: React.FC = () => {
   const { cart, sessionId, setCart } = useCartContext();
-  const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+  const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_key";
   const stripePromise = loadStripe(
     `${STRIPE_KEY}`,
   );
+
+  console.log(`${STRIPE_KEY}`)
 
   const handleCheckout = async () => {
     try {
