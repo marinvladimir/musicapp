@@ -13,7 +13,7 @@ declare module "../config" {
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  VITE_STRIPE_SECRET_KEY: string;
+  VITE_STRIPE_PUBLISHABLE_KEY: string;
   VITE_API_BASE_URL: string;
   VITE_FILE_BASE_PATH: string;
 }

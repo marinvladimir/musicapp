@@ -13,7 +13,7 @@ import { loadStripe } from "@stripe/stripe-js";
 
 const Checkout: React.FC = () => {
   const { cart, sessionId, setCart } = useCartContext();
-  const STRIPE_KEY = import.meta.env.VITE_STRIPE_SECRET_KEY;
+  const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
   const stripePromise = loadStripe(
     `${STRIPE_KEY}`,
   );
