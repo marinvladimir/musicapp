@@ -8,17 +8,6 @@ dotenv.config();
 // const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
 const dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
 
-const listFiles = async () => {
-    try {
-      const response = await dbx.filesListFolder({ path: '' });
-      console.log('Files in Dropbox:', response.result.entries);
-    } catch (error) {
-      console.error('Error listing files:', error);
-    }
-  };
-
-  listFiles();
-
 export async function handler(event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -31,6 +20,17 @@ export async function handler(event) {
     // if (session.payment_status === 'paid') {
     //   const productName = session.metadata.product_name;
     //   const dropboxFilePath = await getDropboxFileLink(productName);
+
+    const listFiles = async () => {
+        try {
+          const response = await dbx.filesListFolder({ path: '' });
+          console.log('Files in Dropbox:', response.result.entries);
+        } catch (error) {
+          console.error('Error listing files:', error);
+        }
+      };
+    
+      listFiles();
     const dropboxFilePath = await getDropboxFileLink('Underwater_Palace.mp3');
     console.log('Dropbox file path:', dropboxFilePath); 
 
@@ -68,17 +68,27 @@ export async function handler(event) {
 }
 
 const getDropboxFileLink = async (fileName) => {
-  try {
-    const response = await dbx.filesGetMetadata({ path: `/${fileName}` });
-
-    if (response) {
-      const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
-      const directLink = sharedLink.result.url.replace('dl=0', 'dl=1');
-      return directLink;
+    try {
+      const response = await dbx.filesGetMetadata({ path: `/${fileName}` });
+  
+      console.log('File Metadata:', response);
+  
+      if (response) {
+        const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
+  
+        if (sharedLinks.result.links.length > 0) {
+          const directLink = sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
+          return directLink;
+        } else {
+          const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
+          const directLink = sharedLink.result.url.replace('dl=0', 'dl=1');
+          return directLink;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching file from Dropbox:', error);
+      return null;
     }
-    return null;
-  } catch (error) {
-    console.error('Error fetching file from Dropbox:', error);
-    return null;
-  }
-};
+  };
+  
