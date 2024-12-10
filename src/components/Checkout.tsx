@@ -52,11 +52,13 @@ const Checkout: React.FC = () => {
   };
 
   const calculateTotal = () => {
-    return cart.reduce(
+    const total = cart.reduce(
       (total, item) => total + parseFloat(item.price.toString()),
       0,
     );
+    return parseFloat(total.toFixed(2));
   };
+  
 
   const removeFromCart = async (songName: string) => {
     try {
