@@ -15,7 +15,9 @@ const CancelNavWrapper = styled.nav`
     font-size: 1.2rem;
     font-weight: bold;
     margin: 0 1.5rem;
-    transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transition:
+      color 0.3s ease-in-out,
+      transform 0.3s ease-in-out;
 
     &:hover {
       color: ${(props) => props.theme.colors.accent};
@@ -45,29 +47,32 @@ const SuccessPage: React.FC = () => {
 
   useEffect(() => {
     const fetchPaymentStatus = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/.netlify/functions/checkPayment`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId }),
-        });
+      // try {
+        // const response = await fetch(
+        //   `${API_BASE_URL}/.netlify/functions/checkPayment`,
+        //   {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({ sessionId }),
+        //   },
+        // );
 
-        const data: PaymentStatusResponse = await response.json();
+        // const data: PaymentStatusResponse = await response.json();
 
-        if (response.ok) {
-          setPaymentStatus(data.status);
+        // if (response.ok) {
+          // setPaymentStatus(data.status);
 
-          if (data.status === "success") {
+          // if (data.status === "success") {
             const songUrl = await fetchDownloadLink();
             setDownloadLink(songUrl);
-          }
-        } else {
-          setPaymentStatus(`Error: ${data.error || "Unknown error"}`);
-        }
-      } catch (error) {
-        console.error("Error checking payment status:", error);
-        setPaymentStatus("Error checking payment status");
-      }
+          // }
+        // } else {
+        //   setPaymentStatus(`Error: ${data.error || "Unknown error"}`);
+        // }
+      // } catch (error) {
+      //   console.error("Error checking payment status:", error);
+      //   setPaymentStatus("Error checking payment status");
+      // }
     };
 
     if (sessionId) {
@@ -77,12 +82,15 @@ const SuccessPage: React.FC = () => {
 
   const fetchDownloadLink = async (): Promise<string | null> => {
     try {
-    const response = await fetch(`${API_BASE_URL}/.netlify/functions/getDownloadLink`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId }),
-    });
-    const data: DownloadLinkResponse = await response.json();
+      const response = await fetch(
+        `${API_BASE_URL}/.netlify/functions/getDownloadLink`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId }),
+        },
+      );
+      const data: DownloadLinkResponse = await response.json();
       return data.downloadLink;
     } catch (error) {
       console.error("Error fetching download link:", error);
@@ -93,7 +101,7 @@ const SuccessPage: React.FC = () => {
   return (
     <ContentWrapper>
       <MusicContainer>
-        {paymentStatus === "success" ? (
+        {/* {paymentStatus === "success" ? ( */}
           <div style={{ marginBottom: "16px" }}>
             <p>Purchase was successful. Go back to home page?</p>
             {downloadLink ? (
@@ -104,9 +112,9 @@ const SuccessPage: React.FC = () => {
               <h2>Loading download link...</h2>
             )}
           </div>
-        ) : (
+        {/* ) : (
           <h2>{paymentStatus || "Processing payment..."}</h2>
-        )}
+        )} */}
         <CancelNavWrapper>
           <NavLink to="/">Back to home</NavLink>
         </CancelNavWrapper>

@@ -1,13 +1,12 @@
-import Stripe from 'stripe';
+// import Stripe from 'stripe';
 import dotenv from 'dotenv';
+import { Dropbox } from 'dropbox';
+import fetch from 'isomorphic-fetch';
 
 dotenv.config();
 
-const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
-
-const generateDownloadLink = (session) => {
-  return `https://your-bucket-url.com/downloads/song-${session.id}.mp3`;
-};
+// const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
+const dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
 
 export async function handler(event) {
   if (event.httpMethod !== 'POST') {
@@ -15,27 +14,52 @@ export async function handler(event) {
   }
 
   try {
-    const { sessionId } = JSON.parse(event.body);
+    // const { sessionId } = JSON.parse(event.body);
+    // const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    // if (session.payment_status === 'paid') {
+      const productName = session.metadata.product_name;
+    //   const dropboxFilePath = await getDropboxFileLink(productName);
+    const dropboxFilePath = await getDropboxFileLink('Underwater_Palace.mp3');
 
-    if (session.payment_status === 'paid') {
-      const downloadLink = generateDownloadLink(session);
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ downloadLink }),
-      };
-    } else {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Payment not successful' }),
-      };
-    }
+      if (dropboxFilePath) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify({ downloadLink: dropboxFilePath }),
+        };
+      } else {
+        return {
+          statusCode: 404,
+          body: JSON.stringify({ error: 'File not found in Dropbox' }),
+        };
+      }
+    // } else {
+    //   return {
+    //     statusCode: 400,
+    //     body: JSON.stringify({ error: 'Payment not successful' }),
+    //   };
+    // }
   } catch (error) {
     console.error('Error retrieving payment status:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Failed to retrieve payment status' }),
     };
+  }
+}
+
+const getDropboxFileLink = async (fileName) => {
+  try {
+    const response = await dbx.filesGetMetadata({ path: `/${fileName}` });
+
+    if (response) {
+      const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
+      const directLink = sharedLink.result.url.replace('dl=0', 'dl=1');
+      return directLink;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching file from Dropbox:', error);
+    return null;
   }
 };

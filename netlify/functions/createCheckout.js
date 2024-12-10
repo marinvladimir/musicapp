@@ -18,7 +18,7 @@ export async function handler(event) {
 
     const products = await stripe.products.list({ limit: 200 });
     const lineItems = cart.map((item) => {
-      const product = products.data.find(p => p.name === item.name);
+      const product = products.data.find((p) => p.name === item.name);
       if (!product) {
         throw new Error(`Product not found for ${item.name}`);
       }
@@ -26,12 +26,14 @@ export async function handler(event) {
       return {
         price_data: {
           currency: 'eur',
-          product: product.id,
-          unit_amount: item.price,
+          product_data: { name: item.name },
+          unit_amount: item.price
         },
-        quantity: 1,
+        quantity: item.quantity || 1,
       };
     });
+
+    const productNames = cart.map((item) => item.name);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -39,7 +41,11 @@ export async function handler(event) {
       mode: 'payment',
       success_url: `${process.env.VITE_APP_BACKEND_ENDPOINT}/#/success`,
       cancel_url: `${process.env.VITE_APP_BACKEND_ENDPOINT}/#/cancel`,
+      metadata: {
+        product_names: JSON.stringify(productNames),
+      },
     });
+
 
     return {
       statusCode: 200,
