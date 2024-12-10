@@ -24,12 +24,16 @@ const CancelNavWrapper = styled.nav`
       transform: scale(1.1);
     }
   }
+
+  @media (max-width: 512px) {
+    display: none;
+  }
 `;
 
-interface PaymentStatusResponse {
-  status: string;
-  error?: string;
-}
+// interface PaymentStatusResponse {
+//   status: string;
+//   error?: string;
+// }
 
 interface DownloadLinkResponse {
   fileLinks: {
@@ -40,41 +44,41 @@ interface DownloadLinkResponse {
 }
 
 const SuccessPage: React.FC = () => {
-  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+  // const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [downloadLinks, setDownloadLinks] = useState<
-    { productName: string; downloadLink?: string; error?: string }[] | null
-  >(null);
+  { productName: string; downloadLink?: string; error?: string }[] | null
+>(null);
 
   const { sessionId } = useCartContext();
 
   useEffect(() => {
     const fetchPaymentStatus = async () => {
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/.netlify/functions/checkPayment`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sessionId }),
-          },
-        );
+      // try {
+        // const response = await fetch(
+        //   `${API_BASE_URL}/.netlify/functions/checkPayment`,
+        //   {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({ sessionId }),
+        //   },
+        // );
 
-        const data: PaymentStatusResponse = await response.json();
+        // const data: PaymentStatusResponse = await response.json();
 
-        if (response.ok) {
-          setPaymentStatus(data.status);
+        // if (response.ok) {
+          // setPaymentStatus(data.status);
 
-          if (data.status === "success") {
+          // if (data.status === "success") {
             const songUrls = await fetchDownloadLinks();
             setDownloadLinks(songUrls);
-          }
-        } else {
-          setPaymentStatus(`Error: ${data.error || "Unknown error"}`);
-        }
-      } catch (error) {
-        console.error("Error checking payment status:", error);
-        setPaymentStatus("Error checking payment status");
-      }
+          // }
+        // } else {
+        //   setPaymentStatus(`Error: ${data.error || "Unknown error"}`);
+        // }
+      // } catch (error) {
+      //   console.error("Error checking payment status:", error);
+      //   setPaymentStatus("Error checking payment status");
+      // }
     };
 
     if (sessionId) {
@@ -82,18 +86,15 @@ const SuccessPage: React.FC = () => {
     }
   }, [sessionId]);
 
-  const fetchDownloadLinks = async (): Promise<
+ const fetchDownloadLinks = async (): Promise<
     { productName: string; downloadLink?: string; error?: string }[] | null
   > => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/.netlify/functions/getDownloadLink`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId }),
-        },
-      );
+      const response = await fetch(`${API_BASE_URL}/.netlify/functions/getDownloadLink`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      });
 
       const data: DownloadLinkResponse = await response.json();
       return data.fileLinks;
@@ -106,28 +107,28 @@ const SuccessPage: React.FC = () => {
   return (
     <ContentWrapper>
       <MusicContainer>
-        {paymentStatus === "success" ? (
-          <div style={{ marginBottom: "16px" }}>
-            <p>Purchase was successful. Go back to home page?</p>
-            {downloadLinks ? (
-              downloadLinks.map((file) => (
-                <div key={file.productName}>
-                  {file.downloadLink ? (
-                    <a href={file.downloadLink} download>
-                      Download {file.productName}
-                    </a>
-                  ) : (
-                    <p>{file.error || "Error: File not found"}</p>
-                  )}
-                </div>
-              ))
-            ) : (
-              <h2>Loading download links...</h2>
-            )}
-          </div>
-        ) : (
+        {/* {paymentStatus === "success" ? ( */}
+  <div style={{ marginBottom: "16px" }}>
+          <p>Purchase was successful. Go back to home page?</p>
+          {downloadLinks ? (
+            downloadLinks.map((file) => (
+              <div key={file.productName}>
+                {file.downloadLink ? (
+                  <a href={file.downloadLink} download>
+                    Download {file.productName}
+                  </a>
+                ) : (
+                  <p>{file.error || "Error: File not found"}</p>
+                )}
+              </div>
+            ))
+          ) : (
+            <h2>Loading download links...</h2>
+          )}
+        </div>
+        {/* ) : (
           <h2>{paymentStatus || "Processing payment..."}</h2>
-        )}
+        )} */}
         <CancelNavWrapper>
           <NavLink to="/">Back to home</NavLink>
         </CancelNavWrapper>
