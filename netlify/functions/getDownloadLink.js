@@ -1,11 +1,11 @@
-import Stripe from 'stripe';
+// import Stripe from 'stripe';
 import dotenv from 'dotenv';
 import { Dropbox } from 'dropbox';
 import fetch from 'isomorphic-fetch';
 
 dotenv.config();
 
-const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
+// const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
 const dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
 
 export async function handler(event) {
@@ -14,11 +14,13 @@ export async function handler(event) {
   }
 
   try {
-    const { sessionId } = JSON.parse(event.body);
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    // const { sessionId } = JSON.parse(event.body);
+    // const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    if (session.payment_status === 'paid') {
-      const productNames = JSON.parse(session.metadata.product_names);
+    // if (session.payment_status === 'paid') {
+    //   const productNames = JSON.parse(session.metadata.product_names);
+
+    const productNames = ["Underwater_Palace.mp3", "Waterfall.mp3"];
 
       const fileLinks = [];
 
@@ -44,12 +46,12 @@ export async function handler(event) {
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
       };
-    } else {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Payment not successful' }),
-      };
-    }
+    // } else {
+    //   return {
+    //     statusCode: 400,
+    //     body: JSON.stringify({ error: 'Payment not successful' }),
+    //   };
+    // }
   } catch (error) {
     console.error('Error retrieving payment status:', error);
     return {

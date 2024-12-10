@@ -24,10 +24,6 @@ const CancelNavWrapper = styled.nav`
       transform: scale(1.1);
     }
   }
-
-  @media (max-width: 512px) {
-    display: none;
-  }
 `;
 
 interface PaymentStatusResponse {
