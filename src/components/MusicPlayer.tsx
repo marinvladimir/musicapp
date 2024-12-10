@@ -134,16 +134,22 @@ const MusicPlayer: React.FC = () => {
     price: number;
   }) => {
     try {
-      await fetch(`${API_BASE_URL}/.netlify/functions/postCart`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId: sessionId,
-          songName: song.songName,
-          songUrl: song.songUrl,
-          price: song.price,
-        }),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/.netlify/functions/postCart`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId: sessionId,
+            songName: song.songName,
+            songUrl: song.songUrl,
+            price: song.price,
+          }),
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Failed to add song to cart");
+      }
       setCart((prevCart) => [
         ...prevCart,
         { songName: song.songName, price: song.price },
@@ -155,14 +161,20 @@ const MusicPlayer: React.FC = () => {
 
   const removeFromCart = async (songName: string) => {
     try {
-      await fetch(`${API_BASE_URL}/.netlify/functions/deleteCart`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId: sessionId,
-          songName: songName,
-        }),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/.netlify/functions/deleteCart`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId: sessionId,
+            songName: songName,
+          }),
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Failed to remove song from cart");
+      }
       setCart((prevCart) =>
         prevCart.filter((item) => item.songName !== songName),
       );

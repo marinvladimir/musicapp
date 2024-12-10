@@ -38,11 +38,6 @@ export async function handler(event) {
       return {
         statusCode: 200,
         body: JSON.stringify({ fileLinks }),
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
       };
     } else {
       return {

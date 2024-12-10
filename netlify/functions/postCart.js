@@ -33,11 +33,6 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 201,
       body: JSON.stringify({ message: 'Song added to cart.' }),
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
     };
   } catch (error) {
     console.error('Error updating cart:', error);

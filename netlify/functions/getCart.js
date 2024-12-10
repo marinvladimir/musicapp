@@ -27,11 +27,6 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 200,
       body: JSON.stringify(data),
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
     };
   } catch (error) {
     console.error('Error fetching cart:', error);

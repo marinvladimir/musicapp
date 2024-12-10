@@ -50,11 +50,6 @@ export async function handler(event) {
     return {
       statusCode: 200,
       body: JSON.stringify({ sessionId: session.id }),
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
     };
   } catch (error) {
     console.error('Error creating Stripe session:', error.message, error.stack);
