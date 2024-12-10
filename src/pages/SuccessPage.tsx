@@ -30,17 +30,17 @@ const CancelNavWrapper = styled.nav`
   }
 `;
 
-interface PaymentStatusResponse {
-  status: string;
-  error?: string;
-}
+// interface PaymentStatusResponse {
+//   status: string;
+//   error?: string;
+// }
 
 interface DownloadLinkResponse {
   downloadLink: string;
 }
 
 const SuccessPage: React.FC = () => {
-  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+  // const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [downloadLink, setDownloadLink] = useState<string | null>(null);
 
   const { sessionId } = useCartContext();
