@@ -18,7 +18,7 @@ export async function handler(event) {
     // const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     // if (session.payment_status === 'paid') {
-      const productName = session.metadata.product_name;
+    //   const productName = session.metadata.product_name;
     //   const dropboxFilePath = await getDropboxFileLink(productName);
     const dropboxFilePath = await getDropboxFileLink('Underwater_Palace.mp3');
 
@@ -26,6 +26,11 @@ export async function handler(event) {
         return {
           statusCode: 200,
           body: JSON.stringify({ downloadLink: dropboxFilePath }),
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          },
         };
       } else {
         return {
