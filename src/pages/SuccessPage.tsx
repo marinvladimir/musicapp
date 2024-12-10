@@ -36,12 +36,18 @@ const CancelNavWrapper = styled.nav`
 // }
 
 interface DownloadLinkResponse {
-  downloadLink: string;
+  fileLinks: {
+    productName: string;
+    downloadLink?: string;
+    error?: string;
+  }[];
 }
 
 const SuccessPage: React.FC = () => {
   // const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
-  const [downloadLink, setDownloadLink] = useState<string | null>(null);
+  const [downloadLinks, setDownloadLinks] = useState<
+  { productName: string; downloadLink?: string; error?: string }[] | null
+>(null);
 
   const { sessionId } = useCartContext();
 
@@ -63,8 +69,8 @@ const SuccessPage: React.FC = () => {
           // setPaymentStatus(data.status);
 
           // if (data.status === "success") {
-            const songUrl = await fetchDownloadLink();
-            setDownloadLink(songUrl);
+            const songUrls = await fetchDownloadLinks();
+            setDownloadLinks(songUrls);
           // }
         // } else {
         //   setPaymentStatus(`Error: ${data.error || "Unknown error"}`);
@@ -80,20 +86,20 @@ const SuccessPage: React.FC = () => {
     }
   }, [sessionId]);
 
-  const fetchDownloadLink = async (): Promise<string | null> => {
+ const fetchDownloadLinks = async (): Promise<
+    { productName: string; downloadLink?: string; error?: string }[] | null
+  > => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/.netlify/functions/getDownloadLink`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId }),
-        },
-      );
+      const response = await fetch(`${API_BASE_URL}/.netlify/functions/getDownloadLink`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      });
+
       const data: DownloadLinkResponse = await response.json();
-      return data.downloadLink;
+      return data.fileLinks;
     } catch (error) {
-      console.error("Error fetching download link:", error);
+      console.error("Error fetching download links:", error);
       return null;
     }
   };
@@ -102,16 +108,24 @@ const SuccessPage: React.FC = () => {
     <ContentWrapper>
       <MusicContainer>
         {/* {paymentStatus === "success" ? ( */}
-          <div style={{ marginBottom: "16px" }}>
-            <p>Purchase was successful. Go back to home page?</p>
-            {downloadLink ? (
-              <a href={downloadLink} download>
-                Download Your Song
-              </a>
-            ) : (
-              <h2>Loading download link...</h2>
-            )}
-          </div>
+        <div style={{ marginBottom: "16px" }}>
+          <p>Purchase was successful. Go back to home page?</p>
+          {downloadLinks ? (
+            downloadLinks.map((file) => (
+              <div key={file.productName}>
+                {file.downloadLink ? (
+                  <a href={file.downloadLink} download>
+                    Download {file.productName}
+                  </a>
+                ) : (
+                  <p>{file.error || "Error: File not found"}</p>
+                )}
+              </div>
+            ))
+          ) : (
+            <h2>Loading download links...</h2>
+          )}
+        </div>
         {/* ) : (
           <h2>{paymentStatus || "Processing payment..."}</h2>
         )} */}

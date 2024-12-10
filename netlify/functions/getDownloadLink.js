@@ -18,40 +18,34 @@ export async function handler(event) {
     // const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     // if (session.payment_status === 'paid') {
-    //   const productName = session.metadata.product_name;
-    //   const dropboxFilePath = await getDropboxFileLink(productName);
+    //   const productNames = JSON.parse(session.metadata.product_names);
 
-    const listFiles = async () => {
-        try {
-          const response = await dbx.filesListFolder({ path: '' });
-          console.log('Files in Dropbox:', response.result.entries);
-        } catch (error) {
-          console.error('Error listing files:', error);
+    const productNames = ["Underwater_Palace.mp3", "Waterfall.mp3"];
+
+      const fileLinks = [];
+
+      for (const productName of productNames) {
+        const dropboxFilePath = await getDropboxFileLink(productName);
+        console.log(`Dropbox file path for ${productName}:`, dropboxFilePath);
+        
+        if (dropboxFilePath) {
+          fileLinks.push({ productName, downloadLink: dropboxFilePath });
+        } else {
+          console.log(`File not found for ${productName}`);
+          console.error(`File not found for ${productName}`);
+          fileLinks.push({ productName, error: 'File not found in Dropbox' });
         }
-      };
-    
-      listFiles();
-    const dropboxFilePath = await getDropboxFileLink('Underwater_Palace.mp3');
-    console.log('Dropbox file path:', dropboxFilePath); 
-
-      if (dropboxFilePath) {
-        return {
-          statusCode: 200,
-          body: JSON.stringify({ downloadLink: dropboxFilePath }),
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          },
-        };
-      } else {
-        console.log('File not found in Dropbox');
-        console.error('File not found in Dropbox');
-        return {
-          statusCode: 404,
-          body: JSON.stringify({ error: 'File not found in Dropbox' }),
-        };
       }
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ fileLinks }),
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      };
     // } else {
     //   return {
     //     statusCode: 400,
@@ -68,27 +62,26 @@ export async function handler(event) {
 }
 
 const getDropboxFileLink = async (fileName) => {
-    try {
-      const response = await dbx.filesGetMetadata({ path: `/${fileName}` });
-  
-      console.log('File Metadata:', response);
-  
-      if (response) {
-        const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
-  
-        if (sharedLinks.result.links.length > 0) {
-          const directLink = sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
-          return directLink;
-        } else {
-          const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
-          const directLink = sharedLink.result.url.replace('dl=0', 'dl=1');
-          return directLink;
-        }
+  try {
+    const response = await dbx.filesGetMetadata({ path: `/${fileName}` });
+
+    console.log('File Metadata:', response);
+
+    if (response) {
+      const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
+
+      if (sharedLinks.result.links.length > 0) {
+        const directLink = sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
+        return directLink;
+      } else {
+        const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
+        const directLink = sharedLink.result.url.replace('dl=0', 'dl=1');
+        return directLink;
       }
-      return null;
-    } catch (error) {
-      console.error('Error fetching file from Dropbox:', error);
-      return null;
     }
-  };
-  
+    return null;
+  } catch (error) {
+    console.error('Error fetching file from Dropbox:', error);
+    return null;
+  }
+};
