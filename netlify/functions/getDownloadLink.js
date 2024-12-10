@@ -21,6 +21,7 @@ export async function handler(event) {
     //   const productName = session.metadata.product_name;
     //   const dropboxFilePath = await getDropboxFileLink(productName);
     const dropboxFilePath = await getDropboxFileLink('Underwater_Palace.mp3');
+    console.log('Dropbox file path:', dropboxFilePath); 
 
       if (dropboxFilePath) {
         return {
@@ -33,6 +34,8 @@ export async function handler(event) {
           },
         };
       } else {
+        console.log('File not found in Dropbox');
+        console.error('File not found in Dropbox');
         return {
           statusCode: 404,
           body: JSON.stringify({ error: 'File not found in Dropbox' }),
