@@ -59,8 +59,11 @@ const MusicPlayer: React.FC = () => {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.src = currentSong.songUrl;
-        audioRef.current.play().catch(() => setIsPlaying(false));
+        if (audioRef.current.paused || audioRef.current.ended) {
+          audioRef.current.play().catch(() => setIsPlaying(false));
+        } else {
+          audioRef.current.play();
+        }
       }
       setIsPlaying(!isPlaying);
     });

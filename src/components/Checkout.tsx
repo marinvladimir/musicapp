@@ -58,7 +58,6 @@ const Checkout: React.FC = () => {
     );
     return parseFloat(total.toFixed(2));
   };
-  
 
   const removeFromCart = async (songName: string) => {
     try {
