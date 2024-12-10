@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { API_BASE_URL } from "../config";
 import { useCartContext } from "../states/CartContext";
+import { theme } from "../theme";
 
 const CancelNavWrapper = styled.nav`
   display: flex;
@@ -30,6 +31,55 @@ const CancelNavWrapper = styled.nav`
   }
 `;
 
+const SuccessWrapper = styled.div`
+  background-color: ${theme.colors.darkBlueVariant};
+  color: ${theme.colors.textPrimary};
+  padding: ${theme.spacing.large};
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+`;
+
+const SuccessMessage = styled.p`
+  font-size: ${theme.typography.headingFontSize};
+  font-weight: ${theme.typography.fontWeightBold};
+  margin-bottom: ${theme.spacing.medium};
+`;
+
+const DownloadWrapper = styled.div`
+  margin-bottom: ${theme.spacing.medium};
+  background-color: ${theme.colors.secondary};
+  padding: ${theme.spacing.medium};
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const DownloadLink = styled.a`
+  display: inline-block;
+  background-color: ${theme.colors.accent};
+  color: ${theme.colors.textPrimary};
+  padding: ${theme.spacing.small} ${theme.spacing.medium};
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: ${theme.typography.fontWeightBold};
+  margin: ${theme.spacing.small} 0;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background-color: ${theme.colors.purple};
+    transform: scale(1.05);
+  }
+`;
+
+const ErrorMessage = styled.p`
+  color: ${theme.colors.pink};
+  font-size: ${theme.typography.bodyFontSize};
+`;
+
 // interface PaymentStatusResponse {
 //   status: string;
 //   error?: string;
@@ -46,35 +96,35 @@ interface DownloadLinkResponse {
 const SuccessPage: React.FC = () => {
   // const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [downloadLinks, setDownloadLinks] = useState<
-  { productName: string; downloadLink?: string; error?: string }[] | null
->(null);
+    { productName: string; downloadLink?: string; error?: string }[] | null
+  >(null);
 
   const { sessionId } = useCartContext();
 
   useEffect(() => {
     const fetchPaymentStatus = async () => {
       // try {
-        // const response = await fetch(
-        //   `${API_BASE_URL}/.netlify/functions/checkPayment`,
-        //   {
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify({ sessionId }),
-        //   },
-        // );
+      // const response = await fetch(
+      //   `${API_BASE_URL}/.netlify/functions/checkPayment`,
+      //   {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({ sessionId }),
+      //   },
+      // );
 
-        // const data: PaymentStatusResponse = await response.json();
+      // const data: PaymentStatusResponse = await response.json();
 
-        // if (response.ok) {
-          // setPaymentStatus(data.status);
+      // if (response.ok) {
+      // setPaymentStatus(data.status);
 
-          // if (data.status === "success") {
-            const songUrls = await fetchDownloadLinks();
-            setDownloadLinks(songUrls);
-          // }
-        // } else {
-        //   setPaymentStatus(`Error: ${data.error || "Unknown error"}`);
-        // }
+      // if (data.status === "success") {
+      const songUrls = await fetchDownloadLinks();
+      setDownloadLinks(songUrls);
+      // }
+      // } else {
+      //   setPaymentStatus(`Error: ${data.error || "Unknown error"}`);
+      // }
       // } catch (error) {
       //   console.error("Error checking payment status:", error);
       //   setPaymentStatus("Error checking payment status");
@@ -86,15 +136,18 @@ const SuccessPage: React.FC = () => {
     }
   }, [sessionId]);
 
- const fetchDownloadLinks = async (): Promise<
+  const fetchDownloadLinks = async (): Promise<
     { productName: string; downloadLink?: string; error?: string }[] | null
   > => {
     try {
-      const response = await fetch(`${API_BASE_URL}/.netlify/functions/getDownloadLink`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId }),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/.netlify/functions/getDownloadLink`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId }),
+        },
+      );
 
       const data: DownloadLinkResponse = await response.json();
       return data.fileLinks;
@@ -108,24 +161,28 @@ const SuccessPage: React.FC = () => {
     <ContentWrapper>
       <MusicContainer>
         {/* {paymentStatus === "success" ? ( */}
-  <div style={{ marginBottom: "16px" }}>
-          <p>Purchase was successful. Go back to home page?</p>
+        <SuccessWrapper>
+          <SuccessMessage>
+            Purchase was successful. Go back to the home page?
+          </SuccessMessage>
           {downloadLinks ? (
             downloadLinks.map((file) => (
-              <div key={file.productName}>
+              <DownloadWrapper key={file.productName}>
                 {file.downloadLink ? (
-                  <a href={file.downloadLink} download>
+                  <DownloadLink href={file.downloadLink} download>
                     Download {file.productName}
-                  </a>
+                  </DownloadLink>
                 ) : (
-                  <p>{file.error || "Error: File not found"}</p>
+                  <ErrorMessage>
+                    {file.error || "Error: File not found"}
+                  </ErrorMessage>
                 )}
-              </div>
+              </DownloadWrapper>
             ))
           ) : (
             <h2>Loading download links...</h2>
           )}
-        </div>
+        </SuccessWrapper>
         {/* ) : (
           <h2>{paymentStatus || "Processing payment..."}</h2>
         )} */}
