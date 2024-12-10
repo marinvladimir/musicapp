@@ -8,6 +8,17 @@ dotenv.config();
 // const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
 const dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
 
+const listFiles = async () => {
+    try {
+      const response = await dbx.filesListFolder({ path: '' });
+      console.log('Files in Dropbox:', response.result.entries);
+    } catch (error) {
+      console.error('Error listing files:', error);
+    }
+  };
+
+  listFiles();
+
 export async function handler(event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
