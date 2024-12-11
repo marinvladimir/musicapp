@@ -77,7 +77,7 @@ const getDropboxFileLink = async (fileName) => {
       console.error('Access token expired. Attempting to refresh.');
       try {
         console.log('Before refreshing token');
-        let newAccessToken = await refreshAccessToken();
+        const newAccessToken = await refreshAccessToken();
         console.log('Token refreshed:', newAccessToken);
         dbx = new Dropbox({ accessToken: newAccessToken, fetch });
         let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
