@@ -57,12 +57,9 @@ export async function handler(event) {
 const getDropboxFileLink = async (fileName) => {
   try {
     let dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
-    
     let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
-
     if (response) {
       const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
-
       if (sharedLinks.result.links.length > 0) {
         const directLink = sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
         return directLink;
@@ -78,10 +75,9 @@ const getDropboxFileLink = async (fileName) => {
     if (error.error && error.error.error_summary && error.error.error_summary.includes('expired_access_token')) {
       console.error('Access token expired. Attempting to refresh.');
       const newAccessToken = await refreshAccessToken();
-      process.env.DROPBOX_ACCESS_TOKEN = newAccessToken; 
-      dbx = new Dropbox({ accessToken: newAccessToken, fetch });  
-      response = await dbx.filesGetMetadata({ path: `/${fileName}` }); 
-
+      process.env.DROPBOX_ACCESS_TOKEN = newAccessToken;
+      dbx = new Dropbox({ accessToken: newAccessToken, fetch });
+      response = await dbx.filesGetMetadata({ path: `/${fileName}` });
       if (response) {
         const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
         if (sharedLinks.result.links.length > 0) {
@@ -99,7 +95,6 @@ const getDropboxFileLink = async (fileName) => {
     }
   }
 };
-
 
 
 const refreshAccessToken = async () => {
