@@ -69,7 +69,6 @@ const getDropboxFileLink = async (fileName) => {
         return directLink;
       }
     }
-
     return null;
   } catch (error) {
     if (error.error && error.error.error_summary && error.error.error_summary.includes('expired_access_token')) {

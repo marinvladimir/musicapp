@@ -126,12 +126,12 @@ const SuccessPage: React.FC = () => {
         const data: PaymentStatusResponse = await response.json();
   
         if (response.ok && data.status === "success") {
-          setPaymentStatus("Payment successful!");
+          setPaymentStatus("success");
           const songUrls = await fetchDownloadLinks();
           console.log(songUrls)
           setDownloadLinks(songUrls);
         } else {
-          setPaymentStatus("Payment failed or not completed.");
+          setPaymentStatus("error");
         }
       } catch (error) {
         console.error("Error verifying payment status:", error);
@@ -165,7 +165,7 @@ const SuccessPage: React.FC = () => {
   return (
     <ContentWrapper>
       <MusicContainer>
-        {paymentStatus === "success" ? (
+        {paymentStatus === "sucess" ? (
           <SuccessWrapper>
             <SuccessMessage>
               Purchase was successful. Go back to the home page?
