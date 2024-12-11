@@ -165,7 +165,7 @@ const SuccessPage: React.FC = () => {
   return (
     <ContentWrapper>
       <MusicContainer>
-        {paymentStatus === "sucess" ? (
+        {paymentStatus === "success" ? (
           <SuccessWrapper>
             <SuccessMessage>
               Purchase was successful. Go back to the home page?
