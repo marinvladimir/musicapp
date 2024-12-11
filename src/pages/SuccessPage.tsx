@@ -131,8 +131,8 @@ const SuccessPage: React.FC = () => {
     }
   };
 
-  const clearCart = () => {
-    downloadLinks?.forEach((file) => {
+  const clearCart = (songUrls: { productName: string; downloadLink?: string; error?: string; }[]) => {
+    songUrls?.forEach((file) => {
       removeFromCart(file.productName);
     });
   };
@@ -155,7 +155,7 @@ const SuccessPage: React.FC = () => {
           const songUrls = await fetchDownloadLinks();
           setDownloadLinks(songUrls);
           if (songUrls && songUrls.length > 0) {
-            clearCart();
+            clearCart(songUrls);
           }
         } else {
           setPaymentStatus("error");
