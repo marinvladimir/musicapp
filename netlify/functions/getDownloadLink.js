@@ -58,6 +58,7 @@ const getDropboxFileLink = async (fileName) => {
   try {
     let dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
     let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
+
     if (response) {
       const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
       if (sharedLinks.result.links.length > 0) {
@@ -69,24 +70,31 @@ const getDropboxFileLink = async (fileName) => {
         return directLink;
       }
     }
+
     return null;
   } catch (error) {
     if (error.error && error.error.error_summary && error.error.error_summary.includes('expired_access_token')) {
       console.error('Access token expired. Attempting to refresh.');
-      const newAccessToken = await refreshAccessToken();
-      process.env.DROPBOX_ACCESS_TOKEN = newAccessToken;
-      dbx = new Dropbox({ accessToken: newAccessToken, fetch });
-      let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
-      if (response) {
-        const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
-        if (sharedLinks.result.links.length > 0) {
-          const directLink = sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
-          return directLink;
-        } else {
-          const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
-          const directLink = sharedLink.result.url.replace('dl=0', 'dl=1');
-          return directLink;
+      try {
+        console.log('Before refreshing token');
+        let newAccessToken = await refreshAccessToken();
+        console.log('Token refreshed:', newAccessToken);
+        newAccessToken = process.env.DROPBOX_ACCESS_TOKEN;
+        dbx = new Dropbox({ accessToken: newAccessToken, fetch });
+        let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
+        if (response) {
+          const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
+          if (sharedLinks.result.links.length > 0) {
+            const directLink = sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
+            return directLink;
+          } else {
+            const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
+            const directLink = sharedLink.result.url.replace('dl=0', 'dl=1');
+            return directLink;
+          }
         }
+      } catch (err) {
+        console.error('Failed to refresh token or fetch Dropbox file:', err);
       }
     } else {
       console.error('Error fetching file from Dropbox:', error);
@@ -94,6 +102,7 @@ const getDropboxFileLink = async (fileName) => {
     }
   }
 };
+
 
 const refreshAccessToken = async () => {
   const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
