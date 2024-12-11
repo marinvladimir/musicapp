@@ -58,8 +58,6 @@ const getDropboxFileLink = async (fileName) => {
   try {
     const response = await dbx.filesGetMetadata({ path: `/${fileName}` });
 
-    console.log('File Metadata:', response);
-
     if (response) {
       const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
 
@@ -74,7 +72,15 @@ const getDropboxFileLink = async (fileName) => {
     }
     return null;
   } catch (error) {
+    if (error.status === 401 && error.error?.error?.['.tag'] === 'expired_access_token') {
+      console.error('Access token expired. Attempting to refresh.');
+      const newAccessToken = await fetchNewAccessToken();
+      dbx.setAccessToken(newAccessToken);
+      return getDropboxFileLink(fileName);
+    }
+
     console.error('Error fetching file from Dropbox:', error);
     return null;
   }
 };
+

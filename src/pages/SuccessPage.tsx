@@ -128,6 +128,7 @@ const SuccessPage: React.FC = () => {
         if (response.ok && data.status === "success") {
           setPaymentStatus("Payment successful!");
           const songUrls = await fetchDownloadLinks();
+          console.log(songUrls)
           setDownloadLinks(songUrls);
         } else {
           setPaymentStatus("Payment failed or not completed.");
