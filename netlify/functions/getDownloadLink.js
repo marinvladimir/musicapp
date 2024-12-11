@@ -56,7 +56,9 @@ export async function handler(event) {
 
 const getDropboxFileLink = async (fileName) => {
   try {
-    const response = await dbx.filesGetMetadata({ path: `/${fileName}` });
+    let dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
+    
+    let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
 
     if (response) {
       const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
@@ -70,38 +72,53 @@ const getDropboxFileLink = async (fileName) => {
         return directLink;
       }
     }
+
     return null;
   } catch (error) {
-    if (error.status === 401 && error.error?.error?.['.tag'] === 'expired_access_token') {
+    if (error.error && error.error.error_summary && error.error.error_summary.includes('expired_access_token')) {
       console.error('Access token expired. Attempting to refresh.');
-      const newAccessToken = await fetchNewAccessToken();
-      dbx.setAccessToken(newAccessToken);
-      return getDropboxFileLink(fileName);
-    }
+      const newAccessToken = await refreshAccessToken();
+      process.env.DROPBOX_ACCESS_TOKEN = newAccessToken; 
+      dbx = new Dropbox({ accessToken: newAccessToken, fetch });  
+      response = await dbx.filesGetMetadata({ path: `/${fileName}` }); 
 
-    console.error('Error fetching file from Dropbox:', error);
-    return null;
+      if (response) {
+        const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
+        if (sharedLinks.result.links.length > 0) {
+          const directLink = sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
+          return directLink;
+        } else {
+          const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
+          const directLink = sharedLink.result.url.replace('dl=0', 'dl=1');
+          return directLink;
+        }
+      }
+    } else {
+      console.error('Error fetching file from Dropbox:', error);
+      return null;
+    }
   }
 };
 
-const fetchNewAccessToken = async () => {
-  const response = await fetch('https://api.dropbox.com/oauth2/token', {
+
+
+const refreshAccessToken = async () => {
+  const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
-      grant_type: 'refresh_token',
       refresh_token: process.env.DROPBOX_REFRESH_TOKEN,
       client_id: process.env.DROPBOX_CLIENT_ID,
       client_secret: process.env.DROPBOX_CLIENT_SECRET,
+      grant_type: 'refresh_token',
     }),
   });
 
-  const data = await response.json();
-  if (data.access_token) {
-    return data.access_token;
-  } else {
-    console.error('Error refreshing access token:', data);
+  if (!response.ok) {
     throw new Error('Failed to refresh access token');
   }
+
+  const data = await response.json();
+  return data.access_token;
 };
 
