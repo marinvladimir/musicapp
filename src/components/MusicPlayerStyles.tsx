@@ -32,6 +32,9 @@ export const PlayerControls = styled.div<{ $noMargin?: boolean }>`
   align-items: center;
   gap: 1rem;
   margin: ${({ $noMargin }) => ($noMargin ? "0 0 2rem 0" : "1rem")};
+  @media (max-width: 512px) {
+    margin: 0 1rem;
+  }
 `;
 
 export const ToolParent = styled.div`
