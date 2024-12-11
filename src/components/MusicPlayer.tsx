@@ -22,6 +22,7 @@ import {
   Playlist,
   ProgressBar,
   ProgressBarContainer,
+  SongNamePlayer,
   SongWrapper,
   TimeDisplay,
   ToolButton,
@@ -296,10 +297,10 @@ const MusicPlayer: React.FC = () => {
             }
           />
         </AlbumCover>
-        <div>
+        <SongNamePlayer>
           {isPlaying &&
             currentSong?.songName.replace(/_/g, " ").replace(/\.mp3$/, "")}
-        </div>
+        </SongNamePlayer>
       </SongWrapper>
       <ToolParent>
         <ToolWrapper>

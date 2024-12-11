@@ -329,6 +329,10 @@ export const AlbumCover = styled.div`
   justify-content: center;
   padding: 1rem 0rem 2.5rem 0rem;
 
+  @media (max-width: 512px) {
+    padding: 1rem 0rem 1rem 0rem;
+  }
+
   @keyframes rotateImage {
     from {
       transform: rotate(0deg);
@@ -440,5 +444,11 @@ export const AlbumNameMobile = styled.h6`
   width: 5rem;
    @media (min-width: 513px) {
     display: none;
+  }
+`
+
+export const SongNamePlayer = styled.h3`
+@media (max-width: 512px) {
+   font-size: 0.5rem;
   }
 `
