@@ -33,10 +33,13 @@ const Checkout: React.FC = () => {
       );
 
       const data = await response.json();
+      const stripe = await stripePromise;
+
+      if (!stripe) throw new Error("Stripe failed to load");
 
     if (response.ok) {
       localStorage.setItem('stripeSessionId', data.sessionId);
-      window.location.href = data.checkoutUrl; 
+      await stripe.redirectToCheckout({ sessionId });
     } else {
       console.error('Error initiating checkout:', data.error);
     }
