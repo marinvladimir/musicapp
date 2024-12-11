@@ -79,7 +79,6 @@ const getDropboxFileLink = async (fileName) => {
         console.log('Before refreshing token');
         let newAccessToken = await refreshAccessToken();
         console.log('Token refreshed:', newAccessToken);
-        newAccessToken = process.env.DROPBOX_ACCESS_TOKEN;
         dbx = new Dropbox({ accessToken: newAccessToken, fetch });
         let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
         if (response) {
