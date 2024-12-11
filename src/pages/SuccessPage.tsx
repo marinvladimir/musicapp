@@ -152,9 +152,11 @@ const SuccessPage: React.FC = () => {
   
         if (response.ok && data.status === "success") {
           setPaymentStatus("success");
-          clearCart();
           const songUrls = await fetchDownloadLinks();
           setDownloadLinks(songUrls);
+          if (songUrls && songUrls.length > 0) {
+            clearCart();
+          }
         } else {
           setPaymentStatus("error");
         }
