@@ -77,6 +77,7 @@ const getDropboxFileLink = async (fileName) => {
       process.env.DROPBOX_ACCESS_TOKEN = newAccessToken;
       dbx = new Dropbox({ accessToken: newAccessToken, fetch });
       let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
+      if (response) {
         const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
         if (sharedLinks.result.links.length > 0) {
           const directLink = sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
