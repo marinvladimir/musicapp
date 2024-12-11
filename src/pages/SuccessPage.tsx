@@ -111,41 +111,34 @@ const SuccessPage: React.FC = () => {
     { productName: string; downloadLink?: string; error?: string }[] | null
   >(null);
 
-  const { sessionId } = useCartContext();
+  const sessionId = localStorage.getItem("stripeSessionId");
 
   useEffect(() => {
     const fetchPaymentStatus = async () => {
+      if (!sessionId) return;
+  
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/.netlify/functions/checkPayment`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sessionId }),
-          },
-        );
-
+        const response = await fetch(`${API_BASE_URL}/.netlify/functions/checkPayment`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId }),
+        });
+  
         const data: PaymentStatusResponse = await response.json();
-
-        if (response.ok) {
-          setPaymentStatus(data.status);
-
-          if (data.status === "success") {
-            const songUrls = await fetchDownloadLinks();
-            setDownloadLinks(songUrls);
-          }
+  
+        if (response.ok && data.status === "success") {
+          setPaymentStatus("Payment successful!");
+          const songUrls = await fetchDownloadLinks();
+          setDownloadLinks(songUrls);
         } else {
-          setPaymentStatus(`Error: ${data.error || "Unknown error"}`);
+          setPaymentStatus("Payment failed or not completed.");
         }
       } catch (error) {
-        console.error("Error checking payment status:", error);
-        setPaymentStatus("Error checking payment status");
+        console.error("Error verifying payment status:", error);
       }
     };
-
-    if (sessionId) {
-      fetchPaymentStatus();
-    }
+  
+    fetchPaymentStatus();
   }, [sessionId]);
 
   const fetchDownloadLinks = async (): Promise<

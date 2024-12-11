@@ -34,21 +34,15 @@ const Checkout: React.FC = () => {
 
       const data = await response.json();
 
-      if (!response.ok)
-        throw new Error(data.error || "Failed to create checkout session");
-
-      const { sessionId } = data;
-
-      if (!sessionId) {
-        throw new Error("Failed to create Stripe session");
-      }
-
-      const stripe = await stripePromise;
-      if (!stripe) throw new Error("Stripe failed to load");
-      await stripe.redirectToCheckout({ sessionId });
-    } catch (error) {
-      console.error("Error during checkout:", error);
+    if (response.ok) {
+      localStorage.setItem('stripeSessionId', data.sessionId);
+      window.location.href = data.checkoutUrl; 
+    } else {
+      console.error('Error initiating checkout:', data.error);
     }
+  } catch (error) {
+    console.error('Error initiating checkout:', error);
+  }
   };
 
   const calculateTotal = () => {
