@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { API_BASE_URL } from "../config";
 import { theme } from "../theme";
+import { useCartContext } from "../states/CartContext";
 
 const CancelNavWrapper = styled.nav`
   display: flex;
@@ -109,8 +110,32 @@ const SuccessPage: React.FC = () => {
   const [downloadLinks, setDownloadLinks] = useState<
     { productName: string; downloadLink?: string; error?: string }[] | null
   >(null);
+  const { setCart } = useCartContext();
 
   const sessionId = localStorage.getItem("stripeSessionId");
+
+  const removeFromCart = async (songName: string) => {
+    try {
+      await fetch(`${API_BASE_URL}/.netlify/functions/deleteCart`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId,
+          songName: songName,
+        }),
+      });
+
+      setCart((prevCart) => prevCart.filter((item) => item.songName !== songName));
+    } catch (error) {
+      console.error("Error removing song from cart:", error);
+    }
+  };
+
+  const clearCart = () => {
+    downloadLinks?.forEach((file) => {
+      removeFromCart(file.productName);
+    });
+  };
 
   useEffect(() => {
     const fetchPaymentStatus = async () => {
@@ -127,8 +152,8 @@ const SuccessPage: React.FC = () => {
   
         if (response.ok && data.status === "success") {
           setPaymentStatus("success");
+          clearCart();
           const songUrls = await fetchDownloadLinks();
-          console.log(songUrls)
           setDownloadLinks(songUrls);
         } else {
           setPaymentStatus("error");
