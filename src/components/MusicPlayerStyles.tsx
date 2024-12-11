@@ -430,7 +430,7 @@ export const TimeDisplay = styled.div`
 
 export const AlbumName = styled.h3`
   @media (max-width: 512px) {
-    display: none;
+    max-width: 5rem;
   }
   width: 15rem;
   text-align: center;

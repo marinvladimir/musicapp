@@ -13,41 +13,41 @@ import { loadStripe } from "@stripe/stripe-js";
 
 const Checkout: React.FC = () => {
   const { cart, sessionId: cartId, setCart } = useCartContext();
-const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_key";
-const stripePromise = loadStripe(`${STRIPE_KEY}`);
+  const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_key";
+  const stripePromise = loadStripe(`${STRIPE_KEY}`);
 
-const handleCheckout = async () => {
-  try {
-    const updatedCart = cart.map((item) => ({
-      name: item.songName,
-      price: item.price * 100,
-    }));
+  const handleCheckout = async () => {
+    try {
+      const updatedCart = cart.map((item) => ({
+        name: item.songName,
+        price: item.price * 100,
+      }));
 
-    const response = await fetch(
-      `${API_BASE_URL}/.netlify/functions/createCheckout`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cart: updatedCart }),
+      const response = await fetch(
+        `${API_BASE_URL}/.netlify/functions/createCheckout`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cart: updatedCart }),
+        },
+      );
+
+      const data = await response.json();
+      const stripe = await stripePromise;
+
+      if (!stripe) throw new Error("Stripe failed to load");
+
+      if (response.ok) {
+        localStorage.setItem("stripeSessionId", data.sessionId);
+        const sessionId = data.sessionId;
+        await stripe.redirectToCheckout({ sessionId });
+      } else {
+        console.error("Error initiating checkout:", data.error);
       }
-    );
-
-    const data = await response.json();
-    const stripe = await stripePromise;
-
-    if (!stripe) throw new Error("Stripe failed to load");
-
-    if (response.ok) {
-      localStorage.setItem('stripeSessionId', data.sessionId);
-      const sessionId = data.sessionId;
-      await stripe.redirectToCheckout({ sessionId });
-    } else {
-      console.error("Error initiating checkout:", data.error);
+    } catch (error) {
+      console.error("Error initiating checkout:", error);
     }
-  } catch (error) {
-    console.error("Error initiating checkout:", error);
-  }
-};
+  };
 
   const calculateTotal = () => {
     const total = cart.reduce(

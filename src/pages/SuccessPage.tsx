@@ -120,7 +120,7 @@ const SuccessPage: React.FC = () => {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sessionId
+          sessionId,
         }),
       });
       setCart([]);
@@ -132,16 +132,19 @@ const SuccessPage: React.FC = () => {
   useEffect(() => {
     const fetchPaymentStatus = async () => {
       if (!sessionId) return;
-  
+
       try {
-        const response = await fetch(`${API_BASE_URL}/.netlify/functions/checkPayment`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId }),
-        });
-  
+        const response = await fetch(
+          `${API_BASE_URL}/.netlify/functions/checkPayment`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sessionId }),
+          },
+        );
+
         const data: PaymentStatusResponse = await response.json();
-  
+
         if (response.ok && data.status === "success") {
           setPaymentStatus("success");
           const songUrls = await fetchDownloadLinks();
@@ -154,7 +157,7 @@ const SuccessPage: React.FC = () => {
         console.error("Error verifying payment status:", error);
       }
     };
-  
+
     fetchPaymentStatus();
   }, [sessionId]);
 
