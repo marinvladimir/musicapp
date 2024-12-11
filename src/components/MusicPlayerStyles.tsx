@@ -464,4 +464,5 @@ export const AlbumInfoWrapper = styled.div`
 export const AlbumWrapper = styled.div`
   display: flex;
   gap: 1rem;
+  align-items: center;
 `;
