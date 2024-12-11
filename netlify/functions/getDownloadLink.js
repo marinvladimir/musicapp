@@ -84,3 +84,24 @@ const getDropboxFileLink = async (fileName) => {
   }
 };
 
+const fetchNewAccessToken = async () => {
+  const response = await fetch('https://api.dropbox.com/oauth2/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: process.env.DROPBOX_REFRESH_TOKEN,
+      client_id: process.env.DROPBOX_CLIENT_ID,
+      client_secret: process.env.DROPBOX_CLIENT_SECRET,
+    }),
+  });
+
+  const data = await response.json();
+  if (data.access_token) {
+    return data.access_token;
+  } else {
+    console.error('Error refreshing access token:', data);
+    throw new Error('Failed to refresh access token');
+  }
+};
+
