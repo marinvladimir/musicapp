@@ -3,7 +3,6 @@ import { ContentWrapper, MusicContainer } from "./PageStyles";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { API_BASE_URL } from "../config";
-import { useCartContext } from "../states/CartContext";
 import { theme } from "../theme";
 
 const CancelNavWrapper = styled.nav`
