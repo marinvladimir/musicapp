@@ -114,27 +114,19 @@ const SuccessPage: React.FC = () => {
 
   const sessionId = localStorage.getItem("stripeSessionId");
 
-  const removeFromCart = async (songName: string) => {
+  const clearCart = async () => {
     try {
-      await fetch(`${API_BASE_URL}/.netlify/functions/deleteCart`, {
+      await fetch(`${API_BASE_URL}/.netlify/functions/emptyCart`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sessionId,
-          songName: songName,
+          sessionId
         }),
       });
-
-      setCart((prevCart) => prevCart.filter((item) => item.songName !== songName));
+      setCart([]);
     } catch (error) {
       console.error("Error removing song from cart:", error);
     }
-  };
-
-  const clearCart = (songUrls: { productName: string; downloadLink?: string; error?: string; }[]) => {
-    songUrls?.forEach((file) => {
-      removeFromCart(file.productName);
-    });
   };
 
   useEffect(() => {
@@ -154,9 +146,7 @@ const SuccessPage: React.FC = () => {
           setPaymentStatus("success");
           const songUrls = await fetchDownloadLinks();
           setDownloadLinks(songUrls);
-          if (songUrls && songUrls.length > 0) {
-            clearCart(songUrls);
-          }
+          await clearCart();
         } else {
           setPaymentStatus("error");
         }
