@@ -441,14 +441,27 @@ export const AlbumName = styled.h3`
 `;
 
 export const AlbumNameMobile = styled.h6`
-  width: 5rem;
-   @media (min-width: 513px) {
+  width: 15rem;
+  @media (min-width: 513px) {
     display: none;
   }
-`
+`;
 
 export const SongNamePlayer = styled.h3`
-@media (max-width: 512px) {
-   font-size: 0.5rem;
+  @media (max-width: 512px) {
+    font-size: 0.5rem;
   }
-`
+`;
+
+export const AlbumInfoWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+export const AlbumWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+`;

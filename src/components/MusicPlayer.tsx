@@ -269,21 +269,22 @@ const MusicPlayer: React.FC = () => {
         $isFadingOut={fadingOut}
       >
         <PlayerControls>
-          <div style={{    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column"}}>
-        <AlbumNameMobile>{currentAlbum?.albumName?.replace(/_/g, " ")}</AlbumNameMobile>
-        <div style={{    display: "flex", gap: "1rem"}}>
-          <ButtonArrow $side="left" onClick={() => changeAlbum(-1)}>
-            <LeftArrow />
-          </ButtonArrow>
-          <AlbumName>{currentAlbum?.albumName?.replace(/_/g, " ")}</AlbumName>
-          <ButtonArrow $side="right" onClick={() => changeAlbum(1)}>
-            <RightArrow />
-          </ButtonArrow>
-        </div>
-        </div>
+          <AlbumInfoWrapper>
+            <AlbumNameMobile>
+              {currentAlbum?.albumName?.replace(/_/g, " ")}
+            </AlbumNameMobile>
+            <AlbumWrapper>
+              <ButtonArrow $side="left" onClick={() => changeAlbum(-1)}>
+                <LeftArrow />
+              </ButtonArrow>
+              <AlbumName>
+                {currentAlbum?.albumName?.replace(/_/g, " ")}
+              </AlbumName>
+              <ButtonArrow $side="right" onClick={() => changeAlbum(1)}>
+                <RightArrow />
+              </ButtonArrow>
+            </AlbumWrapper>
+          </AlbumInfoWrapper>
         </PlayerControls>
         <AlbumCover>
           <AlbumImage
