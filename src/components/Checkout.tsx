@@ -12,7 +12,7 @@ import { API_BASE_URL } from "../config";
 import { loadStripe } from "@stripe/stripe-js";
 
 const Checkout: React.FC = () => {
-  const { cart, sessionId, setCart } = useCartContext();
+  const { cart, setCart } = useCartContext();
   const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_key";
   const stripePromise = loadStripe(`${STRIPE_KEY}`);
 
@@ -39,6 +39,7 @@ const Checkout: React.FC = () => {
 
     if (response.ok) {
       localStorage.setItem('stripeSessionId', data.sessionId);
+      const sessionId = data.sessionId
       await stripe.redirectToCheckout({ sessionId });
     } else {
       console.error('Error initiating checkout:', data.error);
