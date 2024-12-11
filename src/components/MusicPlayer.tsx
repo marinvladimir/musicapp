@@ -272,7 +272,7 @@ const MusicPlayer: React.FC = () => {
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column"}}>
-        <AlbumNameMobile style={{color:"black"}}>{"someText"}</AlbumNameMobile>
+        <AlbumNameMobile>{currentAlbum?.albumName?.replace(/_/g, " ")}</AlbumNameMobile>
         <div style={{    display: "flex", gap: "1rem"}}>
           <ButtonArrow $side="left" onClick={() => changeAlbum(-1)}>
             <LeftArrow />
