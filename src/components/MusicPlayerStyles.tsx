@@ -430,8 +430,15 @@ export const TimeDisplay = styled.div`
 
 export const AlbumName = styled.h3`
   @media (max-width: 512px) {
-    max-width: 5rem;
+    display: none;
   }
   width: 15rem;
   text-align: center;
 `;
+
+export const AlbumNameMobile = styled.h6`
+  width: 5rem;
+   @media (min-width: 513px) {
+    display: none;
+  }
+`

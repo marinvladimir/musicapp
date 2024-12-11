@@ -14,6 +14,7 @@ import {
   AlbumCover,
   AlbumImage,
   AlbumName,
+  AlbumNameMobile,
   ButtonArrow,
   ButtonSong,
   MusicWrapper,
@@ -267,6 +268,12 @@ const MusicPlayer: React.FC = () => {
         $isFadingOut={fadingOut}
       >
         <PlayerControls>
+          <div style={{    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column"}}>
+        <AlbumNameMobile style={{color:"black"}}>{"someText"}</AlbumNameMobile>
+        <div style={{    display: "flex", gap: "1rem"}}>
           <ButtonArrow $side="left" onClick={() => changeAlbum(-1)}>
             <LeftArrow />
           </ButtonArrow>
@@ -274,6 +281,8 @@ const MusicPlayer: React.FC = () => {
           <ButtonArrow $side="right" onClick={() => changeAlbum(1)}>
             <RightArrow />
           </ButtonArrow>
+        </div>
+        </div>
         </PlayerControls>
         <AlbumCover>
           <AlbumImage
