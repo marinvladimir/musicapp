@@ -6,7 +6,7 @@ import fetch from 'isomorphic-fetch';
 dotenv.config();
 
 const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
-const dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
+let dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
 
 export async function handler(event) {
   if (event.httpMethod !== 'POST') {
@@ -56,7 +56,7 @@ export async function handler(event) {
 
 const getDropboxFileLink = async (fileName) => {
   try {
-    let dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
+    dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
     let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
 
     if (response) {
@@ -76,9 +76,7 @@ const getDropboxFileLink = async (fileName) => {
     if (error.error && error.error.error_summary && error.error.error_summary.includes('expired_access_token')) {
       console.error('Access token expired. Attempting to refresh.');
       try {
-        console.log('Before refreshing token');
         const newAccessToken = await refreshAccessToken();
-        console.log('Token refreshed:', newAccessToken);
         dbx = new Dropbox({ accessToken: newAccessToken, fetch });
         let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
         if (response) {
