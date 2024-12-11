@@ -13,8 +13,10 @@ import {
 import {
   AlbumCover,
   AlbumImage,
+  AlbumInfoWrapper,
   AlbumName,
   AlbumNameMobile,
+  AlbumWrapper,
   ButtonArrow,
   ButtonSong,
   MusicWrapper,
