@@ -52,14 +52,16 @@ const DownloadWrapper = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
   max-width: 100%;
-  word-wrap: break-word;
-  white-space: normal;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   @media (max-width: 768px) {
     padding: ${theme.spacing.small};
     margin-bottom: ${theme.spacing.small};
     width: 100%;
     box-shadow: none;
+    text-align: left;
   }
 `;
 
@@ -76,6 +78,11 @@ const DownloadLink = styled.a`
     background-color 0.3s ease,
     transform 0.2s ease;
 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+
   &:hover {
     background-color: ${theme.colors.purple};
     transform: scale(1.05);
@@ -84,6 +91,7 @@ const DownloadLink = styled.a`
   @media (max-width: 768px) {
     font-size: 14px;
     padding: ${theme.spacing.small} ${theme.spacing.small};
+    width: 100%;
   }
 `;
 
