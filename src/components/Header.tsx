@@ -29,6 +29,7 @@ const Header: React.FC = () => {
         <NavLink to="/">Home</NavLink>
         <NavLink to="/music">Music</NavLink>
         <NavLink to="/about">About</NavLink>
+        <NavLink to="/contact">Contact</NavLink>
       </NavigationWrapper>
 
       <BurgerContainer onClick={toggleMenu}>
@@ -43,6 +44,9 @@ const Header: React.FC = () => {
         </NavLink>
         <NavLink to="/about" onClick={toggleMenu}>
           About
+        </NavLink>
+        <NavLink to="/contact" onClick={toggleMenu}>
+          Contact
         </NavLink>
       </MobileMenu>
 

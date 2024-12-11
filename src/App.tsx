@@ -13,6 +13,7 @@ import { PageWrapper } from "./AppStyles";
 import Cart from "./components/Cart";
 import CancelPage from "./pages/CancelPage";
 import SuccessPage from "./pages/SuccessPage";
+import ContactPage from "./pages/ContactPage";
 
 const App: React.FC = () => {
   const { cart } = useCartContext();
@@ -24,6 +25,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/music" element={<MusicPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/cancel" element={<CancelPage />} />
