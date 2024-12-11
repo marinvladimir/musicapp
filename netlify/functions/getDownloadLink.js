@@ -95,7 +95,6 @@ const getDropboxFileLink = async (fileName) => {
   }
 };
 
-
 const refreshAccessToken = async () => {
   const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
     method: 'POST',
