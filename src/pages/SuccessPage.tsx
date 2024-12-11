@@ -53,7 +53,7 @@ const DownloadWrapper = styled.div`
   text-align: center;
   max-width: 100%;
   overflow: hidden;
-  white-space: nowrap;
+  white-space: normal;
   text-overflow: ellipsis;
 
   @media (max-width: 768px) {
@@ -78,7 +78,7 @@ const DownloadLink = styled.a`
     background-color 0.3s ease,
     transform 0.2s ease;
 
-  white-space: nowrap;
+  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
