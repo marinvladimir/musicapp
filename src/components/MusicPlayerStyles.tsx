@@ -33,7 +33,7 @@ export const PlayerControls = styled.div<{ $noMargin?: boolean }>`
   gap: 1rem;
   margin: ${({ $noMargin }) => ($noMargin ? "0 0 2rem 0" : "1rem")};
   @media (max-width: 512px) {
-    margin: 0 1rem;
+    margin: ${({ $noMargin }) => ($noMargin ? "0 0 1rem 0" : "0 1rem")};
   }
 `;
 
