@@ -48,7 +48,56 @@
   },
   {
     "albumName": "Chrono_Disc",
-    "songs": []
+    "songs": [
+      {
+        "songName": "Long_Halls.mp3",
+        "songUrl": "/assets/music/Chrono_Disc/Long_Halls.mp3",
+        "imageUrl": "/assets/music/Chrono_Disc/Long_Halls.png",
+        "price": 1.99
+      },
+      {
+        "songName": "March_To_The_War.mp3",
+        "songUrl": "/assets/music/Chrono_Disc/March_To_The_War.mp3",
+        "imageUrl": "/assets/music/Chrono_Disc/March_To_The_War.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Otherworld_Gate.mp3",
+        "songUrl": "/assets/music/Chrono_Disc/Otherworld_Gate.mp3",
+        "imageUrl": "/assets/music/Chrono_Disc/Otherworld_Gate.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Sad_Story.mp3",
+        "songUrl": "/assets/music/Chrono_Disc/Sad_Story.mp3",
+        "imageUrl": "/assets/music/Chrono_Disc/Sad_Story.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Set_Sail.mp3",
+        "songUrl": "/assets/music/Chrono_Disc/Set_Sail.mp3",
+        "imageUrl": "/assets/music/Chrono_Disc/Set_Sail.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Solemn_Vacancy.mp3",
+        "songUrl": "/assets/music/Chrono_Disc/Solemn_Vacancy.mp3",
+        "imageUrl": "/assets/music/Chrono_Disc/Solemn_Vacancy.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Sounds_Of_Hysteria.mp3",
+        "songUrl": "/assets/music/Chrono_Disc/Sounds_Of_Hysteria.mp3",
+        "imageUrl": "/assets/music/Chrono_Disc/Sounds_Of_Hysteria.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Strangers_Adventure.mp3",
+        "songUrl": "/assets/music/Chrono_Disc/Strangers_Adventure.mp3",
+        "imageUrl": "/assets/music/Chrono_Disc/Strangers_Adventure.png",
+        "price": 1.99
+      }
+    ]
   },
   {
     "albumName": "Dark_Paths_Of_Mystery",
