@@ -101,7 +101,56 @@
   },
   {
     "albumName": "Dark_Paths_Of_Mystery",
-    "songs": []
+    "songs": [
+      {
+        "songName": "Beyond_The_Doubt.mp3",
+        "songUrl": "/assets/music/Dark_Paths_Of_Mystery/Beyond_The_Doubt.mp3",
+        "imageUrl": "/assets/music/Dark_Paths_Of_Mystery/Beyond_The_Doubt.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Digital_Domain.mp3",
+        "songUrl": "/assets/music/Dark_Paths_Of_Mystery/Digital_Domain.mp3",
+        "imageUrl": "/assets/music/Dark_Paths_Of_Mystery/Digital_Domain.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Garden_Of_Salvation.mp3",
+        "songUrl": "/assets/music/Dark_Paths_Of_Mystery/Garden_Of_Salvation.mp3",
+        "imageUrl": "/assets/music/Dark_Paths_Of_Mystery/Garden_Of_Salvation.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Golden_Goblet.mp3",
+        "songUrl": "/assets/music/Dark_Paths_Of_Mystery/Golden_Goblet.mp3",
+        "imageUrl": "/assets/music/Dark_Paths_Of_Mystery/Golden_Goblet.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Mountain_Village.mp3",
+        "songUrl": "/assets/music/Dark_Paths_Of_Mystery/Mountain_Village.mp3",
+        "imageUrl": "/assets/music/Dark_Paths_Of_Mystery/Mountain_Village.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Nocturnal_Anxiety.mp3",
+        "songUrl": "/assets/music/Dark_Paths_Of_Mystery/Nocturnal_Anxiety.mp3",
+        "imageUrl": "/assets/music/Dark_Paths_Of_Mystery/Nocturnal_Anxiety.png",
+        "price": 1.99
+      },
+      {
+        "songName": "The_Forgotten_Prayer.mp3",
+        "songUrl": "/assets/music/Dark_Paths_Of_Mystery/The_Forgotten_Prayer.mp3",
+        "imageUrl": "/assets/music/Dark_Paths_Of_Mystery/The_Forgotten_Prayer.png",
+        "price": 1.99
+      },
+      {
+        "songName": "The_Old_Moon.mp3",
+        "songUrl": "/assets/music/Dark_Paths_Of_Mystery/The_Old_Moon.mp3",
+        "imageUrl": "/assets/music/Dark_Paths_Of_Mystery/The_Old_Moon.png",
+        "price": 1.99
+      }
+    ]
   },
   {
     "albumName": "Diligent_Seasoning",
