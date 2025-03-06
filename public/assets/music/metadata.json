@@ -154,7 +154,56 @@
   },
   {
     "albumName": "Diligent_Seasoning",
-    "songs": []
+    "songs": [
+      {
+        "songName": "A_Casual_Talk.mp3",
+        "songUrl": "/assets/music/Diligent_Seasoning/A_Casual_Talk.mp3",
+        "imageUrl": "/assets/music/Diligent_Seasoning/A_Casual_Talk.png",
+        "price": 1.99
+      },
+      {
+        "songName": "A_Quiet_Gathering.mp3",
+        "songUrl": "/assets/music/Diligent_Seasoning/A_Quiet_Gathering.mp3",
+        "imageUrl": "/assets/music/Diligent_Seasoning/A_Quiet_Gathering.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Crickets.mp3",
+        "songUrl": "/assets/music/Diligent_Seasoning/Crickets.mp3",
+        "imageUrl": "/assets/music/Diligent_Seasoning/Crickets.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Fountain_Of_Ancient_Ruins.mp3",
+        "songUrl": "/assets/music/Diligent_Seasoning/Fountain_Of_Ancient_Ruins.mp3",
+        "imageUrl": "/assets/music/Diligent_Seasoning/Fountain_Of_Ancient_Ruins.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Lunar_Lullaby.mp3",
+        "songUrl": "/assets/music/Diligent_Seasoning/Lunar_Lullaby.mp3",
+        "imageUrl": "/assets/music/Diligent_Seasoning/Lunar_Lullaby.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Nostalgic_Memories.mp3",
+        "songUrl": "/assets/music/Diligent_Seasoning/Nostalgic_Memories.mp3",
+        "imageUrl": "/assets/music/Diligent_Seasoning/Nostalgic_Memories.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Revelation.mp3",
+        "songUrl": "/assets/music/Diligent_Seasoning/Revelation.mp3",
+        "imageUrl": "/assets/music/Diligent_Seasoning/Revelation.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Serene_Gallery.mp3",
+        "songUrl": "/assets/music/Diligent_Seasoning/Serene_Gallery.mp3",
+        "imageUrl": "/assets/music/Diligent_Seasoning/Serene_Gallery.png",
+        "price": 1.99
+      }
+    ]
   },
   {
     "albumName": "Echoes_Of_Distant_Melodies",
