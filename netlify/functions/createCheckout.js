@@ -15,10 +15,10 @@ export async function handler(event) {
 
   try {
     const { cart } = JSON.parse(event.body);
+    const products = await fetchAllProducts();
 
-    const products = await stripe.products.list({ limit: 300 });
     const lineItems = cart.map((item) => {
-      const product = products.data.find((p) => p.name === item.name);
+      const product = products.find((p) => p.name === item.name);
       if (!product) {
         throw new Error(`Product not found for ${item.name}`);
       }
@@ -27,7 +27,7 @@ export async function handler(event) {
         price_data: {
           currency: 'eur',
           product_data: { name: item.name },
-          unit_amount: item.price
+          unit_amount: item.price,
         },
         quantity: item.quantity || 1,
       };
@@ -46,7 +46,6 @@ export async function handler(event) {
       },
     });
 
-
     return {
       statusCode: 200,
       body: JSON.stringify({ sessionId: session.id }),
@@ -59,3 +58,25 @@ export async function handler(event) {
     };
   }
 }
+
+async function fetchAllProducts() {
+  let products = [];
+  let hasMore = true;
+  let lastProductId = null;
+
+  while (hasMore) {
+    const response = await stripe.products.list({
+      limit: 100,
+      starting_after: lastProductId || undefined,
+    });
+
+    products = products.concat(response.data);
+    hasMore = response.has_more;
+    if (hasMore) {
+      lastProductId = response.data[response.data.length - 1].id;
+    }
+  }
+
+  return products;
+}
+
