@@ -53,25 +53,25 @@
         "songName": "Long_Halls.mp3",
         "songUrl": "/assets/music/Chrono_Disc/Long_Halls.mp3",
         "imageUrl": "/assets/music/Chrono_Disc/Long_Halls.png",
-        "price": 1.99
+        "price": 3.49
       },
       {
         "songName": "March_To_The_War.mp3",
         "songUrl": "/assets/music/Chrono_Disc/March_To_The_War.mp3",
         "imageUrl": "/assets/music/Chrono_Disc/March_To_The_War.png",
-        "price": 1.99
+        "price": 2.99
       },
       {
         "songName": "Otherworld_Gate.mp3",
         "songUrl": "/assets/music/Chrono_Disc/Otherworld_Gate.mp3",
         "imageUrl": "/assets/music/Chrono_Disc/Otherworld_Gate.png",
-        "price": 1.99
+        "price": 3.49
       },
       {
         "songName": "Sad_Story.mp3",
         "songUrl": "/assets/music/Chrono_Disc/Sad_Story.mp3",
         "imageUrl": "/assets/music/Chrono_Disc/Sad_Story.png",
-        "price": 1.99
+        "price": 3.49
       },
       {
         "songName": "Set_Sail.mp3",
@@ -83,13 +83,13 @@
         "songName": "Solemn_Vacancy.mp3",
         "songUrl": "/assets/music/Chrono_Disc/Solemn_Vacancy.mp3",
         "imageUrl": "/assets/music/Chrono_Disc/Solemn_Vacancy.png",
-        "price": 1.99
+        "price": 4.99
       },
       {
         "songName": "Sounds_Of_Hysteria.mp3",
         "songUrl": "/assets/music/Chrono_Disc/Sounds_Of_Hysteria.mp3",
         "imageUrl": "/assets/music/Chrono_Disc/Sounds_Of_Hysteria.png",
-        "price": 1.99
+        "price": 2.99
       },
       {
         "songName": "Strangers_Adventure.mp3",
@@ -217,15 +217,162 @@
   },
   {
     "albumName": "Echoes_Of_The_Abyss",
-    "songs": []
+    "songs": [
+      {
+        "songName": "At_The_End_Of_The_Tunnel.mp3",
+        "songUrl": "/assets/music/Echoes_Of_The_Abyss/At_The_End_Of_The_Tunnel.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_The_Abyss/At_The_End_Of_The_Tunnel.png",
+        "price": 1.99
+      },
+      {
+        "songName": "A_Ravens_Lament_Of_Misery.mp3",
+        "songUrl": "/assets/music/Echoes_Of_The_Abyss/A_Ravens_Lament_Of_Misery.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_The_Abyss/A_Ravens_Lament_Of_Misery.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Late_Night_Train.mp3",
+        "songUrl": "/assets/music/Echoes_Of_The_Abyss/Late_Night_Train.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_The_Abyss/Late_Night_Train.png",
+        "price": 1.99
+      },
+      {
+        "songName": "My_Humble_Victory.mp3",
+        "songUrl": "/assets/music/Echoes_Of_The_Abyss/My_Humble_Victory.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_The_Abyss/My_Humble_Victory.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Neon_Nights.mp3",
+        "songUrl": "/assets/music/Echoes_Of_The_Abyss/Neon_Nights.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_The_Abyss/Neon_Nights.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Streets_In_The_Rain.mp3",
+        "songUrl": "/assets/music/Echoes_Of_The_Abyss/Streets_In_The_Rain.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_The_Abyss/Streets_In_The_Rain.png",
+        "price": 4.99
+      },
+      {
+        "songName": "The_Emotions_Of_Gray.mp3",
+        "songUrl": "/assets/music/Echoes_Of_The_Abyss/The_Emotions_Of_Gray.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_The_Abyss/The_Emotions_Of_Gray.png",
+        "price": 2.99
+      },
+      {
+        "songName": "The_Maze_Of_Thoughts.mp3",
+        "songUrl": "/assets/music/Echoes_Of_The_Abyss/The_Maze_Of_Thoughts.mp3",
+        "imageUrl": "/assets/music/Echoes_Of_The_Abyss/The_Maze_Of_Thoughts.png",
+        "price": 2.49
+      }
+    ]
   },
   {
     "albumName": "Ethereal_Veils",
-    "songs": []
+    "songs": [
+      {
+        "songName": "Breath_Of_The_Plains.mp3",
+        "songUrl": "/assets/music/Ethereal_Veils/Breath_Of_The_Plains.mp3",
+        "imageUrl": "/assets/music/Ethereal_Veils/Breath_Of_The_Plains.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Christmas_Eve_Magic.mp3",
+        "songUrl": "/assets/music/Ethereal_Veils/Christmas_Eve_Magic.mp3",
+        "imageUrl": "/assets/music/Ethereal_Veils/Christmas_Eve_Magic.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Crossword_Of_Dear_Memories.mp3",
+        "songUrl": "/assets/music/Ethereal_Veils/Crossword_Of_Dear_Memories.mp3",
+        "imageUrl": "/assets/music/Ethereal_Veils/Crossword_Of_Dear_Memories.png",
+        "price": 3.49
+      },
+      {
+        "songName": "Fields_Of_Lillies.mp3",
+        "songUrl": "/assets/music/Ethereal_Veils/Fields_Of_Lillies.mp3",
+        "imageUrl": "/assets/music/Ethereal_Veils/Fields_Of_Lillies.png",
+        "price": 1.99
+      },
+      {
+        "songName": "The_Clouds_Of_Tomorrow.mp3",
+        "songUrl": "/assets/music/Ethereal_Veils/The_Clouds_Of_Tomorrow.mp3",
+        "imageUrl": "/assets/music/Ethereal_Veils/The_Clouds_Of_Tomorrow.png",
+        "price": 2.99
+      },
+      {
+        "songName": "The_Secret_Of_Life.mp3",
+        "songUrl": "/assets/music/Ethereal_Veils/The_Secret_Of_Life.mp3",
+        "imageUrl": "/assets/music/Ethereal_Veils/The_Secret_Of_Life.png",
+        "price": 2.49
+      },
+      {
+        "songName": "The_Sylvan_Lake.mp3",
+        "songUrl": "/assets/music/Ethereal_Veils/The_Sylvan_Lake.mp3",
+        "imageUrl": "/assets/music/Ethereal_Veils/The_Sylvan_Lake.png",
+        "price": 2.49
+      },
+      {
+        "songName": "Where_The_Angels_Reside.mp3",
+        "songUrl": "/assets/music/Ethereal_Veils/Where_The_Angels_Reside.mp3",
+        "imageUrl": "/assets/music/Ethereal_Veils/Where_The_Angels_Reside.png",
+        "price": 1.99
+      }
+    ]
   },
   {
     "albumName": "Graceful_Angels",
-    "songs": []
+    "songs": [
+      {
+        "songName": "Grandfathers_Vineyard.mp3",
+        "songUrl": "/assets/music/Graceful_Angels/Grandfathers_Vineyard.mp3",
+        "imageUrl": "/assets/music/Graceful_Angels/Grandfathers_Vineyard.png",
+        "price": 4.99
+      },
+      {
+        "songName": "In_The_Embrace_Of_An_Angel.mp3",
+        "songUrl": "/assets/music/Graceful_Angels/In_The_Embrace_Of_An_Angel.mp3",
+        "imageUrl": "/assets/music/Graceful_Angels/In_The_Embrace_Of_An_Angel.png",
+        "price": 3.99
+      },
+      {
+        "songName": "Strings_Of_Solitude.mp3",
+        "songUrl": "/assets/music/Graceful_Angels/Strings_Of_Solitude.mp3",
+        "imageUrl": "/assets/music/Graceful_Angels/Strings_Of_Solitude.png",
+        "price": 3.99
+      },
+      {
+        "songName": "Symphony_Of_Home.mp3",
+        "songUrl": "/assets/music/Graceful_Angels/Symphony_Of_Home.mp3",
+        "imageUrl": "/assets/music/Graceful_Angels/Symphony_Of_Home.png",
+        "price": 3.99
+      },
+      {
+        "songName": "The_Best_Teacher.mp3",
+        "songUrl": "/assets/music/Graceful_Angels/The_Best_Teacher.mp3",
+        "imageUrl": "/assets/music/Graceful_Angels/The_Best_Teacher.png",
+        "price": 2.99
+      },
+      {
+        "songName": "The_Most_Gentle_Soul.mp3",
+        "songUrl": "/assets/music/Graceful_Angels/The_Most_Gentle_Soul.mp3",
+        "imageUrl": "/assets/music/Graceful_Angels/The_Most_Gentle_Soul.png",
+        "price": 3.99
+      },
+      {
+        "songName": "The_Remains_Of_A_Beautiful_Civilization.mp3",
+        "songUrl": "/assets/music/Graceful_Angels/The_Remains_Of_A_Beautiful_Civilization.mp3",
+        "imageUrl": "/assets/music/Graceful_Angels/The_Remains_Of_A_Beautiful_Civilization.png",
+        "price": 2.99
+      },
+      {
+        "songName": "The_Weight_Of_Regret.mp3",
+        "songUrl": "/assets/music/Graceful_Angels/The_Weight_Of_Regret.mp3",
+        "imageUrl": "/assets/music/Graceful_Angels/The_Weight_Of_Regret.png",
+        "price": 3.99
+      }
+    ]
   },
   {
     "albumName": "Lights_Of_Inspiration",
@@ -234,7 +381,7 @@
         "songName": "Rain_Drops.mp3",
         "songUrl": "/assets/music/Lights_Of_Inspiration/Rain_Drops.mp3",
         "imageUrl": "/assets/music/Lights_Of_Inspiration/Rain_Drops.png",
-        "price": 0.99
+        "price": 2.99
       },
       {
         "songName": "Sea_Waves.mp3",
@@ -246,7 +393,7 @@
         "songName": "Spring_Is_Outside.mp3",
         "songUrl": "/assets/music/Lights_Of_Inspiration/Spring_Is_Outside.mp3",
         "imageUrl": "/assets/music/Lights_Of_Inspiration/Spring_Is_Outside.png",
-        "price": 0.99
+        "price": 2.99
       },
       {
         "songName": "Summer_Heat.mp3",
@@ -270,31 +417,221 @@
         "songName": "Warm_Welcome.mp3",
         "songUrl": "/assets/music/Lights_Of_Inspiration/Warm_Welcome.mp3",
         "imageUrl": "/assets/music/Lights_Of_Inspiration/Warm_Welcome.png",
-        "price": 0.99
+        "price": 1.99
       },
       {
         "songName": "Waterfall.mp3",
         "songUrl": "/assets/music/Lights_Of_Inspiration/Waterfall.mp3",
         "imageUrl": "/assets/music/Lights_Of_Inspiration/Waterfall.png",
-        "price": 0.99
+        "price": 4.99
       }
     ]
   },
   {
     "albumName": "Luminous_Trails",
-    "songs": []
+    "songs": [
+      {
+        "songName": "As_City_Lights_Slowly_Fade.mp3",
+        "songUrl": "/assets/music/Luminous_Trails/As_City_Lights_Slowly_Fade.mp3",
+        "imageUrl": "/assets/music/Luminous_Trails/As_City_Lights_Slowly_Fade.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Chamomile_Dreams.mp3",
+        "songUrl": "/assets/music/Luminous_Trails/Chamomile_Dreams.mp3",
+        "imageUrl": "/assets/music/Luminous_Trails/Chamomile_Dreams.png",
+        "price": 2.49
+      },
+      {
+        "songName": "Knights_Requiem.mp3",
+        "songUrl": "/assets/music/Luminous_Trails/Knights_Requiem.mp3",
+        "imageUrl": "/assets/music/Luminous_Trails/Knights_Requiem.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Once_In_A_Lifetime.mp3",
+        "songUrl": "/assets/music/Luminous_Trails/Once_In_A_Lifetime.mp3",
+        "imageUrl": "/assets/music/Luminous_Trails/Once_In_A_Lifetime.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Sailing_Into_The_Sunset.mp3",
+        "songUrl": "/assets/music/Luminous_Trails/Sailing_Into_The_Sunset.mp3",
+        "imageUrl": "/assets/music/Luminous_Trails/Sailing_Into_The_Sunset.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Something_About_Her_Name.mp3",
+        "songUrl": "/assets/music/Luminous_Trails/Something_About_Her_Name.mp3",
+        "imageUrl": "/assets/music/Luminous_Trails/Something_About_Her_Name.png",
+        "price": 2.49
+      },
+      {
+        "songName": "The_Old_Town.mp3",
+        "songUrl": "/assets/music/Luminous_Trails/The_Old_Town.mp3",
+        "imageUrl": "/assets/music/Luminous_Trails/The_Old_Town.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Times_Of_Dilligence.mp3",
+        "songUrl": "/assets/music/Luminous_Trails/Times_Of_Dilligence.mp3",
+        "imageUrl": "/assets/music/Luminous_Trails/Times_Of_Dilligence.png",
+        "price": 2.99
+      }
+    ]
   },
   {
     "albumName": "Natures_Wonders",
-    "songs": []
+    "songs": [
+      {
+        "songName": "Boundless_Skies.mp3",
+        "songUrl": "/assets/music/Natures_Wonders/Boundless_Skies.mp3",
+        "imageUrl": "/assets/music/Natures_Wonders/Boundless_Skies.png",
+        "price": 1.49
+      },
+      {
+        "songName": "Buried_In_The_Snow.mp3",
+        "songUrl": "/assets/music/Natures_Wonders/Buried_In_The_Snow.mp3",
+        "imageUrl": "/assets/music/Natures_Wonders/Buried_In_The_Snow.png",
+        "price": 1.49
+      },
+      {
+        "songName": "Deep_Dive.mp3",
+        "songUrl": "/assets/music/Natures_Wonders/Deep_Dive.mp3",
+        "imageUrl": "/assets/music/Natures_Wonders/Deep_Dive.png",
+        "price": 1.49
+      },
+      {
+        "songName": "Desert_Mirage.mp3",
+        "songUrl": "/assets/music/Natures_Wonders/Desert_Mirage.mp3",
+        "imageUrl": "/assets/music/Natures_Wonders/Desert_Mirage.png",
+        "price": 1.49
+      },
+      {
+        "songName": "Dusks_Whisper.mp3",
+        "songUrl": "/assets/music/Natures_Wonders/Dusks_Whisper.mp3",
+        "imageUrl": "/assets/music/Natures_Wonders/Dusks_Whisper.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Seabed_Corals.mp3",
+        "songUrl": "/assets/music/Natures_Wonders/Seabed_Corals.mp3",
+        "imageUrl": "/assets/music/Natures_Wonders/Seabed_Corals.png",
+        "price": 1.49
+      },
+      {
+        "songName": "Stormy_With_Thunder.mp3",
+        "songUrl": "/assets/music/Natures_Wonders/Stormy_With_Thunder.mp3",
+        "imageUrl": "/assets/music/Natures_Wonders/Stormy_With_Thunder.png",
+        "price": 0.99
+      }
+    ]
   },
   {
     "albumName": "Tales_Untold",
-    "songs": []
+    "songs": [
+      {
+        "songName": "Celestial_Solstice_Banquet.mp3",
+        "songUrl": "/assets/music/Tales_Untold/Celestial_Solstice_Banquet.mp3",
+        "imageUrl": "/assets/music/Tales_Untold/Celestial_Solstice_Banquet.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Cheerful_Campfire.mp3",
+        "songUrl": "/assets/music/Tales_Untold/Cheerful_Campfire.mp3",
+        "imageUrl": "/assets/music/Tales_Untold/Cheerful_Campfire.png",
+        "price": 3.49
+      },
+      {
+        "songName": "Grasslands.mp3",
+        "songUrl": "/assets/music/Tales_Untold/Grasslands.mp3",
+        "imageUrl": "/assets/music/Tales_Untold/Grasslands.png",
+        "price": 1.99
+      },
+      {
+        "songName": "Home_Is_Where_The_Heart_Is.mp3",
+        "songUrl": "/assets/music/Tales_Untold/Home_Is_Where_The_Heart_Is.mp3",
+        "imageUrl": "/assets/music/Tales_Untold/Home_Is_Where_The_Heart_Is.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Midnights_Secrets.mp3",
+        "songUrl": "/assets/music/Tales_Untold/Midnights_Secrets.mp3",
+        "imageUrl": "/assets/music/Tales_Untold/Midnights_Secrets.png",
+        "price": 2.49
+      },
+      {
+        "songName": "Not_A_Care_In_The_World.mp3",
+        "songUrl": "/assets/music/Tales_Untold/Not_A_Care_In_The_World.mp3",
+        "imageUrl": "/assets/music/Tales_Untold/Not_A_Care_In_The_World.png",
+        "price": 3.49
+      },
+      {
+        "songName": "One_Of_Those_Journey_Nights.mp3",
+        "songUrl": "/assets/music/Tales_Untold/One_Of_Those_Journey_Nights.mp3",
+        "imageUrl": "/assets/music/Tales_Untold/One_Of_Those_Journey_Nights.png",
+        "price": 2.49
+      },
+      {
+        "songName": "Sweet_Scent.mp3",
+        "songUrl": "/assets/music/Tales_Untold/Sweet_Scent.mp3",
+        "imageUrl": "/assets/music/Tales_Untold/Sweet_Scent.png",
+        "price": 1.99
+      }
+    ]
   },
   {
     "albumName": "The_Edge_Of_Eternity",
-    "songs": []
+    "songs": [
+      {
+        "songName": "Above_The_Mountains.mp3",
+        "songUrl": "/assets/music/The_Edge_Of_Eternity/Above_The_Mountains.mp3",
+        "imageUrl": "/assets/music/The_Edge_Of_Eternity/Above_The_Mountains.png",
+        "price": 1.99
+      },
+      {
+        "songName": "A_Journey_At_Night.mp3",
+        "songUrl": "/assets/music/The_Edge_Of_Eternity/A_Journey_At_Night.mp3",
+        "imageUrl": "/assets/music/The_Edge_Of_Eternity/A_Journey_At_Night.png",
+        "price": 2.49
+      },
+      {
+        "songName": "Fight_For_Love.mp3",
+        "songUrl": "/assets/music/The_Edge_Of_Eternity/Fight_For_Love.mp3",
+        "imageUrl": "/assets/music/The_Edge_Of_Eternity/Fight_For_Love.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Heavens_Gate.mp3",
+        "songUrl": "/assets/music/The_Edge_Of_Eternity/Heavens_Gate.mp3",
+        "imageUrl": "/assets/music/The_Edge_Of_Eternity/Heavens_Gate.png",
+        "price": 2.99
+      },
+      {
+        "songName": "Moonlight_Above_The_Town.mp3",
+        "songUrl": "/assets/music/The_Edge_Of_Eternity/Moonlight_Above_The_Town.mp3",
+        "imageUrl": "/assets/music/The_Edge_Of_Eternity/Moonlight_Above_The_Town.png",
+        "price": 2.49
+      },
+      {
+        "songName": "Romantic_Feelings.mp3",
+        "songUrl": "/assets/music/The_Edge_Of_Eternity/Romantic_Feelings.mp3",
+        "imageUrl": "/assets/music/The_Edge_Of_Eternity/Romantic_Feelings.png",
+        "price": 2.49
+      },
+      {
+        "songName": "Sensations_Of_The_Late_Night_Aria.mp3",
+        "songUrl": "/assets/music/The_Edge_Of_Eternity/Sensations_Of_The_Late_Night_Aria.mp3",
+        "imageUrl": "/assets/music/The_Edge_Of_Eternity/Sensations_Of_The_Late_Night_Aria.png",
+        "price": 2.49
+      },
+      {
+        "songName": "Walk_At_Night.mp3",
+        "songUrl": "/assets/music/The_Edge_Of_Eternity/Walk_At_Night.mp3",
+        "imageUrl": "/assets/music/The_Edge_Of_Eternity/Walk_At_Night.png",
+        "price": 2.99
+      }
+    ]
   },
   {
     "albumName": "The_Everlasting_Blue",
@@ -303,7 +640,7 @@
         "songName": "A_Bed_of_Roses.mp3",
         "songUrl": "/assets/music/The_Everlasting_Blue/A_Bed_of_Roses.mp3",
         "imageUrl": "/assets/music/The_Everlasting_Blue/A_Bed_of_Roses.png",
-        "price": 2.99
+        "price": 3.99
       },
       {
         "songName": "Hail_Holy_Queen.mp3",
@@ -333,7 +670,7 @@
         "songName": "The_Heart_Of_Glass_That_Slipped_From_My_Hands.mp3",
         "songUrl": "/assets/music/The_Everlasting_Blue/The_Heart_Of_Glass_That_Slipped_From_My_Hands.mp3",
         "imageUrl": "/assets/music/The_Everlasting_Blue/The_Heart_Of_Glass_That_Slipped_From_My_Hands.png",
-        "price": 2.99
+        "price": 3.99
       },
       {
         "songName": "The_Night_In_The_Supermarket.mp3",
@@ -345,12 +682,61 @@
         "songName": "The_Place_From_Dreams.mp3",
         "songUrl": "/assets/music/The_Everlasting_Blue/The_Place_From_Dreams.mp3",
         "imageUrl": "/assets/music/The_Everlasting_Blue/The_Place_From_Dreams.png",
-        "price": 2.99
+        "price": 4.99
       }
     ]
   },
   {
     "albumName": "Wish_Upon_A_Clover",
-    "songs": []
+    "songs": [
+      {
+        "songName": "In_The_Cafe.mp3",
+        "songUrl": "/assets/music/Wish_Upon_A_Clover/In_The_Cafe.mp3",
+        "imageUrl": "/assets/music/Wish_Upon_A_Clover/In_The_Cafe.png",
+        "price": 2.49
+      },
+      {
+        "songName": "Peace_Found_In_A_Wooden_Hollow.mp3",
+        "songUrl": "/assets/music/Wish_Upon_A_Clover/Peace_Found_In_A_Wooden_Hollow.mp3",
+        "imageUrl": "/assets/music/Wish_Upon_A_Clover/Peace_Found_In_A_Wooden_Hollow.png",
+        "price": 2.49
+      },
+      {
+        "songName": "The_Elves_From_A_Far_Away_Land.mp3",
+        "songUrl": "/assets/music/Wish_Upon_A_Clover/The_Elves_From_A_Far_Away_Land.mp3",
+        "imageUrl": "/assets/music/Wish_Upon_A_Clover/The_Elves_From_A_Far_Away_Land.png",
+        "price": 4.49
+      },
+      {
+        "songName": "The_Gathering_Room_In_The_Castle.mp3",
+        "songUrl": "/assets/music/Wish_Upon_A_Clover/The_Gathering_Room_In_The_Castle.mp3",
+        "imageUrl": "/assets/music/Wish_Upon_A_Clover/The_Gathering_Room_In_The_Castle.png",
+        "price": 2.49
+      },
+      {
+        "songName": "The_Secret_Library.mp3",
+        "songUrl": "/assets/music/Wish_Upon_A_Clover/The_Secret_Library.mp3",
+        "imageUrl": "/assets/music/Wish_Upon_A_Clover/The_Secret_Library.png",
+        "price": 3.49
+      },
+      {
+        "songName": "Through_The_Sacred_Garden.mp3",
+        "songUrl": "/assets/music/Wish_Upon_A_Clover/Through_The_Sacred_Garden.mp3",
+        "imageUrl": "/assets/music/Wish_Upon_A_Clover/Through_The_Sacred_Garden.png",
+        "price": 1.99
+      },
+      {
+        "songName": "To_Those_Who_Wait.mp3",
+        "songUrl": "/assets/music/Wish_Upon_A_Clover/To_Those_Who_Wait.mp3",
+        "imageUrl": "/assets/music/Wish_Upon_A_Clover/To_Those_Who_Wait.png",
+        "price": 4.99
+      },
+      {
+        "songName": "Village_In_The_Woods.mp3",
+        "songUrl": "/assets/music/Wish_Upon_A_Clover/Village_In_The_Woods.mp3",
+        "imageUrl": "/assets/music/Wish_Upon_A_Clover/Village_In_The_Woods.png",
+        "price": 3.49
+      }
+    ]
   }
 ]
