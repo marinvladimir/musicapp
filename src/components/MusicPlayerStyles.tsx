@@ -347,7 +347,7 @@ export const AlbumCover = styled.div`
 `;
 
 export const AlbumImage = styled.img<{ $active?: boolean }>`
-  width: 200px;
+  width: 160px;
   animation: ${({ $active }) =>
     $active ? "rotateImage 20s linear infinite;" : ""};
 `;
