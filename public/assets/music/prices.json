@@ -21,14 +21,14 @@
       "Waterfall.mp3": 0.99
     },
     "The_Everlasting_Blue": {
-      "A_Bed_of_Roses.mp3": 1.99,
-      "Hail_Holy_Queen.mp3": 1.99,
-      "Starry_Night_in_the_Desert.mp3": 1.99,
-      "The_Boy_That_Rain_Follows.mp3": 1.99,
-      "The_Falling_Star.mp3": 1.99,
-      "The_Heart_Of_Glass_That_Slipped_From_My_Hands.mp3": 1.99,
-      "The_Night_In_The_Supermarket.mp3": 1.99,
-      "The_Place_From_Dreams.mp3": 1.99
+      "A_Bed_of_Roses.mp3": 2.99,
+      "Hail_Holy_Queen.mp3": 2.49,
+      "Starry_Night_in_the_Desert.mp3": 2.49,
+      "The_Boy_That_Rain_Follows.mp3": 2.49,
+      "The_Falling_Star.mp3": 2.49,
+      "The_Heart_Of_Glass_That_Slipped_From_My_Hands.mp3": 2.99,
+      "The_Night_In_The_Supermarket.mp3": 2.49,
+      "The_Place_From_Dreams.mp3": 2.99
     },
     "Abundant_Emotions": {
       "Cowboy_Hat.mp3": 1.49,
@@ -71,6 +71,93 @@
       "Nocturnal_Anxiety.mp3": 0.99,
       "The_Forgotten_Prayer.mp3": 0.99,
       "The_Old_Moon": 0.99
+    }
+    ,
+    "Echoes_Of_The_Abyss": {
+      "A_Ravens_Lament_Of_Misery.mp3": 1.99,
+      "At_The_End_Of_The_Tunnel.mp3": 1.99,
+      "Late_Night_Train.mp3": 1.99,
+      "My_Humble_Victory.mp3": 1.99,
+      "Neon_Nights.mp3": 1.99,
+      "Streets_In_The_Rain.mp3": 2.49,
+      "The_Emotions_Of_Gray.mp3": 1.99,
+      "The_Maze_Of_Thoughts.mp3": 1.99
+    }
+    ,
+    "Ethereal_Veils": {
+      "Breath_Of_The_Plains.mp3": 1.99,
+      "Christmas_Eve_Magic.mp3": 1.99,
+      "Crossword_Of_Dear_Memories.mp3": 1.99,
+      "Fields_Of_Lillies.mp3": 1.99,
+      "The_Clouds_Of_Tomorrow.mp3": 1.99,
+      "The_Secret_Of_Life.mp3": 2.49,
+      "The_Sylvan_Lake.mp3": 1.99,
+      "Where_The_Angels_Reside.mp3": 1.99
+    }
+    ,
+    "Graceful_Angels": {
+      "Grandfathers_Vineyard.mp3": 2.99,
+      "In_The_Embrace_Of_An_Angel.mp3": 2.99,
+      "Strings_Of_Solitude.mp3": 2.99,
+      "Symphony_Of_Home.mp3": 2.99,
+      "The_Best_Teacher.mp3": 2.99,
+      "The_Most_Gentle_Soul.mp3": 2.99,
+      "The_Remains_Of_A_Beautiful_Civilization.mp3": 2.99,
+      "The_Weight_Of_Regret.mp3": 2.99
+    }
+    ,
+    "Luminous_Trails": {
+      "As_City_Lights_Slowly_Fade.mp3": 1.99,
+      "Chamomile_Dreams.mp3": 1.99,
+      "Knights_Requiem.mp3": 1.99,
+      "Once_In_A_Lifetime.mp3": 1.99,
+      "Sailing_Into_The_Sunset.mp3": 1.99,
+      "Something_About_Her_Name.mp3": 1.99,
+      "The_Old_Town.mp3": 1.99,
+      "Times_Of_Dilligence.mp3": 1.99
+    }
+    ,
+    "Natures_Wonders": {
+      "Boundless_Skies.mp3": 1.49,
+      "Buried_In_The_Snow.mp3": 1.49,
+      "Deep_Dive.mp3": 1.49,
+      "Desert_Mirage.mp3": 1.49,
+      "Dusks_Whisper.mp3": 1.49,
+      "Seabed_Corals.mp3": 1.49,
+      "Stormy_With_Thunder.mp3": 0.99
+    }
+    ,
+    "Tales_Untold": {
+      "Celestial_Solstice_Banquet.mp3": 1.99,
+      "Cheerful_Campfire.mp3": 1.99,
+      "Grasslands.mp3": 1.99,
+      "Home_Is_Where_The_Heart_Is.mp3": 1.99,
+      "Midnights_Secrets.mp3": 1.99,
+      "Not_A_Care_In_The_World.mp3": 1.99,
+      "One_Of_Those_Journey_Nights.mp3": 1.99,
+      "Sweet_Scent.mp3": 1.99
+    }
+    ,
+    "The_Edge_Of_Eternity": {
+      "A_Journey_At_Night.mp3": 1.99,
+      "Above_The_Mountains.mp3": 1.99,
+      "Fight_For_Love.mp3": 1.99,
+      "Heavens_Gate.mp3": 1.99,
+      "Moonlight_Above_The_Town.mp3": 1.99,
+      "Romantic_Feelings.mp3": 1.99,
+      "Sensations_Of_The_Late_Night_Aria.mp3": 1.99,
+      "Walk_At_Night.mp3": 1.99
+    }
+    ,
+    "Wish_Upon_A_Clover": {
+      "In_The_Cafe.mp3": 2.49,
+      "Peace_Found_In_A_Wooden_Hollow.mp3": 2.49,
+      "The_Elves_From_A_Far_Away_Land.mp3": 2.49,
+      "The_Gathering_Room_In_The_Castle.mp3": 2.49,
+      "The_Secret_Library.mp3": 2.49,
+      "Through_The_Sacred_Garden.mp3": 2.49,
+      "To_Those_Who_Wait.mp3": 2.49,
+      "Village_In_The_Woods.mp3": 2.49
     }
   }
   
