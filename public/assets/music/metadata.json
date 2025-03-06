@@ -1,7 +1,50 @@
 [
   {
     "albumName": "Abundant_Emotions",
-    "songs": []
+    "songs": [
+      {
+        "songName": "Cowboy_Hat.mp3",
+        "songUrl": "/assets/music/Abundant_Emotions/Cowboy_Hat.mp3",
+        "imageUrl": "/assets/music/Abundant_Emotions/Cowboy_Hat.png",
+        "price": 1.49
+      },
+      {
+        "songName": "Decent_Outting.mp3",
+        "songUrl": "/assets/music/Abundant_Emotions/Decent_Outting.mp3",
+        "imageUrl": "/assets/music/Abundant_Emotions/Decent_Outting.png",
+        "price": 1.49
+      },
+      {
+        "songName": "Foreigner_On_Our_Grounds.mp3",
+        "songUrl": "/assets/music/Abundant_Emotions/Foreigner_On_Our_Grounds.mp3",
+        "imageUrl": "/assets/music/Abundant_Emotions/Foreigner_On_Our_Grounds.png",
+        "price": 1.49
+      },
+      {
+        "songName": "Graceful_Waltz.mp3",
+        "songUrl": "/assets/music/Abundant_Emotions/Graceful_Waltz.mp3",
+        "imageUrl": "/assets/music/Abundant_Emotions/Graceful_Waltz.png",
+        "price": 1.49
+      },
+      {
+        "songName": "Morning_At_Work.mp3",
+        "songUrl": "/assets/music/Abundant_Emotions/Morning_At_Work.mp3",
+        "imageUrl": "/assets/music/Abundant_Emotions/Morning_At_Work.png",
+        "price": 1.49
+      },
+      {
+        "songName": "Once_Upon_A_Celebration.mp3",
+        "songUrl": "/assets/music/Abundant_Emotions/Once_Upon_A_Celebration.mp3",
+        "imageUrl": "/assets/music/Abundant_Emotions/Once_Upon_A_Celebration.png",
+        "price": 1.49
+      },
+      {
+        "songName": "School_Break.mp3",
+        "songUrl": "/assets/music/Abundant_Emotions/School_Break.mp3",
+        "imageUrl": "/assets/music/Abundant_Emotions/School_Break.png",
+        "price": 1.49
+      }
+    ]
   },
   {
     "albumName": "Chrono_Disc",
