@@ -1,5 +1,21 @@
 [
   {
+    "albumName": "Abundant_Emotions",
+    "songs": []
+  },
+  {
+    "albumName": "Chrono_Disc",
+    "songs": []
+  },
+  {
+    "albumName": "Dark_Paths_Of_Mystery",
+    "songs": []
+  },
+  {
+    "albumName": "Diligent_Seasoning",
+    "songs": []
+  },
+  {
     "albumName": "Echoes_Of_Distant_Melodies",
     "songs": [
       {
@@ -59,6 +75,18 @@
     ]
   },
   {
+    "albumName": "Echoes_Of_The_Abyss",
+    "songs": []
+  },
+  {
+    "albumName": "Ethereal_Veils",
+    "songs": []
+  },
+  {
+    "albumName": "Graceful_Angels",
+    "songs": []
+  },
+  {
     "albumName": "Lights_Of_Inspiration",
     "songs": [
       {
@@ -112,6 +140,22 @@
     ]
   },
   {
+    "albumName": "Luminous_Trails",
+    "songs": []
+  },
+  {
+    "albumName": "Natures_Wonders",
+    "songs": []
+  },
+  {
+    "albumName": "Tales_Untold",
+    "songs": []
+  },
+  {
+    "albumName": "The_Edge_Of_Eternity",
+    "songs": []
+  },
+  {
     "albumName": "The_Everlasting_Blue",
     "songs": [
       {
@@ -163,5 +207,9 @@
         "price": 1.99
       }
     ]
+  },
+  {
+    "albumName": "Wish_Upon_A_Clover",
+    "songs": []
   }
 ]
