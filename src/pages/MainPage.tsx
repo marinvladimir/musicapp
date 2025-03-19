@@ -16,7 +16,7 @@ const IntroSection = styled.section`
   }
 
   p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     line-height: 1.6;
     max-width: 800px;
     margin: 0 auto;
@@ -40,31 +40,30 @@ const StyledList = styled.ul`
 
 const StyledListElm = styled.li`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
-  background: ${({ theme }) => theme.colors.tertiary};
-  color: ${({ theme }) => theme.colors.lightGray};
   padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-
+  border-left: 4px solid ${({ theme }) => theme.colors.tertiary}; 
+  background: ${({ theme }) => theme.colors.darkGray}; 
+  color: ${({ theme }) => theme.colors.lightGray};
+  border-radius: 4px;
+  
   @media (max-width: 512px) {
     flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  div {
+    font-size: 2rem;
   }
 
   span {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
   }
 `;
+
 
 const Strong = styled.strong`
   color: ${({ theme }) => theme.colors.lightGray};
