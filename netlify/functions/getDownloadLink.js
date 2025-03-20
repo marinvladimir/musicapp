@@ -9,8 +9,26 @@ const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
 let dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
 
 export async function handler(event) {
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://marinvladimir.com',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type', 
+      },
+      body: '',
+    };
+  }
+
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+    return {
+      statusCode: 405,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://marinvladimir.com',
+      },
+      body: 'Method Not Allowed',
+    };
   }
 
   try {
@@ -19,17 +37,15 @@ export async function handler(event) {
 
     if (session.payment_status === 'paid') {
       const productNames = JSON.parse(session.metadata.product_names);
-
       const fileLinks = [];
 
       for (const productName of productNames) {
         const dropboxFilePath = await getDropboxFileLink(productName);
         console.log(`Dropbox file path for ${productName}:`, dropboxFilePath);
-        
+
         if (dropboxFilePath) {
           fileLinks.push({ productName, downloadLink: dropboxFilePath });
         } else {
-          console.log(`File not found for ${productName}`);
           console.error(`File not found for ${productName}`);
           fileLinks.push({ productName, error: 'File not found in Dropbox' });
         }
@@ -37,11 +53,19 @@ export async function handler(event) {
 
       return {
         statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': 'https://marinvladimir.com',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
         body: JSON.stringify({ fileLinks }),
       };
     } else {
       return {
         statusCode: 400,
+        headers: {
+          'Access-Control-Allow-Origin': 'https://marinvladimir.com',
+        },
         body: JSON.stringify({ error: 'Payment not successful' }),
       };
     }
@@ -49,6 +73,9 @@ export async function handler(event) {
     console.error('Error retrieving payment status:', error);
     return {
       statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://marinvladimir.com',
+      },
       body: JSON.stringify({ error: 'Failed to retrieve payment status' }),
     };
   }
@@ -62,32 +89,29 @@ const getDropboxFileLink = async (fileName) => {
     if (response) {
       const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
       if (sharedLinks.result.links.length > 0) {
-        const directLink = sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
-        return directLink;
+        return sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
       } else {
         const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
-        const directLink = sharedLink.result.url.replace('dl=0', 'dl=1');
-        return directLink;
+        return sharedLink.result.url.replace('dl=0', 'dl=1');
       }
     }
 
     return null;
   } catch (error) {
-    if (error.error && error.error.error_summary && error.error.error_summary.includes('expired_access_token')) {
+    if (error.error && error.error.error_summary?.includes('expired_access_token')) {
       console.error('Access token expired. Attempting to refresh.');
       try {
         const newAccessToken = await refreshAccessToken();
         dbx = new Dropbox({ accessToken: newAccessToken, fetch });
         let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
+
         if (response) {
           const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
           if (sharedLinks.result.links.length > 0) {
-            const directLink = sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
-            return directLink;
+            return sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
           } else {
             const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
-            const directLink = sharedLink.result.url.replace('dl=0', 'dl=1');
-            return directLink;
+            return sharedLink.result.url.replace('dl=0', 'dl=1');
           }
         }
       } catch (err) {
@@ -99,7 +123,6 @@ const getDropboxFileLink = async (fileName) => {
     }
   }
 };
-
 
 const refreshAccessToken = async () => {
   const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
@@ -120,4 +143,3 @@ const refreshAccessToken = async () => {
   const data = await response.json();
   return data.access_token;
 };
-
