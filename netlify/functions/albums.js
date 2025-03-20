@@ -16,12 +16,20 @@ exports.handler = async (event, context) => {
 
     return {
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://marinvladimir.com', 
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type', 
+      },
       body: JSON.stringify(albums),
     };
   } catch (error) {
     console.error('Error fetching album data:', error);
     return {
       statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://marinvladimir.com',
+      },
       body: JSON.stringify({ error: 'Error fetching album data.' }),
     };
   }
