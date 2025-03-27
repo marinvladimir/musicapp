@@ -9,14 +9,14 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       headers: {
         'Access-Control-Allow-Origin': 'https://marinvladimir.com',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS', 
-        'Access-Control-Allow-Headers': 'Content-Type', 
+        'Access-Control-Allow-Methods': 'DELETE, OPTIONS', 
+        'Access-Control-Allow-Headers': 'Content-Type',
       },
       body: '',
     };
   }
 
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== 'DELETE') {
     return {
       statusCode: 405,
       headers: {
@@ -26,28 +26,26 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const { sessionId, songName } = JSON.parse(event.body); 
-
-  if (!sessionId || !songName) {
-    return {
-      statusCode: 400,
-      headers: {
-        'Access-Control-Allow-Origin': 'https://marinvladimir.com',
-      },
-      body: JSON.stringify({ error: 'Missing required fields' }),
-    };
-  }
-
   try {
+    const { sessionId, songName } = JSON.parse(event.body); 
+
+    if (!sessionId || !songName) {
+      return {
+        statusCode: 400,
+        headers: {
+          'Access-Control-Allow-Origin': 'https://marinvladimir.com',
+        },
+        body: JSON.stringify({ error: 'Missing required fields' }),
+      };
+    }
+
     const { data, error } = await supabase
       .from('cart')
       .delete()
       .eq('session_id', sessionId)
       .eq('song_name', songName);
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     return {
       statusCode: 200,
