@@ -20,7 +20,7 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen((prev: any) => !prev);
+    setIsMenuOpen((prev) => !prev);
   };
 
   return (

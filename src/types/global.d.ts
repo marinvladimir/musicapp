@@ -26,7 +26,7 @@ interface CartContextType {
   >;
   albums: Album[];
   setAlbums: React.Dispatch<React.SetStateAction<Album[]>>;
-  isLoading: Boolean;
+  isLoading: boolean;
 }
 
 interface CartProviderProps {

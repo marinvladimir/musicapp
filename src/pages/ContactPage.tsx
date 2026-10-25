@@ -80,7 +80,6 @@ const ContactPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<ContactFormInputs> = async (data) => {
     try {
-      console.log(`${EMAIL_SERVICE_PUBLIC_KEY}`);
       await emailjs.send(
         `${EMAIL_SERVICE_SERVICE_ID}`,
         `${EMAIL_SERVICE_TEMPLATE_ID}`,
