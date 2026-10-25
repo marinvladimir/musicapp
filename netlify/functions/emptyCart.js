@@ -26,7 +26,7 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const { sessionId } = JSON.parse(event.body);
+  const { sessionId } = JSON.parse(event.body || '{}');
 
   if (!sessionId) {
     return {

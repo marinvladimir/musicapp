@@ -16,7 +16,17 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const { sessionId, songName, songUrl, price } = JSON.parse(event.body);
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://marinvladimir.com',
+      },
+      body: 'Method Not Allowed',
+    };
+  }
+
+  const { sessionId, songName, songUrl, price } = JSON.parse(event.body || '{}');
 
   if (!sessionId || !songName || !songUrl || !price) {
     return {

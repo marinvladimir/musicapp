@@ -1,4 +1,4 @@
-# Music Neclord
+# Marna's Music
 
 A small online store for my own instrumental music, live at [marinvladimir.com](https://marinvladimir.com).
 Visitors can browse albums, listen to short previews, add songs to a cart, pay with Stripe and

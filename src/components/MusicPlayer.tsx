@@ -55,7 +55,7 @@ const MusicPlayer: React.FC = () => {
 
   const currentAlbum = albums[selectedAlbumIndex];
   const currentSong = currentAlbum?.songs[selectedSongIndex];
-  const progress = (currentTime / duration) * 100;
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   const togglePlayPause = useCallback(() => {
     fadeOut(setFadingOut, () => {
@@ -154,10 +154,11 @@ const MusicPlayer: React.FC = () => {
       if (!response.ok) {
         throw new Error("Failed to add song to cart");
       }
-      setCart((prevCart) => [
-        ...prevCart,
-        { songName: song.songName, price: song.price },
-      ]);
+      setCart((prevCart) =>
+        prevCart.some((item) => item.songName === song.songName)
+          ? prevCart
+          : [...prevCart, { songName: song.songName, price: song.price }],
+      );
     } catch (error) {
       console.error("Error adding song to cart:", error);
     }
@@ -356,7 +357,7 @@ const MusicPlayer: React.FC = () => {
       <Playlist>
         {currentAlbum?.songs.map((song, index) => (
           <PlaylistItemComponent
-            key={index}
+            key={song.songName}
             song={song}
             index={index}
             selectedIndex={selectedSongIndex}

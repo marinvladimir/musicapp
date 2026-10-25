@@ -4,7 +4,7 @@ import { FooterWrapper } from "./FooterStyles";
 const Footer: React.FC = () => {
   return (
     <FooterWrapper>
-      <p>&copy; 2024 Marna All Rights Reserved</p>
+      <p>&copy; {new Date().getFullYear()} Marna All Rights Reserved</p>
     </FooterWrapper>
   );
 };

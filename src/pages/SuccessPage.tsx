@@ -118,6 +118,7 @@ const SuccessPage: React.FC = () => {
   const [downloadLinks, setDownloadLinks] = useState<
     { productName: string; downloadLink?: string; error?: string }[] | null
   >(null);
+  const [linksFailed, setLinksFailed] = useState(false);
   const { sessionId: cartId, setCart } = useCartContext();
 
   const sessionId = localStorage.getItem("stripeSessionId");
@@ -139,7 +140,10 @@ const SuccessPage: React.FC = () => {
 
   useEffect(() => {
     const fetchPaymentStatus = async () => {
-      if (!sessionId) return;
+      if (!sessionId) {
+        setPaymentStatus("error");
+        return;
+      }
 
       try {
         const response = await fetch(
@@ -157,12 +161,14 @@ const SuccessPage: React.FC = () => {
           setPaymentStatus("success");
           const songUrls = await fetchDownloadLinks();
           setDownloadLinks(songUrls);
+          setLinksFailed(!songUrls);
           await clearCart();
         } else {
           setPaymentStatus("error");
         }
       } catch (error) {
         console.error("Error verifying payment status:", error);
+        setPaymentStatus("error");
       }
     };
 
@@ -182,6 +188,7 @@ const SuccessPage: React.FC = () => {
         },
       );
 
+      if (!response.ok) return null;
       const data: DownloadLinkResponse = await response.json();
       return data.fileLinks;
     } catch (error) {
@@ -212,12 +219,21 @@ const SuccessPage: React.FC = () => {
                   )}
                 </DownloadWrapper>
               ))
+            ) : linksFailed ? (
+              <ErrorMessage>
+                Your download links could not be loaded. Please refresh the page
+                or contact me.
+              </ErrorMessage>
             ) : (
               <h2>Loading download links...</h2>
             )}
           </SuccessWrapper>
         ) : (
-          <h2>{paymentStatus || "Processing payment..."}</h2>
+          <h2>
+            {paymentStatus === "error"
+              ? "We couldn't confirm your payment. If you were charged, please contact me."
+              : "Processing payment..."}
+          </h2>
         )}
         <CancelNavWrapper>
           <NavLink to="/">Back to home</NavLink>

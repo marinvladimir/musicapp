@@ -81,7 +81,7 @@ const Header: React.FC = () => {
           </a>
           <a
             href="https://www.linkedin.com/in/marin-vladimir-76b9b4170/"
-            aria-label="Facebook"
+            aria-label="LinkedIn"
             target="_blank"
             rel="noopener noreferrer"
           >

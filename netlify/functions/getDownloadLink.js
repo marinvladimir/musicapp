@@ -81,46 +81,35 @@ export async function handler(event) {
   }
 }
 
+const getSharedLink = async (fileName) => {
+  const response = await dbx.filesGetMetadata({ path: `/${fileName}` });
+  const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
+  const url =
+    sharedLinks.result.links.length > 0
+      ? sharedLinks.result.links[0].url
+      : (await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display })).result.url;
+
+  return url.replace('dl=0', 'dl=1');
+};
+
 const getDropboxFileLink = async (fileName) => {
   try {
-    dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
-    let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
-
-    if (response) {
-      const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
-      if (sharedLinks.result.links.length > 0) {
-        return sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
-      } else {
-        const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
-        return sharedLink.result.url.replace('dl=0', 'dl=1');
-      }
-    }
-
-    return null;
+    return await getSharedLink(fileName);
   } catch (error) {
-    if (error.error && error.error.error_summary?.includes('expired_access_token')) {
+    if (error.error?.error_summary?.includes('expired_access_token')) {
       console.error('Access token expired. Attempting to refresh.');
       try {
-        const newAccessToken = await refreshAccessToken();
-        dbx = new Dropbox({ accessToken: newAccessToken, fetch });
-        let response = await dbx.filesGetMetadata({ path: `/${fileName}` });
-
-        if (response) {
-          const sharedLinks = await dbx.sharingListSharedLinks({ path: response.result.path_display });
-          if (sharedLinks.result.links.length > 0) {
-            return sharedLinks.result.links[0].url.replace('dl=0', 'dl=1');
-          } else {
-            const sharedLink = await dbx.sharingCreateSharedLinkWithSettings({ path: response.result.path_display });
-            return sharedLink.result.url.replace('dl=0', 'dl=1');
-          }
-        }
+        // Keep the refreshed client for later requests instead of refreshing on every file.
+        dbx = new Dropbox({ accessToken: await refreshAccessToken(), fetch });
+        return await getSharedLink(fileName);
       } catch (err) {
         console.error('Failed to refresh token or fetch Dropbox file:', err);
+        return null;
       }
-    } else {
-      console.error('Error fetching file from Dropbox:', error);
-      return null;
     }
+
+    console.error('Error fetching file from Dropbox:', error);
+    return null;
   }
 };
 

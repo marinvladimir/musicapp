@@ -41,13 +41,14 @@ const PlaylistItemComponent: React.FC<{
           {song.price + "€"}
           <CartButton
             $filled={cart.some((item) => item.songName === song.songName)}
-            onClick={() =>
+            onClick={(event) => {
+              event.stopPropagation();
               toggleItem({
                 songName: song.songName,
                 songUrl: song.songUrl,
                 price: song.price,
-              })
-            }
+              });
+            }}
           >
             <CartIcon
               filled={cart.some((item) => item.songName === song.songName)}

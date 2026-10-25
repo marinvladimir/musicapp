@@ -39,16 +39,20 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
             `${API_BASE_URL}/.netlify/functions/getCart?sessionId=${sessionId}`,
           ),
         ]);
-        const albumsData: Album[] = await albumsResponse.json();
-        const cartData: { song_name: string; price: number }[] =
-          await cartResponse.json();
-        setAlbums(albumsData);
-        setCart(
-          cartData.map((item) => ({
-            songName: item.song_name,
-            price: item.price,
-          })),
-        );
+        if (albumsResponse.ok) {
+          const albumsData: Album[] = await albumsResponse.json();
+          setAlbums(albumsData);
+        }
+        if (cartResponse.ok) {
+          const cartData: { song_name: string; price: number }[] =
+            await cartResponse.json();
+          setCart(
+            cartData.map((item) => ({
+              songName: item.song_name,
+              price: Number(item.price),
+            })),
+          );
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
