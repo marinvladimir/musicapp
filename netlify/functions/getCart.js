@@ -28,8 +28,6 @@ exports.handler = async (event, context) => {
     };
   }
 
-  await supabase.rpc('create_cart_table');
-
   try {
     const { data, error } = await supabase
       .from('cart')

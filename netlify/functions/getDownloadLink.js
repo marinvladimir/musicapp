@@ -5,7 +5,7 @@ import fetch from 'isomorphic-fetch';
 
 dotenv.config();
 
-const stripe = new Stripe(process.env.VITE_STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || process.env.VITE_STRIPE_SECRET_KEY);
 let dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN, fetch });
 
 export async function handler(event) {

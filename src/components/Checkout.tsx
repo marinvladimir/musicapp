@@ -18,10 +18,8 @@ const Checkout: React.FC = () => {
 
   const handleCheckout = async () => {
     try {
-      const updatedCart = cart.map((item) => ({
-        name: item.songName,
-        price: item.price * 100,
-      }));
+      // Prices are looked up on the server, so only the song names are sent.
+      const updatedCart = cart.map((item) => ({ name: item.songName }));
 
       const response = await fetch(
         `${API_BASE_URL}/.netlify/functions/createCheckout`,

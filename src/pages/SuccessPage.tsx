@@ -118,22 +118,22 @@ const SuccessPage: React.FC = () => {
   const [downloadLinks, setDownloadLinks] = useState<
     { productName: string; downloadLink?: string; error?: string }[] | null
   >(null);
-  const { setCart } = useCartContext();
+  const { sessionId: cartId, setCart } = useCartContext();
 
   const sessionId = localStorage.getItem("stripeSessionId");
 
   const clearCart = async () => {
     try {
       await fetch(`${API_BASE_URL}/.netlify/functions/emptyCart`, {
-        method: "DELETE",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sessionId,
+          sessionId: cartId,
         }),
       });
       setCart([]);
     } catch (error) {
-      console.error("Error removing song from cart:", error);
+      console.error("Error emptying cart:", error);
     }
   };
 
