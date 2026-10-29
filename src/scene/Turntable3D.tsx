@@ -3,7 +3,6 @@ import { useFrame } from "@react-three/fiber";
 import {
   Euler,
   Group,
-  Mesh,
   Quaternion,
   SRGBColorSpace,
   Texture,
@@ -24,6 +23,7 @@ import {
   transfer,
 } from "../audio/recordTransfer";
 import Interactive from "./Interactive";
+import Model from "./Model";
 import { coverUrl } from "../utils";
 import { neon } from "./neon";
 
@@ -190,26 +190,14 @@ const FlyingRecords: React.FC<{
 const Speaker: React.FC<{ position: [number, number, number] }> = ({
   position,
 }) => {
-  const woofer = useRef<Mesh>(null);
-  // The woofer pumps with the loudness of the music.
+  const group = useRef<Group>(null);
+  // The speaker pumps a little with the loudness of the music.
   useFrame(() => {
-    if (woofer.current)
-      woofer.current.scale.setScalar(1 + analysis.level * 0.12);
+    group.current?.scale.setScalar(1 + analysis.level * 0.03);
   });
   return (
-    <group position={position}>
-      <mesh position={[0, 0.2, 0]}>
-        <boxGeometry args={[0.24, 0.4, 0.24]} />
-        <meshStandardMaterial color="#15151f" roughness={0.4} />
-      </mesh>
-      <mesh ref={woofer} position={[0, 0.15, 0.121]}>
-        <circleGeometry args={[0.07, 24]} />
-        <meshStandardMaterial color="#3a3a55" metalness={0.3} roughness={0.5} />
-      </mesh>
-      <mesh position={[0, 0.31, 0.121]}>
-        <circleGeometry args={[0.03, 20]} />
-        <meshStandardMaterial color="#6c63ff" />
-      </mesh>
+    <group ref={group} position={position}>
+      <Model url="/assets/models/speaker.glb" height={0.42} />
     </group>
   );
 };

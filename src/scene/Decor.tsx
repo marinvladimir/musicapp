@@ -7,6 +7,7 @@ import {
   Points,
 } from "three";
 import Sign from "./Sign";
+import Model from "./Model";
 import { profile } from "../data/cv";
 import { neon } from "./neon";
 import { MONO, SANS, roundRect, useCanvasTexture, wrapText } from "./textures";
@@ -297,8 +298,27 @@ const Decor: React.FC = () => (
       colors={["#ff8fab", "#6c63ff"]}
     />
     <Diploma />
+    {/* Models from Meshy */}
+    <Model
+      url="/assets/models/guitar.glb"
+      height={0.95}
+      position={[5.72, 0, 0.15]}
+      rotation={[0, -Math.PI / 2, 0.12]}
+    />
+    <Model
+      url="/assets/models/cabinet.glb"
+      height={1.1}
+      position={[5.72, 0, -3.15]}
+      rotation={[0, -Math.PI / 2, 0]}
+    />
+    <Model
+      url="/assets/models/flat-tv.glb"
+      width={1.2}
+      position={[5.97, 1.35, 3.85]}
+      rotation={[0, -Math.PI / 2, 0]}
+    />
     <Poster
-      position={[5.98, 1.7, 3.3]}
+      position={[5.98, 1.7, 2.65]}
       rotationY={-Math.PI / 2}
       title="Grandpa's Notebook"
       tagline="maths game for schools"
