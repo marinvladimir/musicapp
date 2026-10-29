@@ -61,7 +61,24 @@
       </p>
       <p>This interactive CV needs JavaScript.</p>
     </noscript>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Shown until the app's code has downloaded and takes over -->
+      <div
+        style="
+          position: fixed;
+          inset: 0;
+          display: grid;
+          place-items: center;
+          background: #0c0c16;
+          color: #a3a1c2;
+          font:
+            0.8rem ui-monospace,
+            monospace;
+        "
+      >
+        Loading…
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

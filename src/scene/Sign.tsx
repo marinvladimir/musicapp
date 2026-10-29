@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Group } from "three";
+import { Group, MeshBasicMaterial } from "three";
+import { bootLevel } from "../boot";
 import { SANS, useCanvasTexture } from "./textures";
 import { neon } from "./neon";
 
@@ -12,6 +13,7 @@ const Sign: React.FC<{
   color?: string;
   floating?: boolean;
   width?: number;
+  bootDelay?: number;
 }> = ({
   text,
   position,
@@ -19,6 +21,7 @@ const Sign: React.FC<{
   color = "#b56cff",
   floating = true,
   width = 0.8,
+  bootDelay = 1.3,
 }) => {
   const group = useRef<Group>(null);
   const texture = useCanvasTexture(
@@ -40,7 +43,10 @@ const Sign: React.FC<{
     [text, color],
   );
 
+  const material = useRef<MeshBasicMaterial>(null);
+
   useFrame(({ clock }) => {
+    if (material.current) material.current.opacity = bootLevel(bootDelay, true);
     if (group.current && floating) {
       group.current.position.y =
         position[1] + Math.sin(clock.elapsedTime * 1.4 + position[0]) * 0.03;
@@ -52,6 +58,7 @@ const Sign: React.FC<{
       <mesh>
         <planeGeometry args={[width, width * 0.3125]} />
         <meshBasicMaterial
+          ref={material}
           map={texture}
           color={neon("#ffffff", 2.4)}
           transparent

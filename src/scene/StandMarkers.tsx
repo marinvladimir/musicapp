@@ -5,6 +5,7 @@ import { STATION_ORDER, Station, useStore } from "../store";
 import { STAND_MARKERS } from "./layout";
 import Interactive from "./Interactive";
 import { neon } from "./neon";
+import { bootLevel } from "../boot";
 
 const LABELS: Record<Station, string> = {
   cv: "Go to the desk: my CV",
@@ -23,6 +24,8 @@ const Marker: React.FC<{ station: Station }> = ({ station }) => {
 
   useFrame(({ clock }) => {
     if (!ring.current) return;
+    // The rings appear once the room has switched on.
+    if (ring.current.parent) ring.current.parent.visible = bootLevel(2.2) > 0;
     const pulse = (clock.elapsedTime * 0.8 + x) % 1;
     ring.current.scale.setScalar(1 + pulse * 0.5);
     ring.current.children.forEach((child, index) => {

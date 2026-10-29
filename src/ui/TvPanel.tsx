@@ -260,11 +260,6 @@ const TvPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const channel = useStore((state) => state.channel);
   const project = channels[channel];
 
-  // Switching on the TV shows a moment of static too.
-  useEffect(() => {
-    tuneTo(useStore.getState().channel);
-  }, []);
-
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "ArrowRight" || event.key === "ArrowDown")

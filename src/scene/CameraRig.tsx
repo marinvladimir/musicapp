@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Euler, Matrix4, Quaternion, Vector3 } from "three";
 import { useStore } from "../store";
+import { playWhoosh } from "../audio/sfx";
 import { OBSTACLES, OVERVIEW, ROOM, STATIONS } from "./layout";
 
 const WALK_SPEED = 2.2; // metres per second
@@ -106,6 +107,7 @@ const CameraRig: React.FC = () => {
       onDone();
       return;
     }
+    playWhoosh(seconds);
     flight.current = {
       fromPosition: camera.position.clone(),
       toPosition,

@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { trackLoading } from "./loading";
+import { startBoot } from "./boot";
 import { Album, Song } from "./types";
 
 export type Station = "cv" | "projects" | "music";
@@ -11,6 +13,15 @@ export const STATION_ORDER: Station[] = ["projects", "cv", "music"];
 type Move = { forward: boolean; back: boolean; left: boolean; right: boolean };
 
 const PIXEL_MODE_KEY = "pixel-mode";
+const SOUNDS_KEY = "sounds";
+
+const readSounds = () => {
+  try {
+    return localStorage.getItem(SOUNDS_KEY) !== "off";
+  } catch {
+    return true;
+  }
+};
 
 const readPixelMode = () => {
   try {
@@ -25,6 +36,8 @@ type State = {
   entered: boolean;
   // Retro look: the room is rendered at a low resolution, pixel art style.
   pixelMode: boolean;
+  // Room ambience and sound effects (not the music).
+  soundsOn: boolean;
   // Overlay panel that is open, if any.
   panel: Station | null;
   // Where the camera is flying to; a station's panel opens when it arrives.
@@ -50,6 +63,7 @@ type State = {
   channelChangedAt: number;
   enter: (panel?: Station) => void;
   togglePixelMode: () => void;
+  toggleSounds: () => void;
   goTo: (spot: Spot) => void;
   stepStation: (delta: number) => void;
   toggleFreeRoam: () => void;
@@ -63,6 +77,7 @@ type State = {
 export const useStore = create<State>((set) => ({
   entered: false,
   pixelMode: readPixelMode(),
+  soundsOn: readSounds(),
   panel: null,
   flyTarget: null,
   location: "overview",
@@ -78,7 +93,10 @@ export const useStore = create<State>((set) => ({
   touchMove: { forward: false, back: false, left: false, right: false },
   channel: 0,
   channelChangedAt: -Infinity,
-  enter: (panel) => set({ entered: true, panel: panel ?? null }),
+  enter: (panel) => {
+    startBoot();
+    set({ entered: true, panel: panel ?? null });
+  },
   togglePixelMode: () =>
     set((state) => {
       try {
@@ -87,6 +105,15 @@ export const useStore = create<State>((set) => ({
         // The setting just won't be remembered.
       }
       return { pixelMode: !state.pixelMode };
+    }),
+  toggleSounds: () =>
+    set((state) => {
+      try {
+        localStorage.setItem(SOUNDS_KEY, state.soundsOn ? "off" : "on");
+      } catch {
+        // The setting just won't be remembered.
+      }
+      return { soundsOn: !state.soundsOn };
     }),
   goTo: (spot) => set({ flyTarget: spot, panel: null, hoverLabel: null }),
   stepStation: (delta) =>
@@ -119,7 +146,9 @@ export const useStore = create<State>((set) => ({
     set((state) => ({ touchMove: { ...state.touchMove, ...move } })),
 }));
 
-export const loadAlbums = async () => {
+export const loadAlbums = () => trackLoading(fetchAlbums());
+
+const fetchAlbums = async () => {
   const response = await fetch("/assets/music/metadata.json");
   if (!response.ok)
     throw new Error(`Failed to load albums: ${response.status}`);

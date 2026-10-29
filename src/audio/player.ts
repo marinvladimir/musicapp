@@ -1,6 +1,7 @@
 import { useStore } from "../store";
 import { Song } from "../types";
 import { secondsUntilLanding, startTransfer } from "./recordTransfer";
+import { playNeedleDrop } from "./sfx";
 
 // One audio element for the whole site, routed through an analyser so the
 // room can react to the music.
@@ -82,6 +83,7 @@ export const playSong = (song: Song, album: string) => {
   element.play().catch(() => useStore.setState({ isPlaying: false }));
   startTimer = window.setTimeout(() => {
     element.currentTime = 0;
+    playNeedleDrop();
     if (fader && context) {
       fader.gain.cancelScheduledValues(context.currentTime);
       fader.gain.setValueAtTime(fader.gain.value, context.currentTime);
@@ -96,6 +98,7 @@ export const togglePlayback = () => {
   if (isPlaying) {
     getAudio().pause();
   } else {
+    playNeedleDrop();
     connect()
       .play()
       .catch(() => useStore.setState({ isPlaying: false }));

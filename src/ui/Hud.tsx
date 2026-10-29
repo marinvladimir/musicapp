@@ -273,6 +273,8 @@ const Hud: React.FC = () => {
     setTouchMove,
     pixelMode,
     togglePixelMode,
+    soundsOn,
+    toggleSounds,
     freeRoam,
     toggleFreeRoam,
     location,
@@ -309,6 +311,13 @@ const Hud: React.FC = () => {
             title="Walk freely with WASD or the on-screen arrows"
           >
             Free roam
+          </button>
+          <button
+            aria-pressed={soundsOn}
+            onClick={toggleSounds}
+            title="Room ambience and sound effects"
+          >
+            Sounds
           </button>
           <button
             aria-pressed={pixelMode}

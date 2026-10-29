@@ -7,9 +7,12 @@ import {
   Object3D,
   SRGBColorSpace,
   Vector3,
+  MeshBasicMaterial,
+  SpotLight,
 } from "three";
 import { MONO, whenFontsReady } from "./textures";
 import { neon } from "./neon";
+import { bootLevel } from "../boot";
 
 type Draw = (
   context: CanvasRenderingContext2D,
@@ -63,6 +66,7 @@ const AnimatedPanel: React.FC<{
     result.colorSpace = SRGBColorSpace;
     return result;
   }, [width, height]);
+  const screen = useRef<MeshBasicMaterial>(null);
   const state = useRef({
     last: -1,
     glitchUntil: 0,
@@ -77,6 +81,7 @@ const AnimatedPanel: React.FC<{
   useFrame(({ clock }) => {
     const now = clock.elapsedTime;
     const current = state.current;
+    screen.current?.color.setScalar(bootLevel(1.5, true));
     if (!current.ready || now - current.last < 1 / fps) return;
     current.last = now;
     const context = (texture.image as HTMLCanvasElement).getContext("2d")!;
@@ -102,7 +107,7 @@ const AnimatedPanel: React.FC<{
       </mesh>
       <mesh>
         <planeGeometry args={size} />
-        <meshBasicMaterial map={texture} toneMapped={false} />
+        <meshBasicMaterial ref={screen} map={texture} toneMapped={false} />
       </mesh>
     </group>
   );
@@ -411,8 +416,22 @@ const Spot: React.FC<{
   target: [number, number, number];
   color?: string;
   intensity?: number;
-}> = ({ position, target, color = "#cfc9ff", intensity = 22 }) => {
+  bootDelay?: number;
+}> = ({
+  position,
+  target,
+  color = "#cfc9ff",
+  intensity = 22,
+  bootDelay = 0.6,
+}) => {
   const fade = useBeamFade();
+  const light = useRef<SpotLight>(null);
+  const beamMaterial = useRef<MeshBasicMaterial>(null);
+  useFrame(() => {
+    const level = bootLevel(bootDelay);
+    if (light.current) light.current.intensity = intensity * level;
+    if (beamMaterial.current) beamMaterial.current.opacity = 0.09 * level;
+  });
   const targetObject = useMemo(() => {
     const object = new Object3D();
     object.position.set(...target);
@@ -443,6 +462,7 @@ const Spot: React.FC<{
     <group>
       <primitive object={targetObject} />
       <spotLight
+        ref={light}
         position={position}
         target={targetObject}
         angle={0.36}
@@ -469,7 +489,8 @@ const Spot: React.FC<{
           color={color}
           alphaMap={fade}
           transparent
-          opacity={0.09}
+          ref={beamMaterial}
+          opacity={0}
           blending={AdditiveBlending}
           depthWrite={false}
           toneMapped={false}
@@ -501,16 +522,23 @@ const TechWalls: React.FC = () => (
       <boxGeometry args={[9, 0.04, 0.06]} />
       <meshStandardMaterial color="#1c1c28" metalness={0.5} />
     </mesh>
-    <Spot position={[0, 3.08, -1]} target={[0, 0.9, -1.8]} intensity={10} />
+    <Spot
+      position={[0, 3.08, -1]}
+      target={[0, 0.9, -1.8]}
+      intensity={10}
+      bootDelay={0.9}
+    />
     <Spot
       position={[-3.6, 3.08, -1]}
       target={[-5.3, 1.1, -0.9]}
       color="#a9c8ff"
+      bootDelay={1.05}
     />
     <Spot
       position={[3.6, 3.08, -1]}
       target={[5.6, 1.0, -1.2]}
       color="#e3c9ff"
+      bootDelay={1.2}
     />
   </group>
 );

@@ -1,7 +1,15 @@
-import React from "react";
-import { DoubleSide } from "three";
+import React, { useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import {
+  DoubleSide,
+  AmbientLight,
+  HemisphereLight,
+  MeshBasicMaterial,
+  PointLight,
+} from "three";
 import { ROOM } from "./layout";
 import { neon } from "./neon";
+import { bootLevel } from "../boot";
 
 const WALL = "#3a3a5a";
 const ACCENT = "#6c63ff";
@@ -31,12 +39,87 @@ const Strip: React.FC<{
   position: [number, number, number];
   size: [number, number, number];
   color?: string;
-}> = ({ position, size, color = ACCENT }) => (
-  <mesh position={position}>
-    <boxGeometry args={size} />
-    <meshBasicMaterial color={neon(color)} toneMapped={false} />
-  </mesh>
-);
+  bootDelay?: number;
+}> = ({ position, size, color = ACCENT, bootDelay = 1 }) => {
+  const material = useRef<MeshBasicMaterial>(null);
+  const full = useMemo(() => neon(color), [color]);
+  useFrame(() => {
+    material.current?.color
+      .copy(full)
+      .multiplyScalar(bootLevel(bootDelay, true));
+  });
+  return (
+    <mesh position={position}>
+      <boxGeometry args={size} />
+      <meshBasicMaterial ref={material} toneMapped={false} />
+    </mesh>
+  );
+};
+
+// Ceiling and corner lights, switched on one by one when the room boots.
+const LIGHTS = [
+  {
+    position: [0, 2.8, 1.2],
+    intensity: 12,
+    distance: 12,
+    color: "#efeaff",
+    delay: 0.15,
+  },
+  {
+    position: [0, 2.8, -2.4],
+    intensity: 10,
+    distance: 10,
+    color: "#efeaff",
+    delay: 0.35,
+  },
+  {
+    position: [-3.8, 2.6, -1],
+    intensity: 8,
+    distance: 7,
+    color: "#c9c5ff",
+    delay: 0.55,
+  },
+  {
+    position: [3.8, 2.6, 0.4],
+    intensity: 8,
+    distance: 7,
+    color: "#e3c9ff",
+    delay: 0.75,
+  },
+] as const;
+// Before the boot the room is not quite black, so the intro has a backdrop.
+const DARK = 0.25;
+
+const RoomLights: React.FC = () => {
+  const ambient = useRef<AmbientLight>(null);
+  const hemisphere = useRef<HemisphereLight>(null);
+  const points = useRef<(PointLight | null)[]>([]);
+  useFrame(() => {
+    const base = DARK + (1 - DARK) * bootLevel(0);
+    if (ambient.current) ambient.current.intensity = 0.9 * base;
+    if (hemisphere.current) hemisphere.current.intensity = 1.2 * base;
+    LIGHTS.forEach((light, index) => {
+      const point = points.current[index];
+      if (point) point.intensity = light.intensity * bootLevel(light.delay);
+    });
+  });
+  return (
+    <>
+      <ambientLight ref={ambient} color="#b9b3ff" />
+      <hemisphereLight ref={hemisphere} args={["#a9a4ff", "#2a2a3e", 1.2]} />
+      {LIGHTS.map((light, index) => (
+        <pointLight
+          key={index}
+          ref={(point) => (points.current[index] = point)}
+          position={light.position as unknown as [number, number, number]}
+          distance={light.distance}
+          color={light.color}
+          intensity={0}
+        />
+      ))}
+    </>
+  );
+};
 
 const Room: React.FC = () => {
   const { width, depth, height } = ROOM;
@@ -99,32 +182,7 @@ const Room: React.FC = () => {
       <Plant position={[5.3, 0, -4.3]} scale={1.1} />
       <Plant position={[-5.2, 0, 4.2]} />
 
-      <ambientLight intensity={0.9} color="#b9b3ff" />
-      <hemisphereLight args={["#a9a4ff", "#2a2a3e", 1.2]} />
-      <pointLight
-        position={[0, 2.8, 1.2]}
-        intensity={12}
-        distance={12}
-        color="#efeaff"
-      />
-      <pointLight
-        position={[0, 2.8, -2.4]}
-        intensity={10}
-        distance={10}
-        color="#efeaff"
-      />
-      <pointLight
-        position={[-3.8, 2.6, -1]}
-        intensity={8}
-        distance={7}
-        color="#c9c5ff"
-      />
-      <pointLight
-        position={[3.8, 2.6, 0.4]}
-        intensity={8}
-        distance={7}
-        color="#e3c9ff"
-      />
+      <RoomLights />
     </group>
   );
 };

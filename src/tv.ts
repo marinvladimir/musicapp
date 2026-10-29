@@ -2,7 +2,7 @@ import { useStore } from "./store";
 import { channels } from "./data/cv";
 import { playStatic } from "./audio/sfx";
 
-export const STATIC_SECONDS = 0.7;
+export const STATIC_SECONDS = 0.45;
 // How long the channel number stays on screen after switching.
 export const OSD_SECONDS = 2.5;
 

@@ -8,6 +8,7 @@ import {
   MeshBasicMaterial,
 } from "three";
 import { useStore } from "../store";
+import { bootLevel } from "../boot";
 import { analysis } from "../audio/analysis";
 import { drawLoudness, drawSpectrum } from "../audio/draw";
 import { profile } from "../data/cv";
@@ -255,6 +256,7 @@ const Projection: React.FC = () => {
   const texture = useCanvasTexture(W, H, drawIdle);
   const beam = useBeamGeometry();
   const beamMaterial = useRef<MeshBasicMaterial>(null);
+  const screen = useRef<MeshBasicMaterial>(null);
   const activeUntil = useRef(0);
   const showingIdle = useRef(true);
   const fontsLoaded = useRef(false);
@@ -293,9 +295,10 @@ const Projection: React.FC = () => {
     const { currentSong, isPlaying, currentTime, duration } =
       useStore.getState();
     const now = clock.elapsedTime;
+    screen.current?.color.setScalar(bootLevel(1.8, true));
     if (beamMaterial.current) {
       beamMaterial.current.opacity =
-        0.03 + (isPlaying ? analysis.level * 0.09 : 0);
+        (0.03 + (isPlaying ? analysis.level * 0.09 : 0)) * bootLevel(1.8);
     }
     const context = (texture.image as HTMLCanvasElement).getContext("2d");
     if (!context || !fontsLoaded.current) return;
@@ -331,7 +334,7 @@ const Projection: React.FC = () => {
       </mesh>
       <mesh position={[0, SCREEN.y, SCREEN.z]}>
         <planeGeometry args={[SCREEN.width, SCREEN.height]} />
-        <meshBasicMaterial map={texture} toneMapped={false} />
+        <meshBasicMaterial ref={screen} map={texture} toneMapped={false} />
       </mesh>
 
       <mesh position={PROJECTOR}>

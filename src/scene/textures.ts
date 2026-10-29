@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { CanvasTexture, SRGBColorSpace } from "three";
+import { trackLoading } from "../loading";
 
 export const SANS = '"Space Grotesk", system-ui, sans-serif';
 export const MONO = '"JetBrains Mono", ui-monospace, monospace';
@@ -8,11 +9,13 @@ let fontsReady: Promise<unknown> | null = null;
 
 // Canvas text is drawn once, so wait for the web fonts before drawing.
 export const whenFontsReady = () => {
-  fontsReady ??= Promise.all([
-    document.fonts.load(`700 40px ${SANS}`),
-    document.fonts.load(`400 40px ${SANS}`),
-    document.fonts.load(`400 40px ${MONO}`),
-  ]).catch(() => undefined);
+  fontsReady ??= trackLoading(
+    Promise.all([
+      document.fonts.load(`700 40px ${SANS}`),
+      document.fonts.load(`400 40px ${SANS}`),
+      document.fonts.load(`400 40px ${MONO}`),
+    ]),
+  ).catch(() => undefined);
   return fontsReady;
 };
 
@@ -22,12 +25,14 @@ export const loadImage = (url: string) => {
   if (!images.has(url)) {
     images.set(
       url,
-      new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(image);
-        image.onerror = reject;
-        image.src = url;
-      }),
+      trackLoading(
+        new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = url;
+        }),
+      ),
     );
   }
   return images.get(url)!;
