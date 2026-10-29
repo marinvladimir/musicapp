@@ -300,6 +300,30 @@ const Decor: React.FC = () => (
     <Diploma />
     {/* Models from Meshy */}
     <Model
+      url="/assets/models/coffee-table.glb"
+      width={1.1}
+      position={[0, 0, 1.1]}
+    />
+    {/* Controller lying on the coffee table, as if just put down */}
+    <Model
+      url="/assets/models/controller.glb"
+      width={0.17}
+      position={[0.22, 0.475, 1.12]}
+      rotation={[-Math.PI / 2, 0, 0.5]}
+    />
+    <Model
+      url="/assets/models/aircon.glb"
+      width={0.85}
+      position={[-5.9, 2.62, 2.8]}
+      rotation={[0, Math.PI / 2, 0]}
+    />
+    <Model
+      url="/assets/models/kitten.glb"
+      height={0.22}
+      position={[5.75, 2.3, -1.95]}
+      rotation={[0, -Math.PI / 2, 0]}
+    />
+    <Model
       url="/assets/models/guitar.glb"
       height={0.95}
       position={[5.72, 0, 0.15]}

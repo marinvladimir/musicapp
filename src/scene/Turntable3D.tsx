@@ -25,7 +25,6 @@ import {
 import Interactive from "./Interactive";
 import Model from "./Model";
 import { coverUrl } from "../utils";
-import { neon } from "./neon";
 
 // 33⅓ revolutions per minute, in radians per second.
 const RECORD_SPEED = (33.333 / 60) * Math.PI * 2;
@@ -244,14 +243,8 @@ const Turntable3D: React.FC = () => {
     <>
       {/* Built facing +z, then turned to face the room from the right wall. */}
       <group position={[5.62, 0, 1.4]} rotation-y={-Math.PI / 2}>
-        <mesh position={[0, 0.32, 0]}>
-          <boxGeometry args={[1.4, 0.64, 0.46]} />
-          <meshStandardMaterial color="#e8e6ff" roughness={0.5} />
-        </mesh>
-        <mesh position={[0, 0.32, 0.231]}>
-          <planeGeometry args={[1.3, 0.02]} />
-          <meshBasicMaterial color={neon("#6c63ff")} toneMapped={false} />
-        </mesh>
+        {/* Wooden sideboard (Meshy model) the turntable stands on */}
+        <Model url="/assets/models/credenza.glb" width={1.45} />
 
         <Speaker position={[-0.55, 0.64, 0]} />
         <Speaker position={[0.55, 0.64, 0]} />
