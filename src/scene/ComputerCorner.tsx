@@ -3,12 +3,18 @@ import { useFrame } from "@react-three/fiber";
 import { useStore } from "../store";
 import { channels } from "../data/cv";
 import { OSD_SECONDS, STATIC_SECONDS, changeChannel } from "../tv";
-import { drawOsd, drawScanlines, drawStatic, drawTestCard } from "../tvDraw";
+import {
+  drawFitted,
+  drawOsd,
+  drawScanlines,
+  drawStatic,
+  drawTestCard,
+} from "../tvDraw";
 import Interactive from "./Interactive";
 import Model from "./Model";
 import Sign from "./Sign";
 import { neon } from "./neon";
-import { useCanvasTexture, whenFontsReady } from "./textures";
+import { loadImage, useCanvasTexture, whenFontsReady } from "./textures";
 
 const SCREEN_W = 640;
 const SCREEN_H = 480;
@@ -22,6 +28,23 @@ const TvSet: React.FC = () => {
   const fontsLoaded = useRef(false);
   const video = useRef<HTMLVideoElement | null>(null);
   const demo = channels[channel].demo;
+  const imageUrl = channels[channel].image;
+  const picture = useRef<HTMLImageElement | null>(null);
+
+  // Screenshot for the channel, shown while there is no video frame.
+  useEffect(() => {
+    picture.current = null;
+    if (!imageUrl) return;
+    let cancelled = false;
+    loadImage(imageUrl)
+      .then((image) => {
+        if (!cancelled) picture.current = image;
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [imageUrl]);
 
   useEffect(() => {
     whenFontsReady().then(() => (fontsLoaded.current = true));
@@ -54,14 +77,32 @@ const TvSet: React.FC = () => {
       drawStatic(context, SCREEN_W, SCREEN_H);
       lastDrawn.current = "";
     } else if (video.current && video.current.readyState >= 2) {
-      context.drawImage(video.current, 0, 0, SCREEN_W, SCREEN_H);
+      const frame = video.current;
+      drawFitted(
+        context,
+        SCREEN_W,
+        SCREEN_H,
+        frame,
+        frame.videoWidth,
+        frame.videoHeight,
+      );
       if (showOsd) drawOsd(context, SCREEN_W, SCREEN_H, current + 1);
       lastDrawn.current = "";
     } else {
-      // The test card only changes with the channel and the on-screen number.
-      const key = `${current}-${showOsd}`;
+      // A still picture only changes with the channel and the on-screen number.
+      const image = picture.current;
+      const key = `${current}-${showOsd}-${!!image}`;
       if (key === lastDrawn.current) return;
-      drawTestCard(context, SCREEN_W, SCREEN_H, channels[current]);
+      if (image)
+        drawFitted(
+          context,
+          SCREEN_W,
+          SCREEN_H,
+          image,
+          image.width,
+          image.height,
+        );
+      else drawTestCard(context, SCREEN_W, SCREEN_H, channels[current]);
       if (showOsd) drawOsd(context, SCREEN_W, SCREEN_H, current + 1);
       lastDrawn.current = key;
     }

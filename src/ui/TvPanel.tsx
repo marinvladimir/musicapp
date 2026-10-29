@@ -41,12 +41,20 @@ const Screen = styled.div`
     0 0 0 6px #0c0c12;
 
   canvas,
-  video {
+  video,
+  img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
+    object-fit: contain;
+  }
+
+  /* Blurred copy of the picture behind it fills the rest of the screen. */
+  .backdrop {
     object-fit: cover;
+    filter: blur(18px) brightness(0.45);
+    transform: scale(1.15);
   }
 
   /* Glass reflection and vignette of a curved tube */
@@ -217,13 +225,13 @@ const TvScreen: React.FC = () => {
           drawScanlines(context, SCREEN_W, SCREEN_H);
           lastDrawn = "";
         } else if (key !== lastDrawn) {
-          // With a demo video the canvas only carries the channel number.
-          if (channels[current].demo)
-            context.clearRect(0, 0, SCREEN_W, SCREEN_H);
+          // With a video or screenshot the canvas only carries the channel
+          // number; otherwise it shows the test card.
+          const media = channels[current].demo || channels[current].image;
+          if (media) context.clearRect(0, 0, SCREEN_W, SCREEN_H);
           else drawTestCard(context, SCREEN_W, SCREEN_H, channels[current]);
           if (showOsd) drawOsd(context, SCREEN_W, SCREEN_H, current + 1);
-          if (!channels[current].demo)
-            drawScanlines(context, SCREEN_W, SCREEN_H);
+          if (!media) drawScanlines(context, SCREEN_W, SCREEN_H);
           lastDrawn = key;
         }
       }
@@ -235,15 +243,26 @@ const TvScreen: React.FC = () => {
 
   return (
     <Screen>
-      {project.demo && (
+      {project.image && (
+        <img
+          key={`${project.image}-backdrop`}
+          className="backdrop"
+          src={project.image}
+          alt=""
+        />
+      )}
+      {project.demo ? (
         <video
           key={project.demo}
           src={project.demo}
+          poster={project.image}
           autoPlay
           muted
           loop
           playsInline
         />
+      ) : (
+        project.image && <img key={project.image} src={project.image} alt="" />
       )}
       <canvas
         ref={canvasRef}

@@ -372,12 +372,6 @@ const Decor: React.FC = () => (
       position={[5.72, 0, 0.15]}
       rotation={[0, -Math.PI / 2, 0.12]}
     />
-    <Model
-      url="/assets/models/flat-tv.glb"
-      width={1.2}
-      position={[5.97, 1.35, 3.85]}
-      rotation={[0, -Math.PI / 2, 0]}
-    />
     <Poster
       position={[5.98, 1.7, 2.65]}
       rotationY={-Math.PI / 2}

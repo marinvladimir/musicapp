@@ -144,3 +144,35 @@ export const drawOsd = (
   context.textAlign = "left";
   context.textBaseline = "alphabetic";
 };
+
+// Draws a picture or video frame whole, centred, over a dim enlarged copy
+// of itself, so portrait videos and wide screenshots fill the 4:3 screen.
+export const drawFitted = (
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  source: CanvasImageSource,
+  sourceWidth: number,
+  sourceHeight: number,
+) => {
+  context.fillStyle = "#000000";
+  context.fillRect(0, 0, width, height);
+  const cover = Math.max(width / sourceWidth, height / sourceHeight);
+  context.globalAlpha = 0.3;
+  context.drawImage(
+    source,
+    (width - sourceWidth * cover) / 2,
+    (height - sourceHeight * cover) / 2,
+    sourceWidth * cover,
+    sourceHeight * cover,
+  );
+  context.globalAlpha = 1;
+  const contain = Math.min(width / sourceWidth, height / sourceHeight);
+  context.drawImage(
+    source,
+    (width - sourceWidth * contain) / 2,
+    (height - sourceHeight * contain) / 2,
+    sourceWidth * contain,
+    sourceHeight * contain,
+  );
+};

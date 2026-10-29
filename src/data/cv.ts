@@ -14,8 +14,12 @@ export type Project = {
   stack: string;
   url?: string;
   // Demo video shown on the TV, e.g. "/assets/demos/snuggle-sweep.mp4".
-  // Without one the channel shows a test card.
   demo?: string;
+  // Screenshot shown on the TV when there is no video. Without either, the
+  // channel shows a test card.
+  image?: string;
+  // false keeps the project in the CV but off the TV.
+  onTv?: boolean;
 };
 
 export const profile = {
@@ -127,11 +131,13 @@ export const experience: Experience[] = [
 
 export const ownProducts: Project[] = [
   {
-    name: "Reformer Studio",
-    status: "With Vexnet",
+    name: "Elan Reformer Studio",
+    status: "With Vexnet · Google Play",
     description:
       "Pilates studio app, built together with Vexnet: class schedule and bookings, member accounts, price list and invoices, push notifications and Stripe payments, plus an admin side with POS, reports, user management and live support chat.",
     stack: "React Native · Expo / EAS · Firebase · Stripe",
+    url: "https://play.google.com/store/apps/details?id=com.crasho.pilatesapp",
+    image: "/assets/demos/elan-reformer-studio.webp",
   },
   {
     name: "Snuggle Sweep",
@@ -139,6 +145,14 @@ export const ownProducts: Project[] = [
     description:
       "Cozy puzzle game for iOS, Android and web (itch.io, CrazyGames): 100 levels, 13 languages, AdMob ads and in-app purchases, achievements and an animal encyclopedia. Trailer produced in-house.",
     stack: "Unity · C# · AdMob · Unity IAP · WebGL",
+    demo: "/assets/demos/snuggle-sweep.mp4",
+    image: "/assets/demos/snuggle-sweep.jpg",
+  },
+  {
+    name: "Smolder",
+    status: "Trailer",
+    description: "Dating horror game.",
+    stack: "Game",
   },
   {
     name: "Obilazak",
@@ -161,13 +175,15 @@ export const ownProducts: Project[] = [
       "SEO-focused utility site with 18 tools (password and UUID generators, pickers, dice, wheel) on Cloudflare Pages Functions.",
     stack: "JavaScript · HTML / CSS · Cloudflare Pages · SEO",
     url: "https://randomli.tools",
+    onTv: false,
   },
   {
     name: "Grandpa's Notebook",
     status: "For schools",
     description:
-      "Maths learning game: 32 curriculum skills across 112 generated levels, from adding to 10 up to equations, with adaptive difficulty driven by per-skill mastery, hints, worked steps and written column methods, plus a story mode.",
+      "Maths learning game: 32 curriculum skills across 112 generated levels, from adding to 10 up to equations, with adaptive difficulty driven by per-skill mastery, hints, worked steps and written column methods, plus a story mode. Being built for school maths competitions, from county to national level.",
     stack: "Godot 4 · GDScript · procedural task generation",
+    image: "/assets/demos/math-game.webp",
   },
 ];
 
@@ -178,6 +194,9 @@ export const clientWork: Project[] = [
     description:
       "The studio's app for class bookings, member accounts, invoices and payments, with an admin side for POS, reports and live support chat.",
     stack: "React Native · Expo / EAS · Firebase · Stripe",
+    url: "https://play.google.com/store/apps/details?id=com.crasho.pilatesapp",
+    // Same app as the Vexnet product above, which is the one on the TV.
+    onTv: false,
   },
   {
     name: "Police App",
@@ -185,12 +204,15 @@ export const clientWork: Project[] = [
     description:
       "PWA for managing police stations, staff, registered citizens and scheduled checks, with role-based access.",
     stack: "Next.js · TypeScript · Symfony · Docker · Helm",
+    // Protected under GDPR, so it cannot be shown.
+    onTv: false,
   },
   {
     name: "Naj Saloni",
     status: "Client",
     description: "Social app for beauty professionals.",
     stack: "Expo · Firebase Data Connect · Cloud Functions",
+    url: "https://apps.apple.com/us/app/saloniapp/id6800621733",
   },
   {
     name: "Client websites",
@@ -198,6 +220,16 @@ export const clientWork: Project[] = [
     description:
       "WordPress / Elementor sites with custom PHP for small businesses, built directly with the owners.",
     stack: "WordPress · Elementor · PHP",
+    onTv: false,
+  },
+  {
+    name: "Vinarija Kuzmanić",
+    status: "Client · Live",
+    description:
+      "Bilingual (HR / EN) website for a family winery in Kaštel Novi, with a wine tour page and a gallery.",
+    stack: "Website",
+    url: "https://vinarijakuzmanic.com/",
+    image: "/assets/demos/vinarija-kuzmanic.webp",
   },
 ];
 
@@ -212,4 +244,6 @@ export const education = {
 };
 
 // Every project is a channel on the TV, own products first.
-export const channels: Project[] = [...ownProducts, ...clientWork];
+export const channels: Project[] = [...ownProducts, ...clientWork].filter(
+  (project) => project.onTv !== false,
+);

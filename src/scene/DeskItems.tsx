@@ -161,7 +161,8 @@ export const Phone: React.FC<{
   const showing = useRef<boolean | null>(null);
   const group = useRef<Group>(null);
   const channel = useMemo(
-    () => channels.findIndex((project) => project.name === "Reformer Studio"),
+    () =>
+      channels.findIndex((project) => project.name === "Elan Reformer Studio"),
     [],
   );
   const screen = useCanvasTexture(SCREEN_W, SCREEN_H, (context) =>
