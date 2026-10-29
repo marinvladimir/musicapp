@@ -7,6 +7,7 @@ import CvDesk from "./CvDesk";
 import ComputerCorner from "./ComputerCorner";
 import Bookshelf from "./Bookshelf";
 import Turntable3D from "./Turntable3D";
+import NowPlayingArt from "./NowPlayingArt";
 import Projection from "./Projection";
 import Effects from "./Effects";
 import Decor from "./Decor";
@@ -35,6 +36,7 @@ const Scene: React.FC = () => (
     <ComputerCorner />
     <Bookshelf />
     <Turntable3D />
+    <NowPlayingArt />
     <Decor />
     <StandMarkers />
     <TechWalls />

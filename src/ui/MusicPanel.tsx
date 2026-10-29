@@ -111,13 +111,18 @@ const Tracks = styled.ol`
   }
 `;
 
-const NowPlaying = styled.div`
+// The playing song's picture fills the card behind the controls.
+const NowPlaying = styled.div<{ $art: string | null }>`
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 14px;
+  padding-top: ${({ $art }) => ($art ? "150px" : "14px")};
   border-radius: 12px;
-  background: ${({ theme }) => theme.colors.background};
+  background: ${({ $art, theme }) =>
+    $art
+      ? `linear-gradient(rgba(18, 18, 31, 0.1), rgba(18, 18, 31, 0.92) 55%), center / cover no-repeat url("${$art}")`
+      : theme.colors.background};
 
   strong {
     font-size: 0.95rem;
@@ -239,7 +244,10 @@ const MusicPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         )}
 
         {currentSong && (
-          <NowPlaying aria-live="polite">
+          <NowPlaying
+            aria-live="polite"
+            $art={currentSong.imageUrl ?? coverUrl(currentSong.album)}
+          >
             <strong>{formatSongName(currentSong.songName)}</strong>
             <MiniVisualizer />
             <Controls>

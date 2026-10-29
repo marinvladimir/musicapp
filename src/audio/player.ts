@@ -1,11 +1,16 @@
 import { useStore } from "../store";
 import { Song } from "../types";
+import { startTransfer } from "./recordTransfer";
 
 // One audio element for the whole site, routed through an analyser so the
 // room can react to the music.
 let audio: HTMLAudioElement | null = null;
 let context: AudioContext | null = null;
 let analyser: AnalyserNode | null = null;
+// Fades the music in once the record is on the turntable. A gain node is
+// used because iOS ignores the audio element's volume.
+let fader: GainNode | null = null;
+let startTimer: number | undefined;
 
 const getAudio = () => {
   if (audio) return audio;
@@ -36,7 +41,9 @@ const connect = () => {
     analyser = context.createAnalyser();
     analyser.fftSize = 2048;
     analyser.smoothingTimeConstant = 0.8;
-    context.createMediaElementSource(element).connect(analyser);
+    fader = context.createGain();
+    context.createMediaElementSource(element).connect(fader);
+    fader.connect(analyser);
     analyser.connect(context.destination);
   }
   context.resume();
@@ -47,15 +54,35 @@ export const getAnalyser = () => analyser;
 
 export const playSong = (song: Song, album: string) => {
   const element = connect();
-  if (useStore.getState().currentSong?.songName !== song.songName) {
-    element.src = song.songUrl;
-    useStore.setState({
-      currentSong: { ...song, album },
-      currentTime: 0,
-      duration: 0,
-    });
+  const previous = useStore.getState().currentSong;
+  if (previous?.songName === song.songName) {
+    element.play().catch(() => useStore.setState({ isPlaying: false }));
+    return;
+  }
+
+  // Start the new song silently right away (still inside the click, which
+  // browsers require), then rewind and fade it in when the record lands.
+  const delay = startTransfer({ ...song, album }, previous);
+  window.clearTimeout(startTimer);
+  element.src = song.songUrl;
+  useStore.setState({
+    currentSong: { ...song, album },
+    currentTime: 0,
+    duration: 0,
+  });
+  if (fader && context && delay > 0) {
+    fader.gain.cancelScheduledValues(context.currentTime);
+    fader.gain.setValueAtTime(0, context.currentTime);
   }
   element.play().catch(() => useStore.setState({ isPlaying: false }));
+  startTimer = window.setTimeout(() => {
+    element.currentTime = 0;
+    if (fader && context) {
+      fader.gain.cancelScheduledValues(context.currentTime);
+      fader.gain.setValueAtTime(fader.gain.value, context.currentTime);
+      fader.gain.linearRampToValueAtTime(1, context.currentTime + 0.25);
+    }
+  }, delay * 1000);
 };
 
 export const togglePlayback = () => {

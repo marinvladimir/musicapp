@@ -300,7 +300,7 @@ const TvPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <button onClick={() => changeChannel(1)} aria-label="Next channel">
               CH ▶
             </button>
-            <span>← → or 1–{channels.length} to switch</span>
+            <span>← → or 1–{Math.min(9, channels.length)} to switch</span>
             <span>ON</span>
           </ControlStrip>
         </div>

@@ -1,11 +1,12 @@
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Group, MeshStandardMaterial } from "three";
+import { Group, MeshStandardMaterial, Vector3 } from "three";
 import { useStore } from "../store";
 import { Album } from "../types";
 import Interactive from "./Interactive";
 import Sign from "./Sign";
 import { Plant } from "./Room";
+import { bookPositions } from "../audio/recordTransfer";
 import { albumTitle, coverUrl } from "../utils";
 import { SANS, loadImage, useCanvasTexture } from "./textures";
 
@@ -32,6 +33,14 @@ const Book: React.FC<{ album: Album; position: [number, number, number] }> = ({
   position,
 }) => {
   const group = useRef<Group>(null);
+  const anchor = useRef<Group>(null);
+  // The turntable flies records to and from this spot.
+  useEffect(() => {
+    if (!anchor.current) return;
+    const position = new Vector3();
+    anchor.current.getWorldPosition(position);
+    bookPositions.set(album.albumName, position);
+  }, [album.albumName]);
   const selected = useStore((state) => state.selectedAlbum === album.albumName);
   const { selectAlbum, goTo, panel } = useStore();
 
@@ -84,7 +93,7 @@ const Book: React.FC<{ album: Album; position: [number, number, number] }> = ({
   });
 
   return (
-    <group position={position}>
+    <group ref={anchor} position={position}>
       <group ref={group}>
         <Interactive
           label={`Listen to ${albumTitle(album.albumName)}`}

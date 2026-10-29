@@ -127,6 +127,13 @@ export const experience: Experience[] = [
 
 export const ownProducts: Project[] = [
   {
+    name: "Reformer Studio",
+    status: "With Vexnet",
+    description:
+      "Pilates studio app, built together with Vexnet: class schedule and bookings, member accounts, price list and invoices, push notifications and Stripe payments, plus an admin side with POS, reports, user management and live support chat.",
+    stack: "React Native · Expo / EAS · Firebase · Stripe",
+  },
+  {
     name: "Snuggle Sweep",
     status: "Complete",
     description:

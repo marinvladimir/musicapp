@@ -355,49 +355,6 @@ const TerminalPanel: React.FC<{
   return <AnimatedPanel {...props} draw={draw} />;
 };
 
-// --- Status dashboard -----------------------------------------------------
-
-const DashboardPanel: React.FC<{
-  position: [number, number, number];
-  rotationY?: number;
-  size: [number, number];
-}> = (props) => {
-  const draw: Draw = (context, time, width, height) => {
-    context.fillStyle = "#0b0b16";
-    context.fillRect(0, 0, width, height);
-    context.font = `500 16px ${MONO}`;
-    context.fillStyle = TEAL;
-    context.fillText("● STATUS", 16, 28);
-
-    const charts = [
-      { label: "REQ / S", color: ACCENT, speed: 1.1 },
-      { label: "LATENCY", color: PURPLE, speed: 0.7 },
-      { label: "BUILDS", color: TEAL, speed: 1.6 },
-    ];
-    const chartHeight = (height - 60) / charts.length;
-    charts.forEach((chart, index) => {
-      const top = 46 + index * chartHeight;
-      context.fillStyle = "#8e8aad";
-      context.font = `400 13px ${MONO}`;
-      context.fillText(chart.label, 16, top + 14);
-      context.strokeStyle = chart.color;
-      context.lineWidth = 2;
-      context.beginPath();
-      for (let x = 0; x <= width - 32; x += 8) {
-        const value =
-          0.5 +
-          Math.sin((x + time * 60 * chart.speed) * 0.03) * 0.25 +
-          Math.sin((x + time * 90) * 0.011 + index) * 0.15;
-        const y = top + 22 + (1 - value) * (chartHeight - 34);
-        if (x === 0) context.moveTo(16 + x, y);
-        else context.lineTo(16 + x, y);
-      }
-      context.stroke();
-    });
-  };
-  return <AnimatedPanel {...props} draw={draw} fps={12} />;
-};
-
 // --- Falling code, on the wall behind the entrance ---------------------
 
 const RainPanel: React.FC<{
@@ -527,12 +484,6 @@ const TechWalls: React.FC = () => (
     {/* Back wall, either side of the projection */}
     <NetworkPanel position={[-3.75, 1.65, -4.97]} size={[2.3, 1.4]} />
     <TerminalPanel position={[3.75, 1.65, -4.97]} size={[2.3, 1.4]} />
-    {/* Right wall, above the turntable */}
-    <DashboardPanel
-      position={[5.97, 2.05, 1.4]}
-      rotationY={-Math.PI / 2}
-      size={[1.4, 0.8]}
-    />
     {/* Wall behind the entrance */}
     <RainPanel
       position={[-2.6, 1.6, 4.97]}
