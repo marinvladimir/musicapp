@@ -151,8 +151,10 @@ export const ownProducts: Project[] = [
   {
     name: "Smolder",
     status: "Trailer",
-    description: "Dating horror game.",
+    description:
+      "Dating horror game: it starts as a swipe-right dating app, then turns dark.",
     stack: "Game",
+    image: "/assets/demos/smolder.webp",
   },
   {
     name: "Obilazak",
