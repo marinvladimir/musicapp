@@ -1,14 +1,15 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { MeshBasicMaterial } from "three";
+import { CanvasTexture, MeshBasicMaterial, SRGBColorSpace } from "three";
 import { useStore } from "../store";
 import { analysis } from "../audio/analysis";
 import { isRecordOnPlatter } from "../audio/recordTransfer";
 import { albumTitle, coverUrl, formatSongName } from "../utils";
-import { MONO, SANS, loadImage, useCanvasTexture, wrapText } from "./textures";
+import { MONO, SANS, loadImage, whenFontsReady, wrapText } from "./textures";
 import { neon } from "./neon";
 
 const SIZE = 768;
+const FADE_SECONDS = 0.9;
 
 const drawIdle = (context: CanvasRenderingContext2D) => {
   const background = context.createLinearGradient(0, 0, SIZE, SIZE);
@@ -69,39 +70,90 @@ const NowPlayingArt: React.FC = () => {
   const frame = useRef<MeshBasicMaterial>(null);
   const brightness = useRef(0.6);
 
-  const texture = useCanvasTexture(
-    SIZE,
-    SIZE,
-    async (context) => {
+  // The wall shows `shown`; a new picture is drawn into `next` and faded in
+  // over the old one (kept in `previous`) instead of replacing it at once.
+  const canvases = useMemo(() => {
+    const make = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = SIZE;
+      return canvas;
+    };
+    return { shown: make(), previous: make(), next: make() };
+  }, []);
+  const texture = useMemo(() => {
+    const result = new CanvasTexture(canvases.shown);
+    result.colorSpace = SRGBColorSpace;
+    return result;
+  }, [canvases]);
+  const fade = useRef<{ startedAt: number } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const prepare = async () => {
+      await whenFontsReady();
+      const context = canvases.next.getContext("2d")!;
       if (!currentSong) {
         drawIdle(context);
-        return;
-      }
-      const sources = [currentSong.imageUrl, coverUrl(currentSong.album)];
-      let image: HTMLImageElement | null = null;
-      for (const source of sources) {
-        if (!source) continue;
-        try {
-          image = await loadImage(source);
-          break;
-        } catch {
-          // Try the next picture.
+      } else {
+        let image: HTMLImageElement | null = null;
+        for (const source of [
+          currentSong.imageUrl,
+          coverUrl(currentSong.album),
+        ]) {
+          if (!source) continue;
+          try {
+            image = await loadImage(source);
+            break;
+          } catch {
+            // Try the next picture.
+          }
         }
+        drawSong(
+          context,
+          image,
+          formatSongName(currentSong.songName),
+          albumTitle(currentSong.album),
+        );
       }
-      drawSong(
-        context,
-        image,
-        formatSongName(currentSong.songName),
-        albumTitle(currentSong.album),
-      );
-    },
-    [currentSong?.songName],
-  );
+      if (cancelled) return;
+      canvases.previous.getContext("2d")!.drawImage(canvases.shown, 0, 0);
+      fade.current = { startedAt: performance.now() };
+    };
+    prepare();
+    return () => {
+      cancelled = true;
+    };
+  }, [currentSong, canvases]);
 
   useEffect(() => () => texture.dispose(), [texture]);
 
   // Dim while the record is on its way, full brightness once it plays.
   useFrame((_, delta) => {
+    if (fade.current) {
+      const t = Math.min(
+        1,
+        (performance.now() - fade.current.startedAt) / (FADE_SECONDS * 1000),
+      );
+      const eased = t * t * (3 - 2 * t);
+      const context = canvases.shown.getContext("2d")!;
+      context.globalAlpha = 1;
+      context.drawImage(canvases.previous, 0, 0);
+      // The new picture fades in while settling from a slight zoom.
+      const zoom = 1 + (1 - eased) * 0.06;
+      const offset = (SIZE * (zoom - 1)) / 2;
+      context.globalAlpha = eased;
+      context.drawImage(
+        canvases.next,
+        -offset,
+        -offset,
+        SIZE * zoom,
+        SIZE * zoom,
+      );
+      context.globalAlpha = 1;
+      texture.needsUpdate = true;
+      if (t >= 1) fade.current = null;
+    }
+
     const { isPlaying } = useStore.getState();
     const target = !currentSong
       ? 0.6

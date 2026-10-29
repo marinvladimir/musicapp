@@ -10,7 +10,8 @@ import {
   MeshBasicMaterial,
   SpotLight,
 } from "three";
-import { MONO, whenFontsReady } from "./textures";
+import { MONO, SANS, whenFontsReady } from "./textures";
+import { WORLD_MAP } from "../data/worldMap";
 import { neon } from "./neon";
 import { bootLevel } from "../boot";
 
@@ -500,21 +501,242 @@ const Spot: React.FC<{
   );
 };
 
+// --- World map with the places I have worked with teams in ---------------
+
+const PLACES = [
+  { name: "Split · home", lat: 43.5, lon: 16.4, labelDx: 10, labelDy: 18 },
+  {
+    name: "Germany · Bundesdruckerei",
+    lat: 52.5,
+    lon: 13.4,
+    labelDx: -10,
+    labelDy: -12,
+    alignRight: true,
+  },
+  {
+    name: "Sydney · Aspose",
+    lat: -33.9,
+    lon: 151.2,
+    labelDx: -10,
+    labelDy: -12,
+    alignRight: true,
+  },
+];
+
+const MapPanel: React.FC<{
+  position: [number, number, number];
+  rotationY?: number;
+  size: [number, number];
+}> = (props) => {
+  const draw: Draw = (context, time, width, height) => {
+    context.fillStyle = "#0b0b16";
+    context.fillRect(0, 0, width, height);
+    const top = 40;
+    const mapHeight = height - top - 8;
+    const columns = WORLD_MAP.rows[0].length;
+    const rows = WORLD_MAP.rows.length;
+    const project = (lat: number, lon: number) => ({
+      x: ((lon + 180) / 360) * width,
+      y:
+        top +
+        ((WORLD_MAP.north - lat) / (WORLD_MAP.north - WORLD_MAP.south)) *
+          mapHeight,
+    });
+
+    context.fillStyle = "rgba(169, 164, 255, 0.35)";
+    const cellW = width / columns;
+    const cellH = mapHeight / rows;
+    WORLD_MAP.rows.forEach((row, y) => {
+      for (let x = 0; x < columns; x++) {
+        if (row[x] !== "#") continue;
+        context.beginPath();
+        context.arc(
+          (x + 0.5) * cellW,
+          top + (y + 0.5) * cellH,
+          1.3,
+          0,
+          Math.PI * 2,
+        );
+        context.fill();
+      }
+    });
+
+    const home = project(PLACES[0].lat, PLACES[0].lon);
+    PLACES.slice(1).forEach((place, index) => {
+      const to = project(place.lat, place.lon);
+      const control = {
+        x: (home.x + to.x) / 2,
+        y: Math.min(home.y, to.y) - 30 - Math.abs(to.x - home.x) * 0.15,
+      };
+      context.strokeStyle = "rgba(79, 209, 197, 0.6)";
+      context.lineWidth = 1.5;
+      context.beginPath();
+      context.moveTo(home.x, home.y);
+      context.quadraticCurveTo(control.x, control.y, to.x, to.y);
+      context.stroke();
+      // A packet travelling between home and the team.
+      const t = (time * 0.35 + index * 0.5) % 1;
+      const x =
+        (1 - t) * (1 - t) * home.x + 2 * (1 - t) * t * control.x + t * t * to.x;
+      const y =
+        (1 - t) * (1 - t) * home.y + 2 * (1 - t) * t * control.y + t * t * to.y;
+      context.fillStyle = "#ffffff";
+      context.beginPath();
+      context.arc(x, y, 2.5, 0, Math.PI * 2);
+      context.fill();
+    });
+
+    context.font = `500 13px ${MONO}`;
+    PLACES.forEach((place, index) => {
+      const { x, y } = project(place.lat, place.lon);
+      const pulse = (time * 0.8 + index * 0.3) % 1;
+      context.strokeStyle = `rgba(79, 209, 197, ${1 - pulse})`;
+      context.lineWidth = 2;
+      context.beginPath();
+      context.arc(x, y, 4 + pulse * 12, 0, Math.PI * 2);
+      context.stroke();
+      context.fillStyle = index === 0 ? TEAL : PURPLE;
+      context.beginPath();
+      context.arc(x, y, 4, 0, Math.PI * 2);
+      context.fill();
+      context.fillStyle = "#e8e6ff";
+      context.textAlign = place.alignRight ? "right" : "left";
+      context.fillText(place.name, x + place.labelDx, y + place.labelDy);
+    });
+    context.textAlign = "left";
+
+    context.fillStyle = TEAL;
+    context.font = `500 16px ${MONO}`;
+    context.fillText(
+      "● REMOTE TEAMS  ·  Croatia · Germany · Australia",
+      16,
+      26,
+    );
+  };
+  return <AnimatedPanel {...props} draw={draw} />;
+};
+
+// --- Career timeline ----------------------------------------------------
+
+const CAREER = [
+  { years: "2013–19", title: "FESB", detail: "M.Sc. in ICT" },
+  { years: "2018–20", title: "Ericsson", detail: "Software developer" },
+  { years: "2020–21", title: "Aspose", detail: "Support lead · remote" },
+  { years: "2021–24", title: "Bundesdruckerei", detail: "Software engineer" },
+  { years: "2025–", title: "Freelance", detail: "Full-stack & mobile" },
+];
+
+const TimelinePanel: React.FC<{
+  position: [number, number, number];
+  rotationY?: number;
+  size: [number, number];
+}> = (props) => {
+  const draw: Draw = (context, time, width, height) => {
+    context.fillStyle = "#0b0b16";
+    context.fillRect(0, 0, width, height);
+    context.fillStyle = TEAL;
+    context.font = `500 16px ${MONO}`;
+    context.fillText("● CAREER  ·  2013 → now", 16, 26);
+
+    const lineY = height * 0.56;
+    const left = 50;
+    const right = width - 50;
+    const gradient = context.createLinearGradient(left, 0, right, 0);
+    gradient.addColorStop(0, ACCENT);
+    gradient.addColorStop(1, TEAL);
+    context.strokeStyle = gradient;
+    context.lineWidth = 4;
+    context.shadowColor = ACCENT;
+    context.shadowBlur = 12;
+    context.beginPath();
+    context.moveTo(left - 20, lineY);
+    context.lineTo(right + 20, lineY);
+    context.stroke();
+    context.shadowBlur = 0;
+
+    // A pulse running along the line towards today.
+    const pulseX = left - 20 + ((time * 0.25) % 1) * (right - left + 40);
+    const glow = context.createRadialGradient(
+      pulseX,
+      lineY,
+      0,
+      pulseX,
+      lineY,
+      26,
+    );
+    glow.addColorStop(0, "rgba(255, 255, 255, 0.9)");
+    glow.addColorStop(1, "rgba(255, 255, 255, 0)");
+    context.fillStyle = glow;
+    context.fillRect(pulseX - 26, lineY - 26, 52, 52);
+
+    const step = (right - left) / (CAREER.length - 1);
+    CAREER.forEach((entry, index) => {
+      const x = left + index * step;
+      const above = index % 2 === 0;
+      const last = index === CAREER.length - 1;
+      context.strokeStyle = "rgba(169, 164, 255, 0.5)";
+      context.lineWidth = 1.5;
+      context.beginPath();
+      context.moveTo(x, lineY);
+      context.lineTo(x, above ? lineY - 34 : lineY + 34);
+      context.stroke();
+
+      context.fillStyle =
+        last && Math.floor(time * 2) % 2 === 0
+          ? "#ffffff"
+          : last
+            ? TEAL
+            : PURPLE;
+      context.beginPath();
+      context.arc(x, lineY, last ? 8 : 6, 0, Math.PI * 2);
+      context.fill();
+
+      context.textAlign = "center";
+      context.fillStyle = "#8e8aad";
+      context.font = `500 12px ${MONO}`;
+      context.fillText(entry.years, x, above ? lineY + 24 : lineY - 16);
+      context.fillStyle = "#ffffff";
+      context.font = `700 15px ${SANS}`;
+      context.fillText(
+        entry.title,
+        x,
+        above ? lineY - 58 : lineY + 56,
+        step * 1.6,
+      );
+      context.fillStyle = "#c9c5ff";
+      context.font = `400 12px ${SANS}`;
+      context.fillText(
+        entry.detail,
+        x,
+        above ? lineY - 41 : lineY + 73,
+        step * 1.6,
+      );
+    });
+    context.textAlign = "left";
+  };
+  return <AnimatedPanel {...props} draw={draw} />;
+};
+
 const TechWalls: React.FC = () => (
   <group>
-    {/* Back wall, either side of the projection */}
-    <NetworkPanel position={[-3.75, 1.65, -4.97]} size={[2.3, 1.4]} />
-    <TerminalPanel position={[3.75, 1.65, -4.97]} size={[2.3, 1.4]} />
+    {/* Back wall, either side of the projection: where I have worked */}
+    <MapPanel position={[-3.75, 1.65, -4.97]} size={[2.3, 1.4]} />
+    <TimelinePanel position={[3.75, 1.65, -4.97]} size={[2.3, 1.4]} />
     {/* Wall behind the entrance */}
-    <RainPanel
-      position={[-2.6, 1.6, 4.97]}
+    <NetworkPanel
+      position={[3.7, 1.6, 4.97]}
       rotationY={Math.PI}
-      size={[2.6, 1.6]}
+      size={[2.3, 1.4]}
     />
     <RainPanel
-      position={[2.6, 1.6, 4.97]}
+      position={[0, 1.6, 4.97]}
       rotationY={Math.PI}
-      size={[2.6, 1.6]}
+      size={[2.3, 1.4]}
+    />
+    <TerminalPanel
+      position={[-3.7, 1.6, 4.97]}
+      rotationY={Math.PI}
+      size={[2.3, 1.4]}
     />
 
     {/* Ceiling track with spotlights on each station */}

@@ -7,6 +7,7 @@ import {
   Points,
 } from "three";
 import Sign from "./Sign";
+import { profile } from "../data/cv";
 import { neon } from "./neon";
 import { MONO, SANS, roundRect, useCanvasTexture, wrapText } from "./textures";
 
@@ -160,6 +161,57 @@ const Poster: React.FC<{
   );
 };
 
+// My degree, framed on the wall next to the TV.
+const Diploma: React.FC = () => {
+  const paper = useCanvasTexture(600, 440, (context) => {
+    context.fillStyle = "#f6f1e4";
+    context.fillRect(0, 0, 600, 440);
+    context.strokeStyle = "#b89b5e";
+    context.lineWidth = 6;
+    context.strokeRect(18, 18, 564, 404);
+    context.lineWidth = 1.5;
+    context.strokeRect(30, 30, 540, 380);
+    context.textAlign = "center";
+    context.fillStyle = "#6b5a33";
+    context.font = `500 18px ${MONO}`;
+    context.fillText("UNIVERSITY OF SPLIT · FESB", 300, 90);
+    context.fillStyle = "#2a2440";
+    context.font = `700 40px ${SANS}`;
+    context.fillText("Master of Science", 300, 165);
+    context.font = `500 22px ${SANS}`;
+    context.fillText("Information and Communication Technology", 300, 205);
+    context.fillStyle = "#6b5a33";
+    context.font = `400 18px ${SANS}`;
+    context.fillText("awarded to", 300, 255);
+    context.fillStyle = "#2a2440";
+    context.font = `700 34px ${SANS}`;
+    context.fillText(profile.name, 300, 300);
+    context.fillStyle = "#6b5a33";
+    context.font = `500 20px ${MONO}`;
+    context.fillText("2019", 300, 370);
+    // Gold seal.
+    context.fillStyle = "#c9a54a";
+    context.beginPath();
+    context.arc(500, 350, 32, 0, Math.PI * 2);
+    context.fill();
+    context.fillStyle = "#f6f1e4";
+    context.font = `700 16px ${SANS}`;
+    context.fillText("M.Sc.", 500, 356);
+  });
+  return (
+    <group position={[-5.98, 1.75, 0.95]} rotation-y={Math.PI / 2}>
+      <mesh position={[0, 0, -0.01]}>
+        <boxGeometry args={[0.74, 0.56, 0.035]} />
+        <meshStandardMaterial color="#2a2018" roughness={0.5} />
+      </mesh>
+      <mesh position={[0, 0, 0.009]}>
+        <planeGeometry args={[0.64, 0.47]} />
+        <meshStandardMaterial map={paper} roughness={0.7} />
+      </mesh>
+    </group>
+  );
+};
+
 // Slowly drifting dust, catching the light of the projector and spotlights.
 const Dust: React.FC = () => {
   const points = useRef<Points>(null);
@@ -244,9 +296,10 @@ const Decor: React.FC = () => (
       tagline="100 levels · 13 languages"
       colors={["#ff8fab", "#6c63ff"]}
     />
+    <Diploma />
     <Poster
-      position={[-5.98, 1.7, 0.95]}
-      rotationY={Math.PI / 2}
+      position={[5.98, 1.7, 3.3]}
+      rotationY={-Math.PI / 2}
       title="Grandpa's Notebook"
       tagline="maths game for schools"
       colors={["#ffc46b", "#4fd1c5"]}
@@ -254,13 +307,13 @@ const Decor: React.FC = () => (
 
     <Sign
       text="</> FULL-STACK"
-      position={[-3.75, 2.75, -4.96]}
+      position={[3.75, 2.75, -4.96]}
       width={1.8}
       floating={false}
     />
     <Sign
       text="OPEN TO REMOTE WORK"
-      position={[3.75, 2.75, -4.96]}
+      position={[-3.75, 2.75, -4.96]}
       width={1.9}
       color="#4fd1c5"
       floating={false}

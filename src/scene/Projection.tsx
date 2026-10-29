@@ -29,6 +29,7 @@ const SCREEN = { width: 3.6, height: 2.025, y: 1.85, z: -4.96 };
 const PROJECTOR: [number, number, number] = [0, 3.0, -0.4];
 // Keep animating for a moment after a pause so the bars settle down.
 const DECAY_SECONDS = 2;
+const ART_FADE_SECONDS = 0.9;
 
 const drawIdle = (context: CanvasRenderingContext2D) => {
   const background = context.createLinearGradient(0, 0, W, H);
@@ -114,6 +115,8 @@ const drawPlaying = (
     title,
     album,
     artwork,
+    previousArtwork,
+    mix,
     isPlaying,
     progress,
     time,
@@ -121,6 +124,9 @@ const drawPlaying = (
     title: string;
     album: string;
     artwork: HTMLImageElement | null;
+    // The picture being faded out, and how far the fade is (0 to 1).
+    previousArtwork: HTMLImageElement | null;
+    mix: number;
     isPlaying: boolean;
     progress: number;
     time: string;
@@ -130,11 +136,14 @@ const drawPlaying = (
   context.fillRect(0, 0, W, H);
 
   // A dim, oversized copy of the artwork tints the whole screen.
-  if (artwork) {
-    context.globalAlpha = 0.22;
-    context.drawImage(artwork, -W * 0.1, -H * 0.6, W * 1.2, W * 1.2);
+  const tint = (image: HTMLImageElement | null, alpha: number) => {
+    if (!image || alpha <= 0) return;
+    context.globalAlpha = 0.22 * alpha;
+    context.drawImage(image, -W * 0.1, -H * 0.6, W * 1.2, W * 1.2);
     context.globalAlpha = 1;
-  }
+  };
+  tint(previousArtwork, 1 - mix);
+  tint(artwork, mix);
   const shade = context.createLinearGradient(0, 0, W, 0);
   shade.addColorStop(0, "rgba(16, 16, 25, 0.35)");
   shade.addColorStop(0.5, "rgba(16, 16, 25, 0.85)");
@@ -157,8 +166,13 @@ const drawPlaying = (
   context.save();
   roundRect(context, x, y, size, size, 18);
   context.clip();
+  if (previousArtwork && mix < 1) {
+    context.drawImage(previousArtwork, x, y, size, size);
+  }
+  context.globalAlpha = previousArtwork ? mix : 1;
   if (artwork) context.drawImage(artwork, x, y, size, size);
   else drawPlaceholderArt(context, x, y, size, title);
+  context.globalAlpha = 1;
   context.restore();
 
   context.fillStyle = "#4fd1c5";
@@ -267,11 +281,13 @@ const Projection: React.FC = () => {
 
   const currentSong = useStore((state) => state.currentSong);
   const artwork = useRef<HTMLImageElement | null>(null);
+  const previousArtwork = useRef<HTMLImageElement | null>(null);
+  const artworkChangedAt = useRef(-Infinity);
 
   // Load the playing song's picture, falling back to its album cover and
   // then to a generated placeholder.
   useEffect(() => {
-    artwork.current = null;
+    previousArtwork.current = artwork.current;
     if (!currentSong) return;
     let cancelled = false;
     const sources = [currentSong.imageUrl, coverUrl(currentSong.album)].filter(
@@ -281,7 +297,10 @@ const Projection: React.FC = () => {
       if (index >= sources.length) return;
       loadImage(sources[index])
         .then((image) => {
-          if (!cancelled) artwork.current = image;
+          if (cancelled) return;
+          previousArtwork.current = artwork.current;
+          artwork.current = image;
+          artworkChangedAt.current = performance.now();
         })
         .catch(() => tryNext(index + 1));
     };
@@ -311,14 +330,22 @@ const Projection: React.FC = () => {
       }
       return;
     }
+    // Pictures crossfade when the song changes, even while paused.
+    const mix = Math.min(
+      1,
+      (performance.now() - artworkChangedAt.current) /
+        (ART_FADE_SECONDS * 1000),
+    );
     if (isPlaying) activeUntil.current = now + DECAY_SECONDS;
-    if (now > activeUntil.current && !showingIdle.current) return;
+    if (now > activeUntil.current && !showingIdle.current && mix >= 1) return;
 
     showingIdle.current = false;
     drawPlaying(context, {
       title: formatSongName(currentSong.songName),
       album: albumTitle(currentSong.album),
       artwork: artwork.current,
+      previousArtwork: previousArtwork.current,
+      mix,
       isPlaying,
       progress: duration > 0 ? currentTime / duration : 0,
       time: `${formatTime(currentTime)} / ${formatTime(duration)}`,

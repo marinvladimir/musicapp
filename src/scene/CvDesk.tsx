@@ -4,6 +4,7 @@ import { useStore } from "../store";
 import { experience, profile } from "../data/cv";
 import Interactive from "./Interactive";
 import Sign from "./Sign";
+import { Phone, SteamingMug } from "./DeskItems";
 import {
   SANS,
   loadImage,
@@ -219,10 +220,8 @@ const CvDesk: React.FC = () => {
 
       <PhotoFrame />
       <Lamp />
-      <mesh position={[0.45, 0.83, -1.55]}>
-        <cylinderGeometry args={[0.04, 0.035, 0.1, 16]} />
-        <meshStandardMaterial color="#4fd1c5" />
-      </mesh>
+      <SteamingMug position={[0.62, 0.78, -1.62]} />
+      <Phone position={[0.4, 0.78, -1.5]} rotationY={-0.35} />
 
       <mesh position={[0, 0.5, -1.38]}>
         <boxGeometry args={[1.6, 0.42, 0.03]} />
