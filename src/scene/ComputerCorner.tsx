@@ -5,6 +5,7 @@ import { channels } from "../data/cv";
 import { OSD_SECONDS, STATIC_SECONDS, changeChannel } from "../tv";
 import { drawOsd, drawScanlines, drawStatic, drawTestCard } from "../tvDraw";
 import Interactive from "./Interactive";
+import Model from "./Model";
 import Sign from "./Sign";
 import { neon } from "./neon";
 import { useCanvasTexture, whenFontsReady } from "./textures";
@@ -181,14 +182,14 @@ const ComputerCorner: React.FC = () => {
       <TvSet />
 
       {/* Keyboard and mouse */}
-      <mesh position={[0, 0.79, 0.28]}>
-        <boxGeometry args={[0.6, 0.025, 0.18]} />
-        <meshStandardMaterial color="#2a2a3b" />
-      </mesh>
-      <mesh position={[0, 0.805, 0.28]}>
-        <boxGeometry args={[0.56, 0.006, 0.15]} />
-        <meshBasicMaterial color={neon("#6c63ff", 2)} toneMapped={false} />
-      </mesh>
+      {/* The model stands upright, so lay it flat on the desk. */}
+      {/* The model stands upright, so lay it flat on the desk. */}
+      <Model
+        url="/assets/models/keyboard.glb"
+        width={0.55}
+        position={[0, 0.795, 0.38]}
+        rotation={[-Math.PI / 2, 0, 0]}
+      />
       <mesh position={[0.45, 0.79, 0.3]}>
         <boxGeometry args={[0.06, 0.025, 0.1]} />
         <meshStandardMaterial color="#2a2a3b" />
