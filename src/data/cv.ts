@@ -180,7 +180,7 @@ export const ownProducts: Project[] = [
     onTv: false,
   },
   {
-    name: "Grandpa's Notebook",
+    name: "Maths Schools Project",
     status: "For schools",
     description:
       "Maths learning game: 32 curriculum skills across 112 generated levels, from adding to 10 up to equations, with adaptive difficulty driven by per-skill mastery, hints, worked steps and written column methods, plus a story mode. Being built for school maths competitions, from county to national level.",

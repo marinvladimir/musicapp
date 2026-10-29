@@ -375,7 +375,7 @@ const Decor: React.FC = () => (
     <Poster
       position={[5.98, 1.7, 2.65]}
       rotationY={-Math.PI / 2}
-      title="Grandpa's Notebook"
+      title="Maths Schools Project"
       tagline="maths game for schools"
       colors={["#ffc46b", "#4fd1c5"]}
     />
