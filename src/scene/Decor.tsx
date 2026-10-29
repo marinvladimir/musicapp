@@ -306,12 +306,6 @@ const Decor: React.FC = () => (
       rotation={[0, -Math.PI / 2, 0.12]}
     />
     <Model
-      url="/assets/models/cabinet.glb"
-      height={1.1}
-      position={[5.72, 0, -3.15]}
-      rotation={[0, -Math.PI / 2, 0]}
-    />
-    <Model
       url="/assets/models/flat-tv.glb"
       width={1.2}
       position={[5.97, 1.35, 3.85]}
