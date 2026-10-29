@@ -1,11 +1,12 @@
 import { Vector3 } from "three";
 import { Song } from "../types";
 
-// Taking a record from the shelf to the turntable, in seconds.
-export const EJECT_SECONDS = 0.8; // the old record lifts off and returns to the shelf
-export const EMERGE_SECONDS = 0.5; // the new record slides out of its book
-export const FLY_SECONDS = 1.2; // it flies over to the turntable
-export const DROP_SECONDS = 0.3; // and drops onto the platter
+// Taking a record from the shelf to the turntable, in seconds. Each album
+// is one record, so this only happens when the album changes.
+export const EJECT_SECONDS = 0.5; // the old record lifts off and returns to the shelf
+export const EMERGE_SECONDS = 0.3; // the new record slides out of its book
+export const FLY_SECONDS = 0.8; // it flies over to the turntable
+export const DROP_SECONDS = 0.25; // and drops onto the platter
 const PLACE_SECONDS = EMERGE_SECONDS + FLY_SECONDS + DROP_SECONDS;
 
 // World positions of the books, registered by the bookshelf.
@@ -51,6 +52,10 @@ export const startTransfer = (
   };
   return incomingAt + PLACE_SECONDS - startedAt;
 };
+
+// Time left until the record that is on its way lands, or 0.
+export const secondsUntilLanding = () =>
+  transfer.current ? Math.max(0, transfer.current.landsAt - now()) : 0;
 
 export const isRecordOnPlatter = () =>
   !transfer.current || now() >= transfer.current.landsAt;

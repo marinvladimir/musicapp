@@ -24,6 +24,7 @@ import {
   transfer,
 } from "../audio/recordTransfer";
 import Interactive from "./Interactive";
+import { coverUrl } from "../utils";
 import { neon } from "./neon";
 
 // 33⅓ revolutions per minute, in radians per second.
@@ -218,17 +219,22 @@ const Turntable3D: React.FC = () => {
   const arm = useRef<Group>(null);
   const currentSong = useStore((state) => state.currentSong);
   const goTo = useStore((state) => state.goTo);
-  const label = useLabelTexture(currentSong?.imageUrl);
+  // The record's label is the album cover: one record per album.
+  const label = useLabelTexture(
+    currentSong ? coverUrl(currentSong.album) : null,
+  );
   const platterAnchor = useRef<Group>(null);
   // The song that was on the turntable before, for the record going back.
   const [previousSong, setPreviousSong] = useState(currentSong);
   const lastSong = useRef(currentSong);
   useEffect(() => {
-    if (lastSong.current?.songName === currentSong?.songName) return;
+    if (lastSong.current?.album === currentSong?.album) return;
     setPreviousSong(lastSong.current);
     lastSong.current = currentSong;
   }, [currentSong]);
-  const previousLabel = useLabelTexture(previousSong?.imageUrl);
+  const previousLabel = useLabelTexture(
+    previousSong ? coverUrl(previousSong.album) : null,
+  );
 
   useFrame((_, delta) => {
     const { isPlaying } = useStore.getState();

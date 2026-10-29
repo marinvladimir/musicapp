@@ -48,7 +48,13 @@ const Book: React.FC<{ album: Album; position: [number, number, number] }> = ({
     const cover = await loadImage(coverUrl(album.albumName));
     context.fillStyle = averageColor(cover);
     context.fillRect(0, 0, SPINE_W, SPINE_H);
+    // Round, like the record inside, without the cover's black corners.
+    context.save();
+    context.beginPath();
+    context.arc(SPINE_W / 2, SPINE_W / 2, SPINE_W / 2 - 12, 0, Math.PI * 2);
+    context.clip();
     context.drawImage(cover, 12, 12, SPINE_W - 24, SPINE_W - 24);
+    context.restore();
     context.save();
     context.translate(SPINE_W / 2, SPINE_W + 18);
     context.rotate(Math.PI / 2);

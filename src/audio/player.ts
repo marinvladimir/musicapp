@@ -1,6 +1,6 @@
 import { useStore } from "../store";
 import { Song } from "../types";
-import { startTransfer } from "./recordTransfer";
+import { secondsUntilLanding, startTransfer } from "./recordTransfer";
 
 // One audio element for the whole site, routed through an analyser so the
 // room can react to the music.
@@ -60,9 +60,14 @@ export const playSong = (song: Song, album: string) => {
     return;
   }
 
-  // Start the new song silently right away (still inside the click, which
-  // browsers require), then rewind and fade it in when the record lands.
-  const delay = startTransfer({ ...song, album }, previous);
+  // Each album is one record: a song from the album already on the
+  // turntable starts at once, another album's record has to be fetched first.
+  // Meanwhile the song plays silently (started inside the click, which
+  // browsers require) and is rewound and faded in when the record lands.
+  const delay =
+    previous?.album === album
+      ? secondsUntilLanding()
+      : startTransfer({ ...song, album }, previous);
   window.clearTimeout(startTimer);
   element.src = song.songUrl;
   useStore.setState({

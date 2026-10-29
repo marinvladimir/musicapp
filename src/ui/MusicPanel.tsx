@@ -31,16 +31,24 @@ const AlbumGrid = styled.div`
     cursor: pointer;
   }
 
+  /* The covers are drawn as records, so crop away the square around them. */
   img {
     width: 100%;
     aspect-ratio: 1;
-    border-radius: 8px;
+    border-radius: 50%;
     object-fit: cover;
-    transition: transform 0.2s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    transition: transform 0.6s ease;
   }
 
   button:hover img {
-    transform: scale(1.04);
+    transform: rotate(40deg) scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    button:hover img {
+      transform: scale(1.04);
+    }
   }
 `;
 
@@ -52,8 +60,9 @@ const AlbumHeader = styled.div`
   img {
     width: 96px;
     height: 96px;
-    border-radius: 8px;
+    border-radius: 50%;
     object-fit: cover;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
   }
 
   h3 {
