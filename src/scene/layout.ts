@@ -4,8 +4,18 @@ import { Station } from "../store";
 // (with the projection) is at -z.
 export const ROOM = { width: 12, depth: 10, height: 3.2 };
 
-export const START_POSITION: [number, number, number] = [0, 1.6, 3.8];
-export const START_LOOK_AT: [number, number, number] = [0, 1.4, -3];
+// View of the whole room, where the visitor starts.
+export const OVERVIEW: {
+  position: [number, number, number];
+  lookAt: [number, number, number];
+} = { position: [0, 1.85, 4.1], lookAt: [0, 1.15, -2.5] };
+
+// Spots on the floor that mark where to stand for each station.
+export const STAND_MARKERS: Record<Station, [number, number]> = {
+  cv: [0, -0.6],
+  projects: [-3.35, -0.85],
+  music: [3.2, -0.25],
+};
 
 // Where the camera flies to for each station, and where it looks.
 export const STATIONS: Record<

@@ -10,6 +10,7 @@ import Turntable3D from "./Turntable3D";
 import Projection from "./Projection";
 import Effects from "./Effects";
 import Decor from "./Decor";
+import StandMarkers from "./StandMarkers";
 import TechWalls from "./TechWalls";
 
 const AudioAnalysis: React.FC = () => {
@@ -35,6 +36,7 @@ const Scene: React.FC = () => (
     <Bookshelf />
     <Turntable3D />
     <Decor />
+    <StandMarkers />
     <TechWalls />
     <Effects />
   </Canvas>

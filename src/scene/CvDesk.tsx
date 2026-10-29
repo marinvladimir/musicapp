@@ -154,7 +154,7 @@ const Lamp: React.FC = () => (
     </mesh>
     <pointLight
       position={[-0.12, 0.42, 0.1]}
-      intensity={2.2}
+      intensity={1}
       distance={2.5}
       color="#ffd59a"
     />

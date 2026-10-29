@@ -1,0 +1,121 @@
+import {
+  siAngular,
+  siBlender,
+  siClaude,
+  siCss3,
+  siDocker,
+  siDotnet,
+  siDrizzle,
+  siExpo,
+  siFirebase,
+  siFlutter,
+  siGodotengine,
+  siHelm,
+  siHtml5,
+  siJavascript,
+  siJenkins,
+  siJest,
+  siKeycloak,
+  siKubernetes,
+  siLinux,
+  siNextdotjs,
+  siNodedotjs,
+  siOpenjdk,
+  siPhp,
+  siPostgresql,
+  siPython,
+  siReact,
+  siRedux,
+  siScala,
+  siSpringboot,
+  siStripe,
+  siSupabase,
+  siSymfony,
+  siTypescript,
+  siUnity,
+  siWebgl,
+  siWordpress,
+  type SimpleIcon,
+} from "simple-icons";
+
+export type Tech = { name: string; icon: SimpleIcon };
+
+// Logos come from Simple Icons. It has no C# or Java logo, so those use the
+// .NET and OpenJDK ones.
+export const techGroups: { group: string; items: Tech[] }[] = [
+  {
+    group: "Languages",
+    items: [
+      { name: "TypeScript", icon: siTypescript },
+      { name: "JavaScript", icon: siJavascript },
+      { name: "C#", icon: siDotnet },
+      { name: "Java", icon: siOpenjdk },
+      { name: "Python", icon: siPython },
+      { name: "PHP", icon: siPhp },
+      { name: "Scala", icon: siScala },
+      { name: "GDScript", icon: siGodotengine },
+      { name: "HTML", icon: siHtml5 },
+      { name: "CSS", icon: siCss3 },
+    ],
+  },
+  {
+    group: "Frameworks",
+    items: [
+      { name: "React", icon: siReact },
+      { name: "React Native", icon: siReact },
+      { name: "Next.js", icon: siNextdotjs },
+      { name: "Node.js", icon: siNodedotjs },
+      { name: "Expo", icon: siExpo },
+      { name: "Angular", icon: siAngular },
+      { name: "Redux", icon: siRedux },
+      { name: "Flutter", icon: siFlutter },
+      { name: "Symfony", icon: siSymfony },
+      { name: "Spring Boot", icon: siSpringboot },
+      { name: "Jest", icon: siJest },
+    ],
+  },
+  {
+    group: "Data & payments",
+    items: [
+      { name: "Firebase", icon: siFirebase },
+      { name: "Supabase", icon: siSupabase },
+      { name: "PostgreSQL", icon: siPostgresql },
+      { name: "Drizzle", icon: siDrizzle },
+      { name: "Stripe", icon: siStripe },
+    ],
+  },
+  {
+    group: "DevOps & security",
+    items: [
+      { name: "Docker", icon: siDocker },
+      { name: "Kubernetes", icon: siKubernetes },
+      { name: "Helm", icon: siHelm },
+      { name: "Jenkins", icon: siJenkins },
+      { name: "Linux", icon: siLinux },
+      { name: "Keycloak", icon: siKeycloak },
+    ],
+  },
+  {
+    group: "Games, 3D & more",
+    items: [
+      { name: "Unity", icon: siUnity },
+      { name: "Godot", icon: siGodotengine },
+      { name: "WebGL", icon: siWebgl },
+      { name: "Blender", icon: siBlender },
+      { name: "WordPress", icon: siWordpress },
+      { name: "Claude Code", icon: siClaude },
+    ],
+  },
+];
+
+// Skills without a logo, listed under the tiles.
+export const otherSkills = [
+  "Push notifications",
+  "App Store / Google Play releases",
+  "CI/CD",
+  "OIDC / SSO",
+  "AdMob / IAP",
+  "PixiJS",
+  "AI-assisted development",
+  "SEO",
+];

@@ -3,19 +3,18 @@
 My CV as a small 3D room you can walk around, live at [marinvladimir.com](https://marinvladimir.com).
 
 - **Desk (centre):** my CV. Click the paper for the full version, which can also be printed or saved as a PDF.
-- **Computer (left):** my own products and client work.
+- **TV (left):** the projects I built, one per channel, with static between channels.
 - **Bookshelf (right):** my albums as books. Take one out and play it on the turntable; the
-  projection on the back wall shows the music's frequency spectrum and loudness live.
+  projection on the back wall shows the song's artwork, spectrum and loudness live.
 
 Visitors who just want the CV can skip the room from the first screen.
 
 ## Controls
 
-| Action      | Desktop                        | Touch            |
-| ----------- | ------------------------------ | ---------------- |
-| Look around | Drag                           | Drag             |
-| Walk        | WASD / arrow keys (Shift runs) | On-screen arrows |
-| Open things | Click objects or the top menu  | Tap              |
+By default the visitor moves between the three stations: click a glowing ring on the floor, an
+object, the menu or the bar at the bottom, or use ← → (↓ shows the whole room). Dragging looks
+around a little. **Free roam** in the menu unlocks walking anywhere with WASD / arrow keys (or
+on-screen arrows on touch screens), and **Pixel** switches to a pixel-art look.
 
 ## Tech stack
 
@@ -53,7 +52,8 @@ npm run dev
 
 ## Updating content
 
-- **CV:** edit `src/data/cv.ts`.
+- **CV and projects:** edit `src/data/cv.ts`. Give a project a `demo` video path to show it on
+  its TV channel instead of the test card. Logos in the tech stack are in `src/data/tech.ts`.
 - **New album:** add a folder to `public/assets/music/` with the preview MP3s, a `.png` per song and
   an `Album_Cover.png`, then run `python3 scripts/generateCovers.py` (needs Pillow) and
   `npm run generate-metadata`.

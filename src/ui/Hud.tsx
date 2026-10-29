@@ -99,7 +99,7 @@ const fadeInOut = keyframes`
 const Tip = styled.div`
   position: fixed;
   left: 50%;
-  bottom: 28px;
+  bottom: 84px;
   z-index: 10;
   padding: 10px 18px;
   border-radius: 999px;
@@ -124,10 +124,52 @@ const Tip = styled.div`
   }
 `;
 
+const StationBar = styled.nav`
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 10;
+  display: flex;
+  gap: 4px;
+  max-width: calc(100vw - 32px);
+  padding: 5px;
+  border-radius: 999px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  background: rgba(27, 27, 46, 0.85);
+  backdrop-filter: blur(8px);
+  transform: translateX(-50%);
+
+  button {
+    padding: 7px 13px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: ${({ theme }) => theme.colors.text};
+    font-size: 0.85rem;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  button[aria-pressed="true"] {
+    background: ${({ theme }) => theme.colors.accent};
+  }
+
+  @media (max-width: 480px) {
+    button {
+      padding: 7px 9px;
+      font-size: 0.8rem;
+    }
+  }
+`;
+
 const HoverLabel = styled.div`
   position: fixed;
   left: 50%;
-  bottom: 28px;
+  bottom: 84px;
   z-index: 10;
   transform: translateX(-50%);
   padding: 8px 16px;
@@ -148,8 +190,9 @@ const Help = styled.p`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.75rem;
   pointer-events: none;
+  max-width: calc(50vw - 260px);
 
-  @media (pointer: coarse) {
+  @media (pointer: coarse), (max-width: 1100px) {
     display: none;
   }
 `;
@@ -183,6 +226,12 @@ const MiniPlayer = styled.div`
   position: fixed;
   right: 16px;
   bottom: 16px;
+
+  /* Above the station bar where they would overlap */
+  @media (max-width: 1000px) {
+    bottom: 72px;
+  }
+
   z-index: 10;
   display: flex;
   align-items: center;
@@ -224,6 +273,10 @@ const Hud: React.FC = () => {
     setTouchMove,
     pixelMode,
     togglePixelMode,
+    freeRoam,
+    toggleFreeRoam,
+    location,
+    stepStation,
   } = useStore();
   const [showTip, setShowTip] = useState(true);
 
@@ -251,6 +304,13 @@ const Hud: React.FC = () => {
           ))}
           <Divider aria-hidden />
           <button
+            aria-pressed={freeRoam}
+            onClick={toggleFreeRoam}
+            title="Walk freely with WASD or the on-screen arrows"
+          >
+            Free roam
+          </button>
+          <button
             aria-pressed={pixelMode}
             onClick={togglePixelMode}
             title="Pixel art look"
@@ -263,31 +323,62 @@ const Hud: React.FC = () => {
 
       {showTip && !panel && !hoverLabel && (
         <Tip role="status">
-          Tip: the glowing things are clickable. Start with the CV on the desk.
+          Tip: click a glowing ring to walk there, or use ← → to visit each
+          spot.
         </Tip>
       )}
 
       {hoverLabel && !panel && <HoverLabel>{hoverLabel}</HoverLabel>}
 
       <Help>
-        Drag to look · WASD / arrows to walk · Shift to run · click things
+        {freeRoam
+          ? "Drag to look · WASD / arrows to walk · Shift to run · click things"
+          : "Click a glowing ring or object · ← → to switch · ↓ for the whole room"}
       </Help>
 
-      <Pad aria-hidden>
-        {PAD_BUTTONS.map((button) => (
-          <button
-            key={button.move}
-            style={{ gridColumn: button.column, gridRow: button.row }}
-            onPointerDown={() => setTouchMove({ [button.move]: true })}
-            onPointerUp={() => setTouchMove({ [button.move]: false })}
-            onPointerLeave={() => setTouchMove({ [button.move]: false })}
-            onPointerCancel={() => setTouchMove({ [button.move]: false })}
-            onContextMenu={(event) => event.preventDefault()}
-          >
-            {button.label}
+      {!freeRoam && (
+        <StationBar aria-label="Stations">
+          <button onClick={() => stepStation(-1)} aria-label="Previous station">
+            ◀
           </button>
-        ))}
-      </Pad>
+          <button
+            aria-pressed={location === "overview"}
+            onClick={() => goTo("overview")}
+          >
+            Room
+          </button>
+          {STATIONS.map((station) => (
+            <button
+              key={station.id}
+              aria-pressed={location === station.id}
+              onClick={() => goTo(station.id)}
+            >
+              {station.label}
+            </button>
+          ))}
+          <button onClick={() => stepStation(1)} aria-label="Next station">
+            ▶
+          </button>
+        </StationBar>
+      )}
+
+      {freeRoam && (
+        <Pad aria-hidden>
+          {PAD_BUTTONS.map((button) => (
+            <button
+              key={button.move}
+              style={{ gridColumn: button.column, gridRow: button.row }}
+              onPointerDown={() => setTouchMove({ [button.move]: true })}
+              onPointerUp={() => setTouchMove({ [button.move]: false })}
+              onPointerLeave={() => setTouchMove({ [button.move]: false })}
+              onPointerCancel={() => setTouchMove({ [button.move]: false })}
+              onContextMenu={(event) => event.preventDefault()}
+            >
+              {button.label}
+            </button>
+          ))}
+        </Pad>
+      )}
 
       {currentSong && panel !== "music" && (
         <MiniPlayer>

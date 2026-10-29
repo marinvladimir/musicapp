@@ -1,13 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import Panel from "./Panel";
-import {
-  education,
-  experience,
-  ownProducts,
-  profile,
-  skills,
-} from "../data/cv";
+import TechTiles from "./TechTiles";
+import { education, experience, ownProducts, profile } from "../data/cv";
 
 const Page = styled.article`
   padding: 0 0 40px;
@@ -211,33 +206,6 @@ const Product = styled(Card)`
   }
 `;
 
-const SkillRow = styled.div`
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 8px 16px;
-  padding: 6px 0;
-
-  strong {
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 640px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const Pill = styled.span<{ $core: boolean }>`
-  display: inline-block;
-  margin: 0 6px 6px 0;
-  padding: 2px 10px;
-  border-radius: 999px;
-  border: 1px solid ${({ $core }) => ($core ? "#c9c5ff" : "#e6e4f5")};
-  background: ${({ $core }) => ($core ? "#efeeff" : "#ffffff")};
-  color: ${({ $core }) => ($core ? "#3a3577" : "#33334a")};
-  font-size: 0.8rem;
-  font-weight: ${({ $core }) => ($core ? 600 : 400)};
-`;
-
 const PrintButton = styled.button`
   padding: 6px 12px;
   border: 1px solid #e6e4f5;
@@ -346,24 +314,8 @@ const CvPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => (
       </Section>
 
       <Section>
-        <h2>Skills</h2>
-        {skills.map((row) => (
-          <SkillRow key={row.group}>
-            <strong>{row.group}</strong>
-            <div>
-              {row.core.map((skill) => (
-                <Pill key={skill} $core>
-                  {skill}
-                </Pill>
-              ))}
-              {row.other.map((skill) => (
-                <Pill key={skill} $core={false}>
-                  {skill}
-                </Pill>
-              ))}
-            </div>
-          </SkillRow>
-        ))}
+        <h2>Tech stack</h2>
+        <TechTiles />
       </Section>
 
       <Section>

@@ -2,22 +2,23 @@ import React, { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Euler, Matrix4, Quaternion, Vector3 } from "three";
 import { useStore } from "../store";
-import {
-  OBSTACLES,
-  ROOM,
-  START_LOOK_AT,
-  START_POSITION,
-  STATIONS,
-} from "./layout";
+import { OBSTACLES, OVERVIEW, ROOM, STATIONS } from "./layout";
 
 const WALK_SPEED = 2.2; // metres per second
 const RUN_MULTIPLIER = 1.8;
 const LOOK_SPEED = 0.004; // radians per dragged pixel
 const MAX_PITCH = 1.1;
+// Without free roam, dragging only looks this far (in radians) from the
+// direction the camera was placed in.
+const GUIDED_YAW = 0.35;
+const GUIDED_PITCH = 0.2;
 const FLY_SECONDS = 1.2;
 const ENTER_SECONDS = 2.4;
 const WALL_MARGIN = 0.4;
 const OBSTACLE_MARGIN = 0.3;
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
 
 const KEYS: Record<string, "forward" | "back" | "left" | "right"> = {
   KeyW: "forward",
@@ -77,10 +78,13 @@ const CameraRig: React.FC = () => {
   const arrive = useStore((state) => state.arrive);
   const entered = useStore((state) => state.entered);
 
+  const baseYaw = useRef(0);
+  const basePitch = useRef(0);
+
   const syncAnglesFromCamera = () => {
     const euler = new Euler().setFromQuaternion(camera.quaternion, "YXZ");
-    yaw.current = euler.y;
-    pitch.current = euler.x;
+    yaw.current = baseYaw.current = euler.y;
+    pitch.current = basePitch.current = euler.x;
   };
 
   const flyTo = (
@@ -112,14 +116,16 @@ const CameraRig: React.FC = () => {
   // Walk in from the doorway once the visitor leaves the intro screen.
   useEffect(() => {
     if (!entered) return;
-    flyTo(START_POSITION, START_LOOK_AT, ENTER_SECONDS, () => undefined);
+    flyTo(OVERVIEW.position, OVERVIEW.lookAt, ENTER_SECONDS, () =>
+      useStore.setState({ location: "overview" }),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entered]);
 
   useEffect(() => {
     if (!flyTarget) return;
-    const station = STATIONS[flyTarget];
-    flyTo(station.position, station.lookAt, FLY_SECONDS, arrive);
+    const pose = flyTarget === "overview" ? OVERVIEW : STATIONS[flyTarget];
+    flyTo(pose.position, pose.lookAt, FLY_SECONDS, arrive);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flyTarget, arrive]);
 
@@ -133,14 +139,24 @@ const CameraRig: React.FC = () => {
     const onMove = (event: PointerEvent) => {
       if (!dragging || dragging.id !== event.pointerId || flight.current)
         return;
-      yaw.current -= (event.clientX - dragging.x) * LOOK_SPEED;
-      pitch.current = Math.max(
-        -MAX_PITCH,
-        Math.min(
-          MAX_PITCH,
-          pitch.current - (event.clientY - dragging.y) * LOOK_SPEED,
-        ),
-      );
+      const nextYaw = yaw.current - (event.clientX - dragging.x) * LOOK_SPEED;
+      const nextPitch =
+        pitch.current - (event.clientY - dragging.y) * LOOK_SPEED;
+      if (useStore.getState().freeRoam) {
+        yaw.current = nextYaw;
+        pitch.current = clamp(nextPitch, -MAX_PITCH, MAX_PITCH);
+      } else {
+        yaw.current = clamp(
+          nextYaw,
+          baseYaw.current - GUIDED_YAW,
+          baseYaw.current + GUIDED_YAW,
+        );
+        pitch.current = clamp(
+          nextPitch,
+          basePitch.current - GUIDED_PITCH,
+          basePitch.current + GUIDED_PITCH,
+        );
+      }
       dragging.x = event.clientX;
       dragging.y = event.clientY;
     };
@@ -151,6 +167,20 @@ const CameraRig: React.FC = () => {
       const target = event.target as HTMLElement;
       if (target.closest("input, textarea, [role='dialog']")) return;
       const down = event.type === "keydown";
+      const state = useStore.getState();
+      if (!state.entered) return;
+
+      // Without free roam the arrow keys move between the stations.
+      if (!state.freeRoam) {
+        if (!down || flight.current) return;
+        if (event.code === "ArrowRight") state.stepStation(1);
+        else if (event.code === "ArrowLeft") state.stepStation(-1);
+        else if (event.code === "ArrowDown") state.goTo("overview");
+        else return;
+        event.preventDefault();
+        return;
+      }
+
       if (event.code === "ShiftLeft" || event.code === "ShiftRight")
         keys.current.run = down;
       const direction = KEYS[event.code];

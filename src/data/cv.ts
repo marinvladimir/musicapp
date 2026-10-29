@@ -194,55 +194,6 @@ export const clientWork: Project[] = [
   },
 ];
 
-export const skills: { group: string; core: string[]; other: string[] }[] = [
-  {
-    group: "Mobile",
-    core: ["React Native", "Expo / EAS"],
-    other: ["Flutter", "Stripe", "Push", "Store releases"],
-  },
-  {
-    group: "Frontend",
-    core: ["React", "Next.js", "TypeScript"],
-    other: ["Angular", "Redux", "Jest"],
-  },
-  {
-    group: "Backend & Data",
-    core: ["Node.js"],
-    other: [
-      "Firebase",
-      "Supabase",
-      "PostgreSQL",
-      "Drizzle",
-      "PHP / Symfony",
-      "Java / Spring Boot",
-      "Scala",
-      "Python",
-    ],
-  },
-  {
-    group: "DevOps & Security",
-    core: [],
-    other: [
-      "Docker",
-      "Kubernetes / Helm",
-      "Jenkins",
-      "CI/CD",
-      "Linux",
-      "Keycloak (OIDC)",
-    ],
-  },
-  {
-    group: "Game Dev",
-    core: ["Unity (C#)"],
-    other: ["Godot", "PixiJS", "WebGL", "AdMob / IAP", "Blender"],
-  },
-  {
-    group: "AI & Other",
-    core: ["Claude Code"],
-    other: ["AI-assisted development", "WordPress", "SEO"],
-  },
-];
-
 export const education = {
   degree: "M.Sc. in ICT",
   school: "FESB, University of Split · 2013 – 2019",

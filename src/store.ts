@@ -2,6 +2,11 @@ import { create } from "zustand";
 import { Album, Song } from "./types";
 
 export type Station = "cv" | "projects" | "music";
+// A place the camera can stand: a station or the view of the whole room.
+export type Spot = Station | "overview";
+
+// Stations from left to right, for the previous / next buttons.
+export const STATION_ORDER: Station[] = ["projects", "cv", "music"];
 
 type Move = { forward: boolean; back: boolean; left: boolean; right: boolean };
 
@@ -22,8 +27,13 @@ type State = {
   pixelMode: boolean;
   // Overlay panel that is open, if any.
   panel: Station | null;
-  // Station the camera is flying to; the panel opens when it arrives.
-  flyTarget: Station | null;
+  // Where the camera is flying to; a station's panel opens when it arrives.
+  flyTarget: Spot | null;
+  // Where the camera stands now.
+  location: Spot;
+  // Free roam: walk anywhere with the keyboard. Off by default; then the
+  // visitor moves between the stations only.
+  freeRoam: boolean;
   hoverLabel: string | null;
   albums: Album[];
   selectedAlbum: string | null;
@@ -40,7 +50,9 @@ type State = {
   channelChangedAt: number;
   enter: (panel?: Station) => void;
   togglePixelMode: () => void;
-  goTo: (station: Station) => void;
+  goTo: (spot: Spot) => void;
+  stepStation: (delta: number) => void;
+  toggleFreeRoam: () => void;
   arrive: () => void;
   closePanel: () => void;
   selectAlbum: (albumName: string | null) => void;
@@ -53,6 +65,8 @@ export const useStore = create<State>((set) => ({
   pixelMode: readPixelMode(),
   panel: null,
   flyTarget: null,
+  location: "overview",
+  freeRoam: false,
   hoverLabel: null,
   albums: [],
   selectedAlbum: null,
@@ -74,8 +88,30 @@ export const useStore = create<State>((set) => ({
       }
       return { pixelMode: !state.pixelMode };
     }),
-  goTo: (station) => set({ flyTarget: station, panel: null, hoverLabel: null }),
-  arrive: () => set((state) => ({ panel: state.flyTarget, flyTarget: null })),
+  goTo: (spot) => set({ flyTarget: spot, panel: null, hoverLabel: null }),
+  stepStation: (delta) =>
+    set((state) => {
+      const index = STATION_ORDER.indexOf(state.location as Station);
+      const next =
+        index === -1
+          ? delta > 0
+            ? 0
+            : STATION_ORDER.length - 1
+          : (index + delta + STATION_ORDER.length) % STATION_ORDER.length;
+      return { flyTarget: STATION_ORDER[next], panel: null, hoverLabel: null };
+    }),
+  toggleFreeRoam: () =>
+    set((state) =>
+      state.freeRoam
+        ? { freeRoam: false, flyTarget: "overview", panel: null }
+        : { freeRoam: true },
+    ),
+  arrive: () =>
+    set((state) => ({
+      panel: state.flyTarget === "overview" ? null : state.flyTarget,
+      location: state.flyTarget ?? state.location,
+      flyTarget: null,
+    })),
   closePanel: () => set({ panel: null }),
   selectAlbum: (albumName) => set({ selectedAlbum: albumName }),
   setHoverLabel: (label) => set({ hoverLabel: label }),
