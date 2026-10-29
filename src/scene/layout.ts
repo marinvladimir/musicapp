@@ -36,7 +36,7 @@ export const OBSTACLES: {
   maxZ: number;
 }[] = [
   { minX: -1.05, maxX: 1.05, minZ: -2.9, maxZ: -1.1 }, // CV desk and chair
-  { minX: -0.6, maxX: 0.6, minZ: 0.8, maxZ: 1.4 }, // coffee table
+  { minX: -0.6, maxX: 0.6, minZ: 1.3, maxZ: 1.9 }, // coffee table
   { minX: -6, maxX: -4.1, minZ: -2.2, maxZ: 0.6 }, // TV desk and chair
   { minX: 5.4, maxX: 6, minZ: -2.3, maxZ: -0.3 }, // bookshelf
   { minX: 5.2, maxX: 6, minZ: 0.6, maxZ: 2.2 }, // turntable cabinet

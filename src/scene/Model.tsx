@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box3, Group, Object3D, Vector3 } from "three";
+import {
+  Box3,
+  Group,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  Vector3,
+} from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { trackLoading } from "../loading";
@@ -26,7 +33,17 @@ const Model: React.FC<{
   width?: number;
   position?: [number, number, number];
   rotation?: [number, number, number];
-}> = ({ url, height, width, position = [0, 0, 0], rotation = [0, 0, 0] }) => {
+  // Multiplies the model's colours, to tone down a model that looks too
+  // bright in the room's light.
+  brightness?: number;
+}> = ({
+  url,
+  height,
+  width,
+  position = [0, 0, 0],
+  rotation = [0, 0, 0],
+  brightness = 1,
+}) => {
   const [source, setSource] = useState<Group | null>(null);
 
   useEffect(() => {
@@ -52,8 +69,17 @@ const Model: React.FC<{
       -center.z * scale,
     );
     object.scale.setScalar(scale);
+    if (brightness !== 1) {
+      object.traverse((child) => {
+        const mesh = child as Mesh;
+        if (!mesh.isMesh) return;
+        const material = (mesh.material as MeshStandardMaterial).clone();
+        material.color.multiplyScalar(brightness);
+        mesh.material = material;
+      });
+    }
     return object;
-  }, [source, height, width]);
+  }, [source, height, width, brightness]);
 
   if (!placed) return null;
   return (

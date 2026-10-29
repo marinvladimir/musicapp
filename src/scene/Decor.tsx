@@ -5,9 +5,12 @@ import {
   BufferAttribute,
   BufferGeometry,
   Points,
+  MeshBasicMaterial,
+  PointLight,
 } from "three";
 import Sign from "./Sign";
 import Model from "./Model";
+import { bootLevel } from "../boot";
 import { profile } from "../data/cv";
 import { neon } from "./neon";
 import { MONO, SANS, roundRect, useCanvasTexture, wrapText } from "./textures";
@@ -213,6 +216,46 @@ const Diploma: React.FC = () => {
   );
 };
 
+// Pendant lamp (Meshy model) over the coffee table, with warm light that
+// switches on with the room.
+const PENDANT = {
+  position: [0, 2.5, 1.6] as [number, number, number],
+  height: 0.7,
+};
+
+const PendantLamp: React.FC = () => {
+  const light = useRef<PointLight>(null);
+  const glow = useRef<MeshBasicMaterial>(null);
+  const warm = useMemo(() => neon("#ffd59a", 1.6), []);
+  useFrame(() => {
+    const level = bootLevel(0.9);
+    if (light.current) light.current.intensity = 3.5 * level;
+    glow.current?.color.copy(warm).multiplyScalar(level);
+  });
+  const [x, y, z] = PENDANT.position;
+  return (
+    <group>
+      <Model
+        url="/assets/models/pendant.glb"
+        brightness={0.55}
+        height={PENDANT.height}
+        position={PENDANT.position}
+      />
+      <mesh position={[x, y + 0.02, z]} rotation-x={Math.PI / 2}>
+        <circleGeometry args={[0.2, 24]} />
+        <meshBasicMaterial ref={glow} toneMapped={false} />
+      </mesh>
+      <pointLight
+        ref={light}
+        position={[x, y - 0.1, z]}
+        distance={3.5}
+        color="#ffd59a"
+        intensity={0}
+      />
+    </group>
+  );
+};
+
 // Slowly drifting dust, catching the light of the projector and spotlights.
 const Dust: React.FC = () => {
   const points = useRef<Points>(null);
@@ -302,13 +345,13 @@ const Decor: React.FC = () => (
     <Model
       url="/assets/models/coffee-table.glb"
       width={1.1}
-      position={[0, 0, 1.1]}
+      position={[0, 0, 1.6]}
     />
     {/* Controller lying on the coffee table, as if just put down */}
     <Model
       url="/assets/models/controller.glb"
       width={0.17}
-      position={[0.22, 0.475, 1.12]}
+      position={[0.22, 0.475, 1.62]}
       rotation={[-Math.PI / 2, 0, 0.5]}
     />
     <Model
@@ -357,6 +400,7 @@ const Decor: React.FC = () => (
       floating={false}
     />
 
+    <PendantLamp />
     <Dust />
 
     <BlobShadow position={[0, -1.85]} size={[2.6, 1.6]} />
