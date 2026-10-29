@@ -2,9 +2,9 @@ import { Vector3 } from "three";
 import { Song } from "../types";
 
 // Taking a record from the shelf to the turntable, in seconds.
-export const EJECT_SECONDS = 0.6; // the old record lifts off and returns to the shelf
-export const EMERGE_SECONDS = 0.4; // the new record slides out of its book
-export const FLY_SECONDS = 1.0; // it flies over to the turntable
+export const EJECT_SECONDS = 0.8; // the old record lifts off and returns to the shelf
+export const EMERGE_SECONDS = 0.5; // the new record slides out of its book
+export const FLY_SECONDS = 1.2; // it flies over to the turntable
 export const DROP_SECONDS = 0.3; // and drops onto the platter
 const PLACE_SECONDS = EMERGE_SECONDS + FLY_SECONDS + DROP_SECONDS;
 
@@ -40,7 +40,8 @@ export const startTransfer = (
     return 0;
   }
   const startedAt = now();
-  const incomingAt = startedAt + (outgoing ? EJECT_SECONDS * 0.6 : 0);
+  // The old record is back on the shelf before the new one comes out.
+  const incomingAt = startedAt + (outgoing ? EJECT_SECONDS : 0);
   transfer.current = {
     startedAt,
     incomingAt,

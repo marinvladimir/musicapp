@@ -13,6 +13,10 @@ const MAX_PITCH = 1.1;
 const GUIDED_YAW = 0.35;
 const GUIDED_PITCH = 0.2;
 const FLY_SECONDS = 1.2;
+// Width of the music panel on the left (with its margin), in CSS pixels, and
+// the screen width below which it becomes a bottom sheet instead.
+const DRAWER_WIDTH = 416;
+const DRAWER_MIN_SCREEN = 640;
 const ENTER_SECONDS = 2.4;
 const WALL_MARGIN = 0.4;
 const OBSTACLE_MARGIN = 0.3;
@@ -55,7 +59,7 @@ const lookRotation = (from: Vector3, to: Vector3) =>
 // First-person camera: drag to look around, WASD / arrow keys (or the touch
 // pad) to walk, and a smooth flight when a station is chosen.
 const CameraRig: React.FC = () => {
-  const { camera, gl } = useThree();
+  const { camera, gl, size } = useThree();
   const yaw = useRef(0);
   const pitch = useRef(0);
   const keys = useRef({
@@ -217,7 +221,34 @@ const CameraRig: React.FC = () => {
     };
   }, [gl]);
 
+  // With the music panel open on the left, shift the picture to the right so
+  // the shelf is not hidden behind it.
+  const viewShift = useRef(0);
+  const updateViewShift = (delta: number) => {
+    const { panel } = useStore.getState();
+    const target =
+      panel === "music" && size.width > DRAWER_MIN_SCREEN
+        ? -DRAWER_WIDTH / 2
+        : 0;
+    if (target === 0 && Math.abs(viewShift.current) < 0.5) {
+      if (camera.view?.enabled) camera.clearViewOffset();
+      viewShift.current = 0;
+      return;
+    }
+    viewShift.current += (target - viewShift.current) * Math.min(1, delta * 6);
+    camera.setViewOffset(
+      size.width,
+      size.height,
+      viewShift.current,
+      0,
+      size.width,
+      size.height,
+    );
+  };
+
   useFrame(({ clock }, delta) => {
+    updateViewShift(delta);
+
     // Behind the intro screen the camera slowly drifts by the doorway.
     if (!useStore.getState().entered) {
       const t = clock.elapsedTime;

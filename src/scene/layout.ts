@@ -14,7 +14,7 @@ export const OVERVIEW: {
 export const STAND_MARKERS: Record<Station, [number, number]> = {
   cv: [0, -0.6],
   projects: [-3.35, -0.85],
-  music: [3.2, -0.25],
+  music: [2.5, -0.05],
 };
 
 // Where the camera flies to for each station, and where it looks.
@@ -24,7 +24,7 @@ export const STATIONS: Record<
 > = {
   cv: { position: [0, 1.62, -0.45], lookAt: [0, 1.05, -1.78] },
   projects: { position: [-3.2, 1.45, -0.85], lookAt: [-5.6, 1.2, -0.8] },
-  music: { position: [3.05, 1.5, -0.25], lookAt: [5.8, 1.05, -0.25] },
+  music: { position: [2.25, 1.6, -0.05], lookAt: [5.8, 1.25, -0.05] },
 };
 
 // Furniture footprints on the floor (x and z ranges) the visitor cannot walk
