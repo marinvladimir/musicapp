@@ -1,41 +1,38 @@
-import React from "react";
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
-import MainPage from "./pages/MainPage";
-import MusicPage from "./pages/MusicPage";
-import AboutPage from "./pages/AboutPage";
-import Header from "./components/Header";
-import { ThemeProvider } from "styled-components";
-import Footer from "./components/Footer";
-import { theme } from "./theme";
-import CheckoutPage from "./pages/CheckoutPage";
-import { useCartContext } from "./states/CartContext";
-import { PageWrapper } from "./AppStyles";
-import Cart from "./components/Cart";
-import CancelPage from "./pages/CancelPage";
-import SuccessPage from "./pages/SuccessPage";
-import ContactPage from "./pages/ContactPage";
+import React, { useEffect, useState } from "react";
+import Scene from "./scene/Scene";
+import Hud from "./ui/Hud";
+import Intro from "./ui/Intro";
+import CvPanel from "./ui/CvPanel";
+import ProjectsPanel from "./ui/ProjectsPanel";
+import MusicPanel from "./ui/MusicPanel";
+import { loadAlbums, useStore } from "./store";
 
 const App: React.FC = () => {
-  const { cart } = useCartContext();
+  const [entered, setEntered] = useState(false);
+  const panel = useStore((state) => state.panel);
+  const closePanel = useStore((state) => state.closePanel);
+
+  useEffect(() => {
+    loadAlbums().catch((error) => console.error(error));
+  }, []);
+
   return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <PageWrapper>
-          <Header />
-          <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/music" element={<MusicPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/cancel" element={<CancelPage />} />
-            <Route path="/success" element={<SuccessPage />} />
-          </Routes>
-          <Cart cart={cart} isVisible={cart?.length > 0} />
-          <Footer />
-        </PageWrapper>
-      </Router>
-    </ThemeProvider>
+    <>
+      <Scene />
+      {entered && <Hud />}
+      {panel === "cv" && <CvPanel onClose={closePanel} />}
+      {panel === "projects" && <ProjectsPanel onClose={closePanel} />}
+      {panel === "music" && <MusicPanel onClose={closePanel} />}
+      {!entered && (
+        <Intro
+          onEnter={() => setEntered(true)}
+          onSkip={() => {
+            setEntered(true);
+            useStore.setState({ panel: "cv" });
+          }}
+        />
+      )}
+    </>
   );
 };
 

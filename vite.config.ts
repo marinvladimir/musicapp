@@ -1,7 +1,15 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
-  plugins: [react(), svgr()],
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        // three.js changes rarely, so keep it in its own cacheable file.
+        manualChunks: { three: ['three', '@react-three/fiber'] },
+      },
+    },
+    chunkSizeWarningLimit: 900,
+  },
 });

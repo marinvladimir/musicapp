@@ -1,23 +1,15 @@
-const BASE_PATH = import.meta.env.VITE_FILE_BASE_PATH || "assets/music";
-export const getFilePath = (type: string, albumName: string) =>
-  `${BASE_PATH}/${albumName}/${type}`;
-
 export const formatTime = (time: number) => {
+  if (!isFinite(time)) return "0:00";
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time % 60);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 };
 
-export const fadeOut = (
-  setFadingOut: React.Dispatch<React.SetStateAction<boolean>>,
-  callback: () => void,
-) => {
-  setFadingOut(true);
-  setTimeout(() => {
-    callback();
-    setFadingOut(false);
-  }, 500);
-};
+export const albumTitle = (albumName: string) => albumName.replace(/_/g, " ");
+
+// Small WebP copy of the album cover, made by scripts/generateCovers.py.
+export const coverUrl = (albumName: string) =>
+  `/assets/covers/${albumName}.webp`;
 
 export const formatSongName = (songName: string) =>
   songName.replace(/_/g, " ").replace(/\.mp3$/, "");

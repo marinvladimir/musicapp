@@ -1,15 +1,3 @@
 [build]
-  functions = "netlify/functions"
-
-[[headers]]
-for = "/assets/music/*"
-[headers.values]
-  Access-Control-Allow-Origin = "*"
-  Access-Control-Allow-Methods = "GET"
-  Access-Control-Allow-Headers = "Content-Type"
-
-[functions]
-  external_node_modules = ["dotenv"]
-
-[functions.cleanupCart]
-  schedule = "0 0 * * *"
+  command = "npm run build"
+  publish = "dist"
