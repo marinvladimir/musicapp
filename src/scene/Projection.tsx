@@ -11,8 +11,16 @@ import { useStore } from "../store";
 import { analysis } from "../audio/analysis";
 import { drawLoudness, drawSpectrum } from "../audio/draw";
 import { profile } from "../data/cv";
-import { MONO, SANS, useCanvasTexture, whenFontsReady } from "./textures";
-import { albumTitle, formatSongName } from "../utils";
+import {
+  MONO,
+  SANS,
+  loadImage,
+  roundRect,
+  useCanvasTexture,
+  whenFontsReady,
+  wrapText,
+} from "./textures";
+import { albumTitle, coverUrl, formatSongName, formatTime } from "../utils";
 
 const W = 1280;
 const H = 720;
@@ -29,69 +37,186 @@ const drawIdle = (context: CanvasRenderingContext2D) => {
   context.fillRect(0, 0, W, H);
 
   context.textAlign = "center";
+  context.fillStyle = "#4fd1c5";
+  context.font = `500 26px ${MONO}`;
+  context.fillText("HELLO, I'M", W / 2, 190);
   context.fillStyle = "#ffffff";
   context.font = `700 120px ${SANS}`;
-  context.fillText(profile.name.toUpperCase(), W / 2, 300);
+  context.fillText(profile.name.toUpperCase(), W / 2, 310);
   context.fillStyle = "#a9a4ff";
-  context.font = `500 48px ${SANS}`;
-  context.fillText(profile.title, W / 2, 380);
-  context.fillStyle = "#4fd1c5";
-  context.font = `400 30px ${MONO}`;
-  context.fillText(profile.stack, W / 2, 450);
+  context.font = `500 46px ${SANS}`;
+  context.fillText(profile.title, W / 2, 385);
+
+  // Three headline facts from the CV, as pills.
+  const facts = [
+    "7+ years in production",
+    "German federal gov. projects",
+    "Mobile apps in both stores",
+  ];
+  context.font = `500 26px ${SANS}`;
+  const gap = 24;
+  const widths = facts.map((fact) => context.measureText(fact).width + 48);
+  let x =
+    (W -
+      widths.reduce((sum, width) => sum + width, 0) -
+      gap * (facts.length - 1)) /
+    2;
+  facts.forEach((fact, index) => {
+    context.fillStyle = "rgba(108, 99, 255, 0.25)";
+    roundRect(context, x, 445, widths[index], 56, 28);
+    context.fill();
+    context.fillStyle = "#e8e6ff";
+    context.fillText(fact, x + widths[index] / 2, 482);
+    x += widths[index] + gap;
+  });
+
   context.fillStyle = "#8e8aad";
-  context.font = `400 28px ${SANS}`;
+  context.font = `400 26px ${SANS}`;
   context.fillText(
-    "Walk around · CV on the desk · projects on the left · music on the right",
+    "CV on the desk  ·  projects on the TV  ·  music on the shelf",
     W / 2,
-    600,
+    620,
   );
   context.textAlign = "left";
 };
 
+// Artwork for songs that have no picture of their own yet.
+const drawPlaceholderArt = (
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  size: number,
+  title: string,
+) => {
+  const gradient = context.createLinearGradient(x, y, x + size, y + size);
+  gradient.addColorStop(0, "#6c63ff");
+  gradient.addColorStop(1, "#4fd1c5");
+  context.fillStyle = gradient;
+  context.fillRect(x, y, size, size);
+  context.fillStyle = "rgba(255, 255, 255, 0.9)";
+  context.font = `700 ${size * 0.45}px ${SANS}`;
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText("♪", x + size / 2, y + size * 0.42);
+  context.font = `500 ${size * 0.06}px ${SANS}`;
+  context.fillText(title, x + size / 2, y + size * 0.8, size * 0.85);
+  context.textAlign = "left";
+  context.textBaseline = "alphabetic";
+};
+
+const ART = { x: 70, y: 100, size: 520 };
+const COLUMN = { x: 650, width: W - 650 - 70 };
+
 const drawPlaying = (
   context: CanvasRenderingContext2D,
-  title: string,
-  album: string,
+  {
+    title,
+    album,
+    artwork,
+    isPlaying,
+    progress,
+    time,
+  }: {
+    title: string;
+    album: string;
+    artwork: HTMLImageElement | null;
+    isPlaying: boolean;
+    progress: number;
+    time: string;
+  },
 ) => {
-  context.fillStyle = "#12121f";
+  context.fillStyle = "#101019";
   context.fillRect(0, 0, W, H);
 
-  context.fillStyle = "#ffffff";
-  context.font = `700 54px ${SANS}`;
-  context.fillText(title, 70, 100, W - 400);
-  context.fillStyle = "#a9a4ff";
-  context.font = `500 32px ${SANS}`;
-  context.fillText(album, 70, 148);
+  // A dim, oversized copy of the artwork tints the whole screen.
+  if (artwork) {
+    context.globalAlpha = 0.22;
+    context.drawImage(artwork, -W * 0.1, -H * 0.6, W * 1.2, W * 1.2);
+    context.globalAlpha = 1;
+  }
+  const shade = context.createLinearGradient(0, 0, W, 0);
+  shade.addColorStop(0, "rgba(16, 16, 25, 0.35)");
+  shade.addColorStop(0.5, "rgba(16, 16, 25, 0.85)");
+  shade.addColorStop(1, "rgba(16, 16, 25, 0.95)");
+  context.fillStyle = shade;
+  context.fillRect(0, 0, W, H);
 
+  // The artwork breathes with the loudness of the music.
+  const grow = isPlaying ? analysis.level * 14 : 0;
+  const size = ART.size + grow;
+  const x = ART.x - grow / 2;
+  const y = ART.y - grow / 2;
+  context.save();
+  context.shadowColor = "rgba(108, 99, 255, 0.8)";
+  context.shadowBlur = 30 + analysis.level * 50;
+  roundRect(context, x, y, size, size, 18);
+  context.fillStyle = "#000";
+  context.fill();
+  context.restore();
+  context.save();
+  roundRect(context, x, y, size, size, 18);
+  context.clip();
+  if (artwork) context.drawImage(artwork, x, y, size, size);
+  else drawPlaceholderArt(context, x, y, size, title);
+  context.restore();
+
+  context.fillStyle = "#4fd1c5";
+  context.font = `500 24px ${MONO}`;
+  context.fillText(isPlaying ? "▶ NOW PLAYING" : "❚❚ PAUSED", COLUMN.x, 130);
+  context.fillStyle = "#ffffff";
+  context.font = `700 52px ${SANS}`;
+  const afterTitle = wrapText(
+    context,
+    title,
+    COLUMN.x,
+    196,
+    COLUMN.width,
+    58,
+    2,
+  );
+  context.fillStyle = "#a9a4ff";
+  context.font = `500 30px ${SANS}`;
+  context.fillText(album, COLUMN.x, afterTitle + 4, COLUMN.width);
+
+  context.fillStyle = "#8e8aad";
+  context.font = `400 20px ${MONO}`;
+  context.fillText("SPECTRUM", COLUMN.x, 330);
+  drawSpectrum(context, analysis.bars, {
+    x: COLUMN.x,
+    y: 342,
+    width: COLUMN.width,
+    height: 150,
+  });
+
+  context.fillStyle = "#8e8aad";
+  context.fillText("LOUDNESS", COLUMN.x, 530);
   context.textAlign = "right";
   context.fillStyle = "#4fd1c5";
-  context.font = `400 34px ${MONO}`;
-  const db =
+  context.fillText(
     isFinite(analysis.db) && analysis.db > -50
       ? `${analysis.db.toFixed(1)} dB`
-      : "– dB";
-  context.fillText(db, W - 70, 100);
-  context.fillStyle = "#8e8aad";
-  context.font = `400 24px ${SANS}`;
-  context.fillText("LOUDNESS", W - 70, 140);
+      : "– dB",
+    COLUMN.x + COLUMN.width,
+    530,
+  );
   context.textAlign = "left";
-
-  context.fillStyle = "#8e8aad";
-  context.font = `400 24px ${SANS}`;
-  context.fillText("SPECTRUM  40 Hz – 16 kHz", 70, 220);
-  drawSpectrum(context, analysis.bars, {
-    x: 70,
-    y: 235,
-    width: W - 140,
-    height: 220,
-  });
-  context.fillText("LOUDNESS  last 5 s", 70, 500);
   drawLoudness(context, analysis.history, {
-    x: 70,
-    y: 515,
-    width: W - 140,
-    height: 160,
+    x: COLUMN.x,
+    y: 542,
+    width: COLUMN.width,
+    height: 70,
   });
+
+  context.fillStyle = "rgba(255, 255, 255, 0.12)";
+  roundRect(context, COLUMN.x, 648, COLUMN.width, 8, 4);
+  context.fill();
+  context.fillStyle = "#6c63ff";
+  roundRect(context, COLUMN.x, 648, Math.max(8, COLUMN.width * progress), 8, 4);
+  context.fill();
+  context.fillStyle = "#8e8aad";
+  context.textAlign = "right";
+  context.fillText(time, COLUMN.x + COLUMN.width, 690);
+  context.textAlign = "left";
 };
 
 // Light beam from the projector to the corners of the screen.
@@ -138,8 +263,35 @@ const Projection: React.FC = () => {
     whenFontsReady().then(() => (fontsLoaded.current = true));
   }, []);
 
+  const currentSong = useStore((state) => state.currentSong);
+  const artwork = useRef<HTMLImageElement | null>(null);
+
+  // Load the playing song's picture, falling back to its album cover and
+  // then to a generated placeholder.
+  useEffect(() => {
+    artwork.current = null;
+    if (!currentSong) return;
+    let cancelled = false;
+    const sources = [currentSong.imageUrl, coverUrl(currentSong.album)].filter(
+      (url): url is string => !!url,
+    );
+    const tryNext = (index: number) => {
+      if (index >= sources.length) return;
+      loadImage(sources[index])
+        .then((image) => {
+          if (!cancelled) artwork.current = image;
+        })
+        .catch(() => tryNext(index + 1));
+    };
+    tryNext(0);
+    return () => {
+      cancelled = true;
+    };
+  }, [currentSong]);
+
   useFrame(({ clock }) => {
-    const { currentSong, isPlaying } = useStore.getState();
+    const { currentSong, isPlaying, currentTime, duration } =
+      useStore.getState();
     const now = clock.elapsedTime;
     if (beamMaterial.current) {
       beamMaterial.current.opacity =
@@ -160,11 +312,14 @@ const Projection: React.FC = () => {
     if (now > activeUntil.current && !showingIdle.current) return;
 
     showingIdle.current = false;
-    drawPlaying(
-      context,
-      formatSongName(currentSong.songName),
-      albumTitle(currentSong.album),
-    );
+    drawPlaying(context, {
+      title: formatSongName(currentSong.songName),
+      album: albumTitle(currentSong.album),
+      artwork: artwork.current,
+      isPlaying,
+      progress: duration > 0 ? currentTime / duration : 0,
+      time: `${formatTime(currentTime)} / ${formatTime(duration)}`,
+    });
     texture.needsUpdate = true;
   });
 

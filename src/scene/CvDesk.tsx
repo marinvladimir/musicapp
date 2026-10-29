@@ -38,7 +38,11 @@ const drawCv = async (context: CanvasRenderingContext2D) => {
   context.fillStyle = "#c9c9dd";
   context.font = `400 26px ${SANS}`;
   context.fillText(profile.stack, 64, 240);
-  context.fillText(`${profile.email}  ·  ${profile.location}`, 64, 284);
+  context.fillText(
+    `${profile.email}  ·  ${profile.phone}  ·  ${profile.location}`,
+    64,
+    284,
+  );
 
   try {
     const photo = await loadImage(profile.photo);
@@ -206,7 +210,7 @@ const CvDesk: React.FC = () => {
                 roughness={0.7}
                 emissive="#ffffff"
                 emissiveMap={paper}
-                emissiveIntensity={hovered ? 0.55 : 0.25}
+                emissiveIntensity={hovered ? 0.3 : 0.04}
               />
             </mesh>
           </group>

@@ -13,6 +13,9 @@ export type Project = {
   description: string;
   stack: string;
   url?: string;
+  // Demo video shown on the TV, e.g. "/assets/demos/snuggle-sweep.mp4".
+  // Without one the channel shows a test card.
+  demo?: string;
 };
 
 export const profile = {
@@ -20,6 +23,7 @@ export const profile = {
   title: "Senior Full-Stack & Mobile Engineer",
   stack: "React Native · Expo · React · Next.js · TypeScript · Node.js",
   email: "mvladi00@fesb.hr",
+  phone: "+385 91 534 4144",
   location: "Split, Croatia (CET)",
   availability: "Open to remote roles · full-time or B2B contract",
   photo: "/assets/me.webp",
@@ -248,3 +252,6 @@ export const education = {
   ],
   more: { title: "Music producer", text: "Original music · FL Studio" },
 };
+
+// Every project is a channel on the TV, own products first.
+export const channels: Project[] = [...ownProducts, ...clientWork];

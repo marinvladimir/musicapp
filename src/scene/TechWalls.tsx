@@ -1,0 +1,567 @@
+import React, { useEffect, useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import {
+  AdditiveBlending,
+  CanvasTexture,
+  Mesh,
+  Object3D,
+  SRGBColorSpace,
+  Vector3,
+} from "three";
+import { MONO, whenFontsReady } from "./textures";
+import { neon } from "./neon";
+
+type Draw = (
+  context: CanvasRenderingContext2D,
+  time: number,
+  width: number,
+  height: number,
+) => void;
+
+const ACCENT = "#6c63ff";
+const TEAL = "#4fd1c5";
+const PURPLE = "#b56cff";
+
+// Every few seconds the picture tears for a moment: strips slide sideways
+// and the colour channels split, like a bad digital signal.
+const glitch = (
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+) => {
+  const canvas = context.canvas;
+  for (let i = 0; i < 6; i++) {
+    const y = Math.random() * height;
+    const strip = 4 + Math.random() * height * 0.08;
+    const shift = (Math.random() - 0.5) * width * 0.15;
+    context.drawImage(canvas, 0, y, width, strip, shift, y, width, strip);
+  }
+  context.globalCompositeOperation = "lighter";
+  context.globalAlpha = 0.35;
+  context.drawImage(canvas, 6, 0);
+  context.globalAlpha = 1;
+  context.globalCompositeOperation = "source-over";
+  context.fillStyle =
+    Math.random() > 0.5 ? "rgba(255, 0, 120, 0.25)" : "rgba(0, 255, 230, 0.25)";
+  context.fillRect(0, Math.random() * height, width, 3 + Math.random() * 10);
+};
+
+const AnimatedPanel: React.FC<{
+  position: [number, number, number];
+  rotationY?: number;
+  size: [number, number];
+  draw: Draw;
+  fps?: number;
+}> = ({ position, rotationY = 0, size, draw, fps = 15 }) => {
+  const width = 512;
+  const height = Math.round((512 * size[1]) / size[0]);
+  const texture = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const result = new CanvasTexture(canvas);
+    result.colorSpace = SRGBColorSpace;
+    return result;
+  }, [width, height]);
+  const state = useRef({
+    last: -1,
+    glitchUntil: 0,
+    nextGlitch: 2 + Math.random() * 4,
+    ready: false,
+  });
+
+  useEffect(() => {
+    whenFontsReady().then(() => (state.current.ready = true));
+  }, []);
+
+  useFrame(({ clock }) => {
+    const now = clock.elapsedTime;
+    const current = state.current;
+    if (!current.ready || now - current.last < 1 / fps) return;
+    current.last = now;
+    const context = (texture.image as HTMLCanvasElement).getContext("2d")!;
+    draw(context, now, width, height);
+    if (now > current.nextGlitch) {
+      current.glitchUntil = now + 0.12 + Math.random() * 0.2;
+      current.nextGlitch = now + 3 + Math.random() * 5;
+    }
+    if (now < current.glitchUntil) glitch(context, width, height);
+    texture.needsUpdate = true;
+  });
+
+  return (
+    <group position={position} rotation-y={rotationY}>
+      <mesh position={[0, 0, -0.012]}>
+        <boxGeometry args={[size[0] + 0.06, size[1] + 0.06, 0.02]} />
+        <meshStandardMaterial color="#0d0d16" roughness={0.4} />
+      </mesh>
+      {/* Thin glowing frame */}
+      <mesh position={[0, 0, -0.001]}>
+        <planeGeometry args={[size[0] + 0.03, size[1] + 0.03]} />
+        <meshBasicMaterial color={neon(ACCENT, 1.6)} toneMapped={false} />
+      </mesh>
+      <mesh>
+        <planeGeometry args={size} />
+        <meshBasicMaterial map={texture} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+};
+
+// --- Network graph: services talking to each other ---------------------
+
+const NODE_LABELS = [
+  "api",
+  "auth",
+  "db",
+  "cdn",
+  "queue",
+  "edge",
+  "cache",
+  "app",
+  "ci",
+  "k8s",
+  "iam",
+  "push",
+];
+
+const useNetwork = () =>
+  useMemo(() => {
+    const nodes = NODE_LABELS.map((label, index) => ({
+      label,
+      x: 0.1 + Math.random() * 0.8,
+      y: 0.15 + Math.random() * 0.7,
+      phase: index,
+    }));
+    const edges: [number, number][] = [];
+    nodes.forEach((_, a) => {
+      const nearest = nodes
+        .map((node, b) => ({
+          b,
+          d: Math.hypot(node.x - nodes[a].x, node.y - nodes[a].y),
+        }))
+        .filter(({ b }) => b !== a)
+        .sort((p, q) => p.d - q.d)
+        .slice(0, 2);
+      nearest.forEach(({ b }) => {
+        if (
+          !edges.some(([p, q]) => (p === b && q === a) || (p === a && q === b))
+        )
+          edges.push([a, b]);
+      });
+    });
+    return { nodes, edges };
+  }, []);
+
+const NetworkPanel: React.FC<{
+  position: [number, number, number];
+  rotationY?: number;
+  size: [number, number];
+}> = (props) => {
+  const { nodes, edges } = useNetwork();
+  const draw: Draw = (context, time, width, height) => {
+    context.fillStyle = "#0b0b16";
+    context.fillRect(0, 0, width, height);
+    context.strokeStyle = "rgba(108, 99, 255, 0.12)";
+    context.lineWidth = 1;
+    for (let x = 0; x < width; x += 32) {
+      context.beginPath();
+      context.moveTo(x, 0);
+      context.lineTo(x, height);
+      context.stroke();
+    }
+    for (let y = 0; y < height; y += 32) {
+      context.beginPath();
+      context.moveTo(0, y);
+      context.lineTo(width, y);
+      context.stroke();
+    }
+
+    const point = (index: number) => {
+      const node = nodes[index];
+      return {
+        x: (node.x + Math.sin(time * 0.3 + node.phase) * 0.01) * width,
+        y: (node.y + Math.cos(time * 0.25 + node.phase) * 0.012) * height,
+      };
+    };
+
+    edges.forEach(([a, b], index) => {
+      const from = point(a);
+      const to = point(b);
+      context.strokeStyle = "rgba(79, 209, 197, 0.45)";
+      context.lineWidth = 1.5;
+      context.beginPath();
+      context.moveTo(from.x, from.y);
+      context.lineTo(to.x, to.y);
+      context.stroke();
+      // A data packet travelling along the link.
+      const t = (time * 0.4 + index * 0.37) % 1;
+      context.fillStyle = index % 3 === 0 ? PURPLE : TEAL;
+      context.beginPath();
+      context.arc(
+        from.x + (to.x - from.x) * t,
+        from.y + (to.y - from.y) * t,
+        3,
+        0,
+        Math.PI * 2,
+      );
+      context.fill();
+    });
+
+    context.font = `500 15px ${MONO}`;
+    nodes.forEach((node, index) => {
+      const { x, y } = point(index);
+      const pulse = 7 + Math.sin(time * 2 + node.phase) * 1.5;
+      context.fillStyle = "rgba(108, 99, 255, 0.3)";
+      context.beginPath();
+      context.arc(x, y, pulse + 6, 0, Math.PI * 2);
+      context.fill();
+      context.fillStyle = ACCENT;
+      context.beginPath();
+      context.arc(x, y, pulse, 0, Math.PI * 2);
+      context.fill();
+      context.fillStyle = "#e8e6ff";
+      context.fillText(node.label, x + 14, y + 5);
+    });
+
+    context.fillStyle = TEAL;
+    context.font = `500 16px ${MONO}`;
+    context.fillText("● NETWORK  ·  12 services  ·  all healthy", 16, 26);
+  };
+  return <AnimatedPanel {...props} draw={draw} />;
+};
+
+// --- Terminal with code scrolling by ------------------------------------
+
+const CODE = [
+  ["k", "export async function ", "f", "deploy", "p", "(env: Env) {"],
+  ["p", "  const build = await ", "f", "bundle", "p", "({ minify: true });"],
+  ["k", "  await ", "p", "helm.", "f", "upgrade", "p", '("api", build);'],
+  ["c", "  // zero-downtime rollout"],
+  ["k", "  return ", "s", '"✔ shipped"', "p", ";"],
+  ["p", "}"],
+  ["p", ""],
+  [
+    "k",
+    "const ",
+    "p",
+    "user = ",
+    "k",
+    "await ",
+    "f",
+    "keycloak",
+    "p",
+    ".verify(token);",
+  ],
+  [
+    "k",
+    "if ",
+    "p",
+    "(!user.roles.",
+    "f",
+    "includes",
+    "p",
+    '("admin")) ',
+    "k",
+    "throw ",
+    "p",
+    "403;",
+  ],
+  ["p", ""],
+  ["c", "// Stripe webhook → Firestore"],
+  [
+    "p",
+    "app.",
+    "f",
+    "post",
+    "p",
+    "(",
+    "s",
+    '"/webhook"',
+    "p",
+    ", ",
+    "k",
+    "async ",
+    "p",
+    "(req) => {",
+  ],
+  ["p", "  const event = stripe.", "f", "constructEvent", "p", "(req);"],
+  [
+    "p",
+    "  await db.",
+    "f",
+    "collection",
+    "p",
+    "(",
+    "s",
+    '"payments"',
+    "p",
+    ").add(event);",
+  ],
+  ["p", "});"],
+  ["p", ""],
+  ["s", "$ ", "p", "eas build --platform all"],
+  ["c", "✔ iOS and Android builds queued"],
+  ["s", "$ ", "p", "docker compose up -d"],
+  ["c", "✔ api  ✔ db  ✔ worker"],
+];
+const COLORS: Record<string, string> = {
+  k: PURPLE,
+  f: TEAL,
+  s: "#ffc46b",
+  c: "#6b6b8f",
+  p: "#d9d7f5",
+};
+
+const TerminalPanel: React.FC<{
+  position: [number, number, number];
+  rotationY?: number;
+  size: [number, number];
+}> = (props) => {
+  const draw: Draw = (context, time, width, height) => {
+    context.fillStyle = "#0b0b16";
+    context.fillRect(0, 0, width, height);
+    context.fillStyle = "#1b1b2e";
+    context.fillRect(0, 0, width, 30);
+    ["#ff6b6b", "#ffc46b", TEAL].forEach((color, index) => {
+      context.fillStyle = color;
+      context.beginPath();
+      context.arc(18 + index * 18, 15, 5, 0, Math.PI * 2);
+      context.fill();
+    });
+    context.fillStyle = "#8e8aad";
+    context.font = `400 14px ${MONO}`;
+    context.fillText("marin@dev: ~/ship-it", 80, 20);
+
+    const lineHeight = 22;
+    const visible = Math.floor((height - 40) / lineHeight);
+    const scroll = Math.floor(time * 2.5);
+    context.font = `400 15px ${MONO}`;
+    for (let row = 0; row < visible; row++) {
+      const line = CODE[(scroll + row) % CODE.length];
+      let x = 14;
+      const y = 56 + row * lineHeight;
+      for (let i = 0; i < line.length; i += 2) {
+        context.fillStyle = COLORS[line[i]];
+        context.fillText(line[i + 1], x, y);
+        x += context.measureText(line[i + 1]).width;
+      }
+    }
+    if (Math.floor(time * 2) % 2 === 0) {
+      context.fillStyle = TEAL;
+      context.fillRect(14, 56 + (visible - 1) * lineHeight + 4, 9, 3);
+    }
+  };
+  return <AnimatedPanel {...props} draw={draw} />;
+};
+
+// --- Status dashboard -----------------------------------------------------
+
+const DashboardPanel: React.FC<{
+  position: [number, number, number];
+  rotationY?: number;
+  size: [number, number];
+}> = (props) => {
+  const draw: Draw = (context, time, width, height) => {
+    context.fillStyle = "#0b0b16";
+    context.fillRect(0, 0, width, height);
+    context.font = `500 16px ${MONO}`;
+    context.fillStyle = TEAL;
+    context.fillText("● STATUS", 16, 28);
+
+    const charts = [
+      { label: "REQ / S", color: ACCENT, speed: 1.1 },
+      { label: "LATENCY", color: PURPLE, speed: 0.7 },
+      { label: "BUILDS", color: TEAL, speed: 1.6 },
+    ];
+    const chartHeight = (height - 60) / charts.length;
+    charts.forEach((chart, index) => {
+      const top = 46 + index * chartHeight;
+      context.fillStyle = "#8e8aad";
+      context.font = `400 13px ${MONO}`;
+      context.fillText(chart.label, 16, top + 14);
+      context.strokeStyle = chart.color;
+      context.lineWidth = 2;
+      context.beginPath();
+      for (let x = 0; x <= width - 32; x += 8) {
+        const value =
+          0.5 +
+          Math.sin((x + time * 60 * chart.speed) * 0.03) * 0.25 +
+          Math.sin((x + time * 90) * 0.011 + index) * 0.15;
+        const y = top + 22 + (1 - value) * (chartHeight - 34);
+        if (x === 0) context.moveTo(16 + x, y);
+        else context.lineTo(16 + x, y);
+      }
+      context.stroke();
+    });
+  };
+  return <AnimatedPanel {...props} draw={draw} fps={12} />;
+};
+
+// --- Falling code, on the wall behind the entrance ---------------------
+
+const RainPanel: React.FC<{
+  position: [number, number, number];
+  rotationY?: number;
+  size: [number, number];
+}> = (props) => {
+  const columns = useRef<number[]>([]);
+  const draw: Draw = (context, _time, width, height) => {
+    const size = 16;
+    const count = Math.floor(width / size);
+    if (columns.current.length !== count) {
+      columns.current = Array.from(
+        { length: count },
+        () => Math.random() * -40,
+      );
+      context.fillStyle = "#0b0b16";
+      context.fillRect(0, 0, width, height);
+    }
+    context.fillStyle = "rgba(11, 11, 22, 0.18)";
+    context.fillRect(0, 0, width, height);
+    context.font = `500 ${size}px ${MONO}`;
+    columns.current.forEach((row, index) => {
+      const character = "01{}<>/=;$#λ".charAt(Math.floor(Math.random() * 12));
+      context.fillStyle =
+        Math.random() > 0.97 ? "#ffffff" : index % 4 === 0 ? PURPLE : TEAL;
+      context.fillText(character, index * size, row * size);
+      columns.current[index] =
+        row * size > height && Math.random() > 0.96 ? 0 : row + 1;
+    });
+  };
+  return <AnimatedPanel {...props} draw={draw} fps={18} />;
+};
+
+// --- Ceiling spotlights with visible beams --------------------------------
+
+// Beams fade out from the lamp towards the floor.
+const useBeamFade = () =>
+  useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 4;
+    canvas.height = 128;
+    const context = canvas.getContext("2d")!;
+    const gradient = context.createLinearGradient(0, 0, 0, 128);
+    gradient.addColorStop(0, "#ffffff");
+    gradient.addColorStop(1, "#000000");
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 4, 128);
+    return new CanvasTexture(canvas);
+  }, []);
+
+const Spot: React.FC<{
+  position: [number, number, number];
+  target: [number, number, number];
+  color?: string;
+  intensity?: number;
+}> = ({ position, target, color = "#cfc9ff", intensity = 22 }) => {
+  const fade = useBeamFade();
+  const targetObject = useMemo(() => {
+    const object = new Object3D();
+    object.position.set(...target);
+    return object;
+  }, [target]);
+
+  const { length, radius, midpoint, to } = useMemo(() => {
+    const from = new Vector3(...position);
+    const to = new Vector3(...target);
+    const distance = from.distanceTo(to);
+    return {
+      length: distance,
+      radius: Math.tan(0.32) * distance,
+      midpoint: from.clone().add(to).multiplyScalar(0.5),
+      to,
+    };
+  }, [position, target]);
+
+  // The cone's tip is at +y: point -y at the target so it widens downwards.
+  const aimBeam = (mesh: Mesh | null) => {
+    if (!mesh) return;
+    mesh.position.copy(midpoint);
+    mesh.lookAt(to);
+    mesh.rotateX(-Math.PI / 2);
+  };
+
+  return (
+    <group>
+      <primitive object={targetObject} />
+      <spotLight
+        position={position}
+        target={targetObject}
+        angle={0.36}
+        penumbra={0.6}
+        intensity={intensity}
+        distance={7}
+        color={color}
+      />
+      {/* Lamp housing on the ceiling track */}
+      <mesh position={position}>
+        <cylinderGeometry args={[0.07, 0.09, 0.16, 16]} />
+        <meshStandardMaterial color="#1c1c28" metalness={0.5} roughness={0.4} />
+      </mesh>
+      <mesh
+        position={[position[0], position[1] - 0.081, position[2]]}
+        rotation-x={Math.PI / 2}
+      >
+        <circleGeometry args={[0.065, 16]} />
+        <meshBasicMaterial color={neon("#ffffff", 3)} toneMapped={false} />
+      </mesh>
+      <mesh ref={aimBeam}>
+        <coneGeometry args={[radius, length, 32, 1, true]} />
+        <meshBasicMaterial
+          color={color}
+          alphaMap={fade}
+          transparent
+          opacity={0.09}
+          blending={AdditiveBlending}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+    </group>
+  );
+};
+
+const TechWalls: React.FC = () => (
+  <group>
+    {/* Back wall, either side of the projection */}
+    <NetworkPanel position={[-3.75, 1.65, -4.97]} size={[2.3, 1.4]} />
+    <TerminalPanel position={[3.75, 1.65, -4.97]} size={[2.3, 1.4]} />
+    {/* Right wall, above the turntable */}
+    <DashboardPanel
+      position={[5.97, 2.05, 1.4]}
+      rotationY={-Math.PI / 2}
+      size={[1.4, 0.8]}
+    />
+    {/* Wall behind the entrance */}
+    <RainPanel
+      position={[-2.6, 1.6, 4.97]}
+      rotationY={Math.PI}
+      size={[2.6, 1.6]}
+    />
+    <RainPanel
+      position={[2.6, 1.6, 4.97]}
+      rotationY={Math.PI}
+      size={[2.6, 1.6]}
+    />
+
+    {/* Ceiling track with spotlights on each station */}
+    <mesh position={[0, 3.17, -1]}>
+      <boxGeometry args={[9, 0.04, 0.06]} />
+      <meshStandardMaterial color="#1c1c28" metalness={0.5} />
+    </mesh>
+    <Spot position={[0, 3.08, -1]} target={[0, 0.9, -1.8]} intensity={10} />
+    <Spot
+      position={[-3.6, 3.08, -1]}
+      target={[-5.3, 1.1, -0.9]}
+      color="#a9c8ff"
+    />
+    <Spot
+      position={[3.6, 3.08, -1]}
+      target={[5.6, 1.0, -1.2]}
+      color="#e3c9ff"
+    />
+  </group>
+);
+
+export default TechWalls;

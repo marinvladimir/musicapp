@@ -1,6 +1,7 @@
 import React from "react";
 import { DoubleSide } from "three";
 import { ROOM } from "./layout";
+import { neon } from "./neon";
 
 const WALL = "#3a3a5a";
 const ACCENT = "#6c63ff";
@@ -33,7 +34,7 @@ const Strip: React.FC<{
 }> = ({ position, size, color = ACCENT }) => (
   <mesh position={position}>
     <boxGeometry args={size} />
-    <meshBasicMaterial color={color} toneMapped={false} />
+    <meshBasicMaterial color={neon(color)} toneMapped={false} />
   </mesh>
 );
 

@@ -1,70 +1,168 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 import { useStore } from "../store";
-import { clientWork, ownProducts } from "../data/cv";
+import { channels } from "../data/cv";
+import { OSD_SECONDS, STATIC_SECONDS, changeChannel } from "../tv";
+import { drawOsd, drawScanlines, drawStatic, drawTestCard } from "../tvDraw";
 import Interactive from "./Interactive";
 import Sign from "./Sign";
-import { MONO, SANS, roundRect, useCanvasTexture } from "./textures";
+import { neon } from "./neon";
+import { useCanvasTexture, whenFontsReady } from "./textures";
 
-const SCREEN_W = 1280;
-const SCREEN_H = 720;
-const ICON_COLORS = ["#6c63ff", "#b56cff", "#4fd1c5", "#ff8fab", "#ffc46b"];
+const SCREEN_W = 640;
+const SCREEN_H = 480;
 
-const drawDesktop = (context: CanvasRenderingContext2D) => {
-  const wallpaper = context.createLinearGradient(0, 0, SCREEN_W, SCREEN_H);
-  wallpaper.addColorStop(0, "#15152c");
-  wallpaper.addColorStop(1, "#3b2a6b");
-  context.fillStyle = wallpaper;
-  context.fillRect(0, 0, SCREEN_W, SCREEN_H);
+// Retro CRT TV. Every project is a channel, with static between channels.
+const TvSet: React.FC = () => {
+  const goTo = useStore((state) => state.goTo);
+  const channel = useStore((state) => state.channel);
+  const screen = useCanvasTexture(SCREEN_W, SCREEN_H, () => undefined);
+  const lastDrawn = useRef("");
+  const fontsLoaded = useRef(false);
+  const video = useRef<HTMLVideoElement | null>(null);
+  const demo = channels[channel].demo;
 
-  context.fillStyle = "rgba(0, 0, 0, 0.45)";
-  context.fillRect(0, 0, SCREEN_W, 48);
-  context.fillStyle = "#c9c6ff";
-  context.font = `400 24px ${MONO}`;
-  context.fillText("marin@dev: ~/projects", 24, 32);
-  context.textAlign = "right";
-  context.fillText("● ● ●", SCREEN_W - 24, 32);
-  context.textAlign = "left";
+  useEffect(() => {
+    whenFontsReady().then(() => (fontsLoaded.current = true));
+  }, []);
 
-  const projects = [...ownProducts, ...clientWork].slice(0, 8);
-  const columns = 4;
-  const cell = 280;
-  const startX = (SCREEN_W - columns * cell) / 2;
-  projects.forEach((project, index) => {
-    const x = startX + (index % columns) * cell + cell / 2;
-    const y = 110 + Math.floor(index / columns) * 250;
-    context.fillStyle = ICON_COLORS[index % ICON_COLORS.length];
-    roundRect(context, x - 64, y, 128, 128, 28);
-    context.fill();
-    context.fillStyle = "#ffffff";
-    context.font = `700 54px ${SANS}`;
-    context.textAlign = "center";
-    const initials = project.name
-      .split(/[\s.']+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((word) => word[0].toUpperCase())
-      .join("");
-    context.fillText(initials, x, y + 84);
-    context.font = `500 26px ${SANS}`;
-    context.fillStyle = "#ecebff";
-    context.fillText(project.name, x, y + 172, cell - 20);
-    context.textAlign = "left";
+  useEffect(() => {
+    if (!demo) return;
+    const element = document.createElement("video");
+    element.src = demo;
+    element.muted = true;
+    element.loop = true;
+    element.playsInline = true;
+    element.play().catch(() => undefined);
+    video.current = element;
+    return () => {
+      element.pause();
+      element.removeAttribute("src");
+      video.current = null;
+    };
+  }, [demo]);
+
+  useFrame(() => {
+    const context = (screen.image as HTMLCanvasElement).getContext("2d");
+    if (!context || !fontsLoaded.current) return;
+    const { channel: current, channelChangedAt } = useStore.getState();
+    const elapsed = (performance.now() - channelChangedAt) / 1000;
+    const showOsd = elapsed < OSD_SECONDS;
+
+    if (elapsed < STATIC_SECONDS) {
+      drawStatic(context, SCREEN_W, SCREEN_H);
+      lastDrawn.current = "";
+    } else if (video.current && video.current.readyState >= 2) {
+      context.drawImage(video.current, 0, 0, SCREEN_W, SCREEN_H);
+      if (showOsd) drawOsd(context, SCREEN_W, SCREEN_H, current + 1);
+      lastDrawn.current = "";
+    } else {
+      // The test card only changes with the channel and the on-screen number.
+      const key = `${current}-${showOsd}`;
+      if (key === lastDrawn.current) return;
+      drawTestCard(context, SCREEN_W, SCREEN_H, channels[current]);
+      if (showOsd) drawOsd(context, SCREEN_W, SCREEN_H, current + 1);
+      lastDrawn.current = key;
+    }
+    drawScanlines(context, SCREEN_W, SCREEN_H);
+    screen.needsUpdate = true;
   });
 
-  context.fillStyle = "rgba(108, 99, 255, 0.9)";
-  roundRect(context, SCREEN_W / 2 - 230, SCREEN_H - 92, 460, 60, 30);
-  context.fill();
-  context.fillStyle = "#ffffff";
-  context.font = `700 28px ${SANS}`;
-  context.textAlign = "center";
-  context.fillText("Click to open my projects", SCREEN_W / 2, SCREEN_H - 52);
-  context.textAlign = "left";
+  return (
+    <group position={[-0.15, 0.78, -0.15]}>
+      <Interactive
+        label="Watch my projects on TV"
+        onSelect={() => goTo("projects")}
+      >
+        {(hovered) => (
+          <group>
+            <mesh position={[0, 0.42, 0]}>
+              <boxGeometry args={[1.1, 0.84, 0.5]} />
+              <meshStandardMaterial
+                color={hovered ? "#3a3266" : "#2b2b3b"}
+                roughness={0.5}
+              />
+            </mesh>
+            {/* Screen with a dark rim */}
+            <mesh position={[-0.12, 0.44, 0.252]}>
+              <planeGeometry args={[0.8, 0.64]} />
+              <meshStandardMaterial color="#050508" roughness={0.3} />
+            </mesh>
+            <mesh position={[-0.12, 0.44, 0.254]}>
+              <planeGeometry args={[0.74, 0.555]} />
+              <meshBasicMaterial map={screen} toneMapped={false} />
+            </mesh>
+            {/* Speaker grille */}
+            {[0, 1, 2, 3, 4].map((index) => (
+              <mesh key={index} position={[0.4, 0.24 + index * 0.035, 0.252]}>
+                <planeGeometry args={[0.16, 0.012]} />
+                <meshStandardMaterial color="#14141f" />
+              </mesh>
+            ))}
+            <mesh position={[0.4, 0.12, 0.252]}>
+              <circleGeometry args={[0.012, 12]} />
+              <meshBasicMaterial
+                color={neon("#ff6b6b", 2.5)}
+                toneMapped={false}
+              />
+            </mesh>
+            {/* Rabbit-ear antenna */}
+            {[-0.5, 0.5].map((angle) => (
+              <mesh
+                key={angle}
+                position={[
+                  Math.sin(angle) * 0.22,
+                  0.84 + Math.cos(angle) * 0.22,
+                  -0.05,
+                ]}
+                rotation-z={-angle}
+              >
+                <cylinderGeometry args={[0.006, 0.006, 0.46, 6]} />
+                <meshStandardMaterial
+                  color="#c9c9dd"
+                  metalness={0.7}
+                  roughness={0.3}
+                />
+              </mesh>
+            ))}
+            <mesh position={[0, 0.86, -0.05]}>
+              <sphereGeometry
+                args={[0.05, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2]}
+              />
+              <meshStandardMaterial color="#1c1c28" />
+            </mesh>
+            <pointLight
+              position={[-0.12, 0.44, 0.6]}
+              intensity={2}
+              distance={2.5}
+              color="#a9c8ff"
+            />
+          </group>
+        )}
+      </Interactive>
+
+      {/* Channel knob: switches to the next project */}
+      <Interactive label="Next channel" onSelect={() => changeChannel(1)}>
+        {(hovered) => (
+          <mesh position={[0.4, 0.56, 0.27]} rotation-x={Math.PI / 2}>
+            <cylinderGeometry args={[0.05, 0.05, 0.04, 20]} />
+            <meshStandardMaterial
+              color={hovered ? "#b56cff" : "#c9c9dd"}
+              metalness={0.5}
+              roughness={0.4}
+            />
+          </mesh>
+        )}
+      </Interactive>
+      <mesh position={[0.4, 0.7, 0.262]} rotation-x={Math.PI / 2}>
+        <cylinderGeometry args={[0.035, 0.035, 0.03, 16]} />
+        <meshStandardMaterial color="#8c8ca3" metalness={0.5} />
+      </mesh>
+    </group>
+  );
 };
 
 const ComputerCorner: React.FC = () => {
-  const goTo = useStore((state) => state.goTo);
-  const screen = useCanvasTexture(SCREEN_W, SCREEN_H, drawDesktop);
-
   return (
     // Built facing +x, against the left wall.
     <group position={[-5.45, 0, -1]} rotation-y={Math.PI / 2}>
@@ -80,45 +178,18 @@ const ComputerCorner: React.FC = () => {
         </mesh>
       ))}
 
-      <Interactive label="Browse my projects" onSelect={() => goTo("projects")}>
-        {(hovered) => (
-          <group position={[0, 1.3, -0.18]}>
-            <mesh position={[0, 0, -0.03]}>
-              <boxGeometry args={[1.2, 0.72, 0.04]} />
-              <meshStandardMaterial color="#0d0d16" roughness={0.4} />
-            </mesh>
-            <mesh>
-              <planeGeometry args={[1.14, 0.64]} />
-              <meshBasicMaterial
-                map={screen}
-                toneMapped={false}
-                color={hovered ? "#ffffff" : "#d8d8e8"}
-              />
-            </mesh>
-            <mesh position={[0, -0.47, -0.04]}>
-              <boxGeometry args={[0.06, 0.24, 0.04]} />
-              <meshStandardMaterial color="#2a2a3b" />
-            </mesh>
-            <pointLight
-              position={[0, 0, 0.4]}
-              intensity={2.5}
-              distance={3}
-              color="#7f75ff"
-            />
-          </group>
-        )}
-      </Interactive>
+      <TvSet />
 
       {/* Keyboard and mouse */}
-      <mesh position={[0, 0.79, 0.12]}>
+      <mesh position={[0, 0.79, 0.28]}>
         <boxGeometry args={[0.6, 0.025, 0.18]} />
         <meshStandardMaterial color="#2a2a3b" />
       </mesh>
-      <mesh position={[0, 0.805, 0.12]}>
+      <mesh position={[0, 0.805, 0.28]}>
         <boxGeometry args={[0.56, 0.006, 0.15]} />
-        <meshBasicMaterial color="#6c63ff" toneMapped={false} />
+        <meshBasicMaterial color={neon("#6c63ff", 2)} toneMapped={false} />
       </mesh>
-      <mesh position={[0.45, 0.79, 0.14]}>
+      <mesh position={[0.45, 0.79, 0.3]}>
         <boxGeometry args={[0.06, 0.025, 0.1]} />
         <meshStandardMaterial color="#2a2a3b" />
       </mesh>
@@ -131,12 +202,12 @@ const ComputerCorner: React.FC = () => {
         </mesh>
         <mesh position={[0, 0.25, 0.241]}>
           <planeGeometry args={[0.03, 0.42]} />
-          <meshBasicMaterial color="#4fd1c5" toneMapped={false} />
+          <meshBasicMaterial color={neon("#4fd1c5")} toneMapped={false} />
         </mesh>
       </group>
 
       {/* Chair, pulled out to the side so it does not hide the monitor */}
-      <group position={[0.75, 0, 0.85]} rotation-y={-0.7}>
+      <group position={[1.05, 0, 0.95]} rotation-y={-1.1}>
         <mesh position={[0, 0.48, 0]}>
           <boxGeometry args={[0.5, 0.08, 0.48]} />
           <meshStandardMaterial color="#3a3266" />

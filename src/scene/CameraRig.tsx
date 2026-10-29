@@ -15,6 +15,7 @@ const RUN_MULTIPLIER = 1.8;
 const LOOK_SPEED = 0.004; // radians per dragged pixel
 const MAX_PITCH = 1.1;
 const FLY_SECONDS = 1.2;
+const ENTER_SECONDS = 2.4;
 const WALL_MARGIN = 0.4;
 const OBSTACLE_MARGIN = 0.3;
 
@@ -69,9 +70,12 @@ const CameraRig: React.FC = () => {
     fromRotation: Quaternion;
     toRotation: Quaternion;
     progress: number;
+    seconds: number;
+    onDone: () => void;
   } | null>(null);
   const flyTarget = useStore((state) => state.flyTarget);
   const arrive = useStore((state) => state.arrive);
+  const entered = useStore((state) => state.entered);
 
   const syncAnglesFromCamera = () => {
     const euler = new Euler().setFromQuaternion(camera.quaternion, "YXZ");
@@ -79,23 +83,19 @@ const CameraRig: React.FC = () => {
     pitch.current = euler.x;
   };
 
-  useEffect(() => {
-    camera.position.set(...START_POSITION);
-    camera.lookAt(...START_LOOK_AT);
-    syncAnglesFromCamera();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [camera]);
-
-  useEffect(() => {
-    if (!flyTarget) return;
-    const station = STATIONS[flyTarget];
-    const toPosition = new Vector3(...station.position);
-    const toRotation = lookRotation(toPosition, new Vector3(...station.lookAt));
+  const flyTo = (
+    position: [number, number, number],
+    lookAt: [number, number, number],
+    seconds: number,
+    onDone: () => void,
+  ) => {
+    const toPosition = new Vector3(...position);
+    const toRotation = lookRotation(toPosition, new Vector3(...lookAt));
     if (prefersReducedMotion()) {
       camera.position.copy(toPosition);
       camera.quaternion.copy(toRotation);
       syncAnglesFromCamera();
-      arrive();
+      onDone();
       return;
     }
     flight.current = {
@@ -104,9 +104,24 @@ const CameraRig: React.FC = () => {
       fromRotation: camera.quaternion.clone(),
       toRotation,
       progress: 0,
+      seconds,
+      onDone,
     };
+  };
+
+  // Walk in from the doorway once the visitor leaves the intro screen.
+  useEffect(() => {
+    if (!entered) return;
+    flyTo(START_POSITION, START_LOOK_AT, ENTER_SECONDS, () => undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flyTarget, camera, arrive]);
+  }, [entered]);
+
+  useEffect(() => {
+    if (!flyTarget) return;
+    const station = STATIONS[flyTarget];
+    flyTo(station.position, station.lookAt, FLY_SECONDS, arrive);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flyTarget, arrive]);
 
   useEffect(() => {
     const element = gl.domElement;
@@ -172,7 +187,19 @@ const CameraRig: React.FC = () => {
     };
   }, [gl]);
 
-  useFrame((_, delta) => {
+  useFrame(({ clock }, delta) => {
+    // Behind the intro screen the camera slowly drifts by the doorway.
+    if (!useStore.getState().entered) {
+      const t = clock.elapsedTime;
+      camera.position.set(
+        Math.sin(t * 0.15) * 1.4,
+        2.1 + Math.sin(t * 0.3) * 0.08,
+        4.5,
+      );
+      camera.lookAt(0, 1.3, -3);
+      return;
+    }
+
     // Long frames (a slow device, a background tab) would make walking jump.
     const step = Math.min(delta, 0.05);
 
@@ -180,7 +207,7 @@ const CameraRig: React.FC = () => {
       const current = flight.current;
       current.progress = Math.min(
         1,
-        current.progress + Math.min(delta, 0.25) / FLY_SECONDS,
+        current.progress + Math.min(delta, 0.25) / current.seconds,
       );
       const t = current.progress;
       const eased = t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
@@ -197,7 +224,7 @@ const CameraRig: React.FC = () => {
       if (t >= 1) {
         flight.current = null;
         syncAnglesFromCamera();
-        arrive();
+        current.onDone();
       }
       return;
     }

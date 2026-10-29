@@ -5,6 +5,7 @@ import { useStore } from "../store";
 import { togglePlayback } from "../audio/player";
 import { analysis } from "../audio/analysis";
 import Interactive from "./Interactive";
+import { neon } from "./neon";
 
 // 33⅓ revolutions per minute, in radians per second.
 const RECORD_SPEED = (33.333 / 60) * Math.PI * 2;
@@ -86,7 +87,7 @@ const Turntable3D: React.FC = () => {
       </mesh>
       <mesh position={[0, 0.32, 0.231]}>
         <planeGeometry args={[1.3, 0.02]} />
-        <meshBasicMaterial color="#6c63ff" toneMapped={false} />
+        <meshBasicMaterial color={neon("#6c63ff")} toneMapped={false} />
       </mesh>
 
       <Speaker position={[-0.55, 0.64, 0]} />

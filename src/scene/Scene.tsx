@@ -8,6 +8,9 @@ import ComputerCorner from "./ComputerCorner";
 import Bookshelf from "./Bookshelf";
 import Turntable3D from "./Turntable3D";
 import Projection from "./Projection";
+import Effects from "./Effects";
+import Decor from "./Decor";
+import TechWalls from "./TechWalls";
 
 const AudioAnalysis: React.FC = () => {
   useFrame((_, delta) => updateAnalysis(delta));
@@ -20,7 +23,7 @@ const Scene: React.FC = () => (
     dpr={[1, 1.75]}
     gl={{ antialias: true }}
     style={{ position: "fixed", inset: 0, touchAction: "none" }}
-    aria-label="A 3D room: CV on the desk, projects on the computer to the left, music on the shelf to the right"
+    aria-label="A 3D room: CV on the desk, projects on the TV to the left, music on the shelf to the right"
   >
     <color attach="background" args={["#12121f"]} />
     <AudioAnalysis />
@@ -31,6 +34,9 @@ const Scene: React.FC = () => (
     <ComputerCorner />
     <Bookshelf />
     <Turntable3D />
+    <Decor />
+    <TechWalls />
+    <Effects />
   </Canvas>
 );
 

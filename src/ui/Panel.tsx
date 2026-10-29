@@ -1,5 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
+
+const open = keyframes`
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+`;
 
 export type PanelVariant = "paper" | "window" | "drawer";
 
@@ -41,6 +46,11 @@ const Dialog = styled.section<{ $variant: PanelVariant }>`
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
   pointer-events: auto;
   outline: none;
+  animation: ${open} 0.28s ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 
   ${({ $variant, theme }) =>
     $variant === "paper"

@@ -2,37 +2,40 @@ import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Group } from "three";
 import { SANS, useCanvasTexture } from "./textures";
+import { neon } from "./neon";
 
-// Floating neon label that marks a station in the room.
+// Neon label: marks a station (floating) or decorates a wall.
 const Sign: React.FC<{
   text: string;
   position: [number, number, number];
   rotationY?: number;
   color?: string;
   floating?: boolean;
+  width?: number;
 }> = ({
   text,
   position,
   rotationY = 0,
   color = "#b56cff",
   floating = true,
+  width = 0.8,
 }) => {
   const group = useRef<Group>(null);
   const texture = useCanvasTexture(
-    512,
-    160,
+    1024,
+    320,
     (context) => {
-      context.clearRect(0, 0, 512, 160);
-      context.font = `700 92px ${SANS}`;
+      context.clearRect(0, 0, 1024, 320);
+      context.font = `700 150px ${SANS}`;
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.shadowColor = color;
-      context.shadowBlur = 28;
+      context.shadowBlur = 40;
       context.fillStyle = color;
-      context.fillText(text, 256, 84);
+      context.fillText(text, 512, 168, 980);
       context.shadowBlur = 0;
       context.fillStyle = "#ffffff";
-      context.fillText(text, 256, 84);
+      context.fillText(text, 512, 168, 980);
     },
     [text, color],
   );
@@ -47,8 +50,13 @@ const Sign: React.FC<{
   return (
     <group ref={group} position={position} rotation-y={rotationY}>
       <mesh>
-        <planeGeometry args={[0.8, 0.25]} />
-        <meshBasicMaterial map={texture} transparent toneMapped={false} />
+        <planeGeometry args={[width, width * 0.3125]} />
+        <meshBasicMaterial
+          map={texture}
+          color={neon("#ffffff", 2.4)}
+          transparent
+          toneMapped={false}
+        />
       </mesh>
     </group>
   );

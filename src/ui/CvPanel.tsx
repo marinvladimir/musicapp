@@ -272,7 +272,10 @@ const CvPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => (
           <Meta>{profile.stack}</Meta>
           <Meta>
             <a href={`mailto:${profile.email}`}>{profile.email}</a> ·{" "}
-            {profile.location}
+            <a href={`tel:${profile.phone.replace(/\s/g, "")}`}>
+              {profile.phone}
+            </a>{" "}
+            · {profile.location}
             {profile.links.map((link) => (
               <React.Fragment key={link.url}>
                 {" · "}

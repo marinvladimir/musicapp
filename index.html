@@ -2,21 +2,65 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/webp" href="/logo.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marin Vladimir · Senior Full-Stack & Mobile Engineer</title>
     <meta
       name="description"
-      content="Marin Vladimir, Senior Full-Stack & Mobile Engineer. An interactive 3D CV: walk around the room to see my experience, projects and music."
+      content="Marin Vladimir, Senior Full-Stack & Mobile Engineer (React Native, Next.js, TypeScript). An interactive 3D CV: walk around the room to see my experience, projects and music."
     />
+    <meta name="theme-color" content="#12121f" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://marinvladimir.com/" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content="https://marinvladimir.com/" />
+    <meta
+      property="og:title"
+      content="Marin Vladimir · Senior Full-Stack & Mobile Engineer"
+    />
+    <meta
+      property="og:description"
+      content="An interactive 3D CV: walk around my room to see my experience, the projects I built and the music I compose."
+    />
+    <meta name="twitter:card" content="summary" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Marin Vladimir",
+        "jobTitle": "Senior Full-Stack & Mobile Engineer",
+        "email": "mailto:mvladi00@fesb.hr",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Split",
+          "addressCountry": "HR"
+        },
+        "alumniOf": "FESB, University of Split",
+        "url": "https://marinvladimir.com/",
+        "sameAs": ["https://www.linkedin.com/in/marin-vladimir-76b9b4170/"]
+      }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <title>Marin Vladimir · Senior Full-Stack & Mobile Engineer</title>
   </head>
   <body>
+    <noscript>
+      <h1>Marin Vladimir</h1>
+      <p>
+        Senior Full-Stack &amp; Mobile Engineer · React Native, Expo, React,
+        Next.js, TypeScript, Node.js
+      </p>
+      <p>
+        Split, Croatia · <a href="mailto:mvladi00@fesb.hr">mvladi00@fesb.hr</a>
+      </p>
+      <p>This interactive CV needs JavaScript.</p>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
