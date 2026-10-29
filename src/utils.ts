@@ -18,3 +18,6 @@ export const fadeOut = (
     setFadingOut(false);
   }, 500);
 };
+
+export const formatSongName = (songName: string) =>
+  songName.replace(/_/g, " ").replace(/\.mp3$/, "");
