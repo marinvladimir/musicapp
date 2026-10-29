@@ -50,6 +50,12 @@ npm run dev
 | `npm run lint`   | Run ESLint                                    |
 | `npm run format` | Format the source with Prettier               |
 
+## Deploying
+
+Any static host works. On Cloudflare Pages or Netlify use the build command `npm run build` and
+the output directory `dist` (`netlify.toml` already sets this for Netlify). Node.js 22 is pinned in
+`.node-version`.
+
 ## Updating content
 
 - **CV and projects:** edit `src/data/cv.ts`. Give a project a `demo` video path to show it on
