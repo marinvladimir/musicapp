@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import Panel from "./Panel";
 import { useStore } from "../store";
+import { useCv, useT } from "../i18n";
 import { channels } from "../data/cv";
 import { OSD_SECONDS, STATIC_SECONDS, changeChannel, tuneTo } from "../tv";
 import { drawOsd, drawScanlines, drawStatic, drawTestCard } from "../tvDraw";
@@ -276,8 +277,11 @@ const TvScreen: React.FC = () => {
 };
 
 const TvPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const t = useT();
+  // Same channels as the screen, with texts in the visitor's language.
+  const { channels: guide } = useCv();
   const channel = useStore((state) => state.channel);
-  const project = channels[channel];
+  const project = guide[channel];
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -298,7 +302,7 @@ const TvPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   }, []);
 
   return (
-    <Panel title="TV · projects I built" variant="window" onClose={onClose}>
+    <Panel title={t.tvTitle} variant="window" onClose={onClose}>
       <Layout>
         <div>
           <Casing>
@@ -307,25 +311,25 @@ const TvPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <ControlStrip>
             <button
               onClick={() => changeChannel(-1)}
-              aria-label="Previous channel"
+              aria-label={t.previousChannel}
             >
               ◀ CH
             </button>
-            <button onClick={() => changeChannel(1)} aria-label="Next channel">
+            <button onClick={() => changeChannel(1)} aria-label={t.nextChannel}>
               CH ▶
             </button>
-            <span>← → or 1–{Math.min(9, channels.length)} to switch</span>
-            <span>ON</span>
+            <span>{t.switchHint(Math.min(9, guide.length))}</span>
+            <span>{t.on}</span>
           </ControlStrip>
         </div>
 
         <Guide>
           <GuideHeader>
-            <span>P100 PROGRAMME GUIDE</span>
+            <span>{t.guide}</span>
             <span>CH {String(channel + 1).padStart(2, "0")}</span>
           </GuideHeader>
           <ChannelList>
-            {channels.map((item, index) => (
+            {guide.map((item, index) => (
               <li key={item.name}>
                 <button
                   aria-current={index === channel}
@@ -346,7 +350,7 @@ const TvPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <small>{project.stack}</small>
             {project.url && (
               <a href={project.url} target="_blank" rel="noopener noreferrer">
-                VISIT {new URL(project.url).hostname.toUpperCase()} ↗
+                {t.visit(new URL(project.url).hostname)}
               </a>
             )}
           </Details>

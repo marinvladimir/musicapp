@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useStore } from "../store";
+import { useT } from "../i18n";
 import { channels } from "../data/cv";
 import { OSD_SECONDS, STATIC_SECONDS, changeChannel } from "../tv";
 import {
@@ -22,6 +23,7 @@ const SCREEN_H = 480;
 // Retro CRT TV. Every project is a channel, with static between channels.
 const TvSet: React.FC = () => {
   const goTo = useStore((state) => state.goTo);
+  const t = useT();
   const channel = useStore((state) => state.channel);
   const screen = useCanvasTexture(SCREEN_W, SCREEN_H, () => undefined);
   const lastDrawn = useRef("");
@@ -112,10 +114,7 @@ const TvSet: React.FC = () => {
 
   return (
     <group position={[-0.15, 0.78, -0.15]}>
-      <Interactive
-        label="Watch my projects on TV"
-        onSelect={() => goTo("projects")}
-      >
+      <Interactive label={t.watchTv} onSelect={() => goTo("projects")}>
         {(hovered) => (
           <group>
             <mesh position={[0, 0.42, 0]}>
@@ -184,7 +183,7 @@ const TvSet: React.FC = () => {
       </Interactive>
 
       {/* Channel knob: switches to the next project */}
-      <Interactive label="Next channel" onSelect={() => changeChannel(1)}>
+      <Interactive label={t.nextTvChannel} onSelect={() => changeChannel(1)}>
         {(hovered) => (
           <mesh position={[0.4, 0.56, 0.27]} rotation-x={Math.PI / 2}>
             <cylinderGeometry args={[0.05, 0.05, 0.04, 20]} />

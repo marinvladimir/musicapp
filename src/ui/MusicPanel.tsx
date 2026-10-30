@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Panel from "./Panel";
 import MiniVisualizer from "./MiniVisualizer";
 import { useStore } from "../store";
+import { useT } from "../i18n";
 import { playSong, seek, setVolume, togglePlayback } from "../audio/player";
 import { albumTitle, coverUrl, formatSongName, formatTime } from "../utils";
 
@@ -194,6 +195,7 @@ const MusicPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     duration,
     volume,
   } = useStore();
+  const t = useT();
   const album = albums.find((item) => item.albumName === selectedAlbum);
 
   return (
@@ -202,13 +204,13 @@ const MusicPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         {album ? (
           <>
             <LinkButton onClick={() => selectAlbum(null)}>
-              ← All albums
+              {t.allAlbums}
             </LinkButton>
             <AlbumHeader>
               <img src={coverUrl(album.albumName)} alt="" />
               <div>
                 <h3>{albumTitle(album.albumName)}</h3>
-                <p>{album.songs.length} tracks · original music · previews</p>
+                <p>{t.tracks(album.songs.length)}</p>
               </div>
             </AlbumHeader>
             <Tracks>
@@ -234,10 +236,7 @@ const MusicPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </>
         ) : (
           <>
-            <p>
-              Original music I compose and produce in FL Studio. Pick an album,
-              or take a book from the shelf.
-            </p>
+            <p>{t.musicIntro}</p>
             <AlbumGrid>
               {albums.map((item) => (
                 <button
@@ -262,7 +261,7 @@ const MusicPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <Controls>
               <PlayButton
                 onClick={togglePlayback}
-                aria-label={isPlaying ? "Pause" : "Play"}
+                aria-label={isPlaying ? t.pause : t.play}
               >
                 <PlayIcon playing={isPlaying} />
               </PlayButton>
@@ -274,7 +273,7 @@ const MusicPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 step="0.001"
                 value={duration > 0 ? currentTime / duration : 0}
                 onChange={(event) => seek(parseFloat(event.target.value))}
-                aria-label="Position in song"
+                aria-label={t.position}
               />
               <span>{formatTime(duration)}</span>
             </Controls>
@@ -287,7 +286,7 @@ const MusicPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 step="0.01"
                 value={volume}
                 onChange={(event) => setVolume(parseFloat(event.target.value))}
-                aria-label="Volume"
+                aria-label={t.volume}
               />
             </Controls>
           </NowPlaying>

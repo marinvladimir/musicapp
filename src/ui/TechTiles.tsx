@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { otherSkills, techGroups } from "../data/tech";
+import { techGroups } from "../data/tech";
+import { useT } from "../i18n";
 
 const Group = styled.div`
   & + & {
@@ -70,27 +71,30 @@ const inkFor = (hex: string) => {
   return 0.299 * r + 0.587 * g + 0.114 * b > 160 ? "#111118" : "#ffffff";
 };
 
-const TechTiles: React.FC = () => (
-  <>
-    {techGroups.map(({ group, items }) => (
-      <Group key={group}>
-        <h3>{group}</h3>
-        <Grid>
-          {items.map(({ name, icon }) => (
-            <Tile key={name} $color={`#${icon.hex}`} $ink={inkFor(icon.hex)}>
-              <svg viewBox="0 0 24 24" role="img" aria-hidden>
-                <path d={icon.path} />
-              </svg>
-              <span>{name}</span>
-            </Tile>
-          ))}
-        </Grid>
-      </Group>
-    ))}
-    <Other>
-      <strong>Also:</strong> {otherSkills.join(" · ")}
-    </Other>
-  </>
-);
+const TechTiles: React.FC = () => {
+  const t = useT();
+  return (
+    <>
+      {techGroups.map(({ group, items }, index) => (
+        <Group key={group}>
+          <h3>{t.techGroups[index] ?? group}</h3>
+          <Grid>
+            {items.map(({ name, icon }) => (
+              <Tile key={name} $color={`#${icon.hex}`} $ink={inkFor(icon.hex)}>
+                <svg viewBox="0 0 24 24" role="img" aria-hidden>
+                  <path d={icon.path} />
+                </svg>
+                <span>{name}</span>
+              </Tile>
+            ))}
+          </Grid>
+        </Group>
+      ))}
+      <Other>
+        <strong>{t.also}</strong> {t.otherSkills.join(" · ")}
+      </Other>
+    </>
+  );
+};
 
 export default TechTiles;

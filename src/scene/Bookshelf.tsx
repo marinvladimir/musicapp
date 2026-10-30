@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Group, MeshStandardMaterial, Vector3 } from "three";
 import { useStore } from "../store";
+import { useT } from "../i18n";
 import { Album } from "../types";
 import Interactive from "./Interactive";
 import Sign from "./Sign";
@@ -43,6 +44,7 @@ const Book: React.FC<{ album: Album; position: [number, number, number] }> = ({
   }, [album.albumName]);
   const selected = useStore((state) => state.selectedAlbum === album.albumName);
   const { selectAlbum, goTo, panel } = useStore();
+  const t = useT();
 
   const spine = useCanvasTexture(SPINE_W, SPINE_H, async (context) => {
     const cover = await loadImage(coverUrl(album.albumName));
@@ -102,7 +104,7 @@ const Book: React.FC<{ album: Album; position: [number, number, number] }> = ({
     <group ref={anchor} position={position}>
       <group ref={group}>
         <Interactive
-          label={`Listen to ${albumTitle(album.albumName)}`}
+          label={t.listenTo(albumTitle(album.albumName))}
           onSelect={() => {
             selectAlbum(album.albumName);
             if (panel !== "music") goTo("music");

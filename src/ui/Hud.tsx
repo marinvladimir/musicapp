@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { profile } from "../data/cv";
 import { Station, useStore } from "../store";
+import { useCv, useT } from "../i18n";
 import { togglePlayback } from "../audio/player";
 import { formatSongName } from "../utils";
 import { PlayButton, PlayIcon } from "./MusicPanel";
@@ -250,10 +250,10 @@ const MiniPlayer = styled.div`
   }
 `;
 
-const STATIONS: { id: Station; label: string }[] = [
-  { id: "cv", label: "CV" },
-  { id: "projects", label: "Projects" },
-  { id: "music", label: "Music" },
+const STATIONS: { id: Station; label: "cv" | "projects" | "music" }[] = [
+  { id: "cv", label: "cv" },
+  { id: "projects", label: "projects" },
+  { id: "music", label: "music" },
 ];
 
 const PAD_BUTTONS = [
@@ -279,7 +279,11 @@ const Hud: React.FC = () => {
     toggleFreeRoam,
     location,
     stepStation,
+    lang,
+    setLang,
   } = useStore();
+  const t = useT();
+  const { profile } = useCv();
   const [showTip, setShowTip] = useState(true);
 
   useEffect(() => {
@@ -292,69 +296,70 @@ const Hud: React.FC = () => {
       <Bar>
         <Name onClick={() => goTo("cv")}>
           <strong>Marin Vladimir</strong>
-          <span>Senior Full-Stack & Mobile Engineer</span>
+          <span>{profile.title}</span>
         </Name>
-        <Nav aria-label="Rooms">
+        <Nav aria-label={t.rooms}>
           {STATIONS.map((station) => (
             <button
               key={station.id}
               aria-pressed={panel === station.id}
               onClick={() => goTo(station.id)}
             >
-              {station.label}
+              {t[station.label]}
             </button>
           ))}
           <Divider aria-hidden />
           <button
             aria-pressed={freeRoam}
             onClick={toggleFreeRoam}
-            title="Walk freely with WASD or the on-screen arrows"
+            title={t.freeRoamTitle}
           >
-            Free roam
+            {t.freeRoam}
           </button>
           <button
             aria-pressed={soundsOn}
             onClick={toggleSounds}
-            title="Room ambience and sound effects"
+            title={t.soundsTitle}
           >
-            Sounds
+            {t.sounds}
           </button>
           <button
             aria-pressed={pixelMode}
             onClick={togglePixelMode}
-            title="Pixel art look"
+            title={t.pixelTitle}
           >
-            Pixel
+            {t.pixel}
           </button>
-          <Contact href={`mailto:${profile.email}`}>Contact me</Contact>
+          <button
+            onClick={() => setLang(lang === "en" ? "hr" : "en")}
+            title={t.switchLanguageTitle}
+            lang={lang === "en" ? "hr" : "en"}
+          >
+            {t.switchLanguage}
+          </button>
+          <Contact href={`mailto:${profile.email}`}>{t.contact}</Contact>
         </Nav>
       </Bar>
 
-      {showTip && !panel && !hoverLabel && (
-        <Tip role="status">
-          Tip: click a glowing ring to walk there, or use ← → to visit each
-          spot.
-        </Tip>
-      )}
+      {showTip && !panel && !hoverLabel && <Tip role="status">{t.tip}</Tip>}
 
       {hoverLabel && !panel && <HoverLabel>{hoverLabel}</HoverLabel>}
 
-      <Help>
-        {freeRoam
-          ? "Drag to look · WASD / arrows to walk · Shift to run · click things"
-          : "Click a glowing ring or object · ← → to switch · ↓ for the whole room"}
-      </Help>
+      <Help>{freeRoam ? t.helpFree : t.helpGuided}</Help>
 
       {!freeRoam && (
-        <StationBar aria-label="Stations">
-          <button onClick={() => stepStation(-1)} aria-label="Previous station">
+        <StationBar aria-label={t.stations}>
+          <button
+            onClick={() => stepStation(-1)}
+            aria-label={t.previousStation}
+          >
             ◀
           </button>
           <button
             aria-pressed={location === "overview"}
             onClick={() => goTo("overview")}
           >
-            Room
+            {t.room}
           </button>
           {STATIONS.map((station) => (
             <button
@@ -362,10 +367,10 @@ const Hud: React.FC = () => {
               aria-pressed={location === station.id}
               onClick={() => goTo(station.id)}
             >
-              {station.label}
+              {t[station.label]}
             </button>
           ))}
-          <button onClick={() => stepStation(1)} aria-label="Next station">
+          <button onClick={() => stepStation(1)} aria-label={t.nextStation}>
             ▶
           </button>
         </StationBar>
@@ -393,7 +398,7 @@ const Hud: React.FC = () => {
         <MiniPlayer>
           <PlayButton
             onClick={togglePlayback}
-            aria-label={isPlaying ? "Pause" : "Play"}
+            aria-label={isPlaying ? t.pause : t.play}
           >
             <PlayIcon playing={isPlaying} />
           </PlayButton>

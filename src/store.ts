@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { trackLoading } from "./loading";
 import { startBoot } from "./boot";
+import { Lang, detectLang } from "./i18n";
 import { Album, Song } from "./types";
 
 export type Station = "cv" | "projects" | "music";
@@ -38,6 +39,8 @@ type State = {
   pixelMode: boolean;
   // Room ambience and sound effects (not the music).
   soundsOn: boolean;
+  lang: Lang;
+  setLang: (lang: Lang) => void;
   // Overlay panel that is open, if any.
   panel: Station | null;
   // Where the camera is flying to; a station's panel opens when it arrives.
@@ -78,6 +81,15 @@ export const useStore = create<State>((set) => ({
   entered: false,
   pixelMode: readPixelMode(),
   soundsOn: readSounds(),
+  lang: detectLang(),
+  setLang: (lang) => {
+    try {
+      localStorage.setItem("lang", lang);
+    } catch {
+      // The choice just won't be remembered.
+    }
+    set({ lang });
+  },
   panel: null,
   flyTarget: null,
   location: "overview",

@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
-import { profile } from "../data/cv";
+import { useStore } from "../store";
+import { useCv, useT } from "../i18n";
 
 const shimmer = keyframes`
   from { background-position: 0% 50%; }
@@ -162,33 +163,82 @@ const Hint = styled.p`
   font-size: 0.75rem;
 `;
 
+// Language choice, shown before the visitor enters.
+const LangSwitch = styled.div`
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  background: rgba(27, 27, 46, 0.7);
+
+  button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: ${({ theme }) => theme.colors.textMuted};
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  button[aria-pressed="true"] {
+    background: ${({ theme }) => theme.colors.accent};
+    color: #ffffff;
+  }
+`;
+
 const Intro: React.FC<{ onEnter: () => void; onSkip: () => void }> = ({
   onEnter,
   onSkip,
-}) => (
-  <Overlay>
-    <Card>
-      <Photo src={profile.photo} alt="" />
-      <Name>{profile.name}</Name>
-      <Role>{profile.title}</Role>
-      <Facts>
-        <li>7+ years shipping production software</li>
-        <li>React Native · Next.js · TypeScript</li>
-        <li>Remote · {profile.location}</li>
-      </Facts>
-      <Text>
-        Welcome to my room. My CV is on the desk, the projects I built are on
-        the TV, and the music I compose is on the shelf.
-      </Text>
-      <Actions>
-        <button onClick={onEnter} autoFocus>
-          Enter the room
+}) => {
+  const t = useT();
+  const { profile } = useCv();
+  const lang = useStore((state) => state.lang);
+  const setLang = useStore((state) => state.setLang);
+  return (
+    <Overlay>
+      <LangSwitch role="group" aria-label="Language / Jezik">
+        <button
+          aria-pressed={lang === "en"}
+          onClick={() => setLang("en")}
+          lang="en"
+        >
+          EN
         </button>
-        <button onClick={onSkip}>Just show me the CV</button>
-      </Actions>
-      <Hint>Best with sound on · drag to look around · WASD to walk</Hint>
-    </Card>
-  </Overlay>
-);
+        <button
+          aria-pressed={lang === "hr"}
+          onClick={() => setLang("hr")}
+          lang="hr"
+        >
+          HR
+        </button>
+      </LangSwitch>
+      <Card>
+        <Photo src={profile.photo} alt="" />
+        <Name>{profile.name}</Name>
+        <Role>{profile.title}</Role>
+        <Facts>
+          <li>{t.factYears}</li>
+          <li>React Native · Next.js · TypeScript</li>
+          <li>
+            {t.remote} · {profile.location}
+          </li>
+        </Facts>
+        <Text>{t.welcome}</Text>
+        <Actions>
+          <button onClick={onEnter} autoFocus>
+            {t.enter}
+          </button>
+          <button onClick={onSkip}>{t.skip}</button>
+        </Actions>
+        <Hint>{t.introHint}</Hint>
+      </Card>
+    </Overlay>
+  );
+};
 
 export default Intro;

@@ -21,6 +21,12 @@ const App: React.FC = () => {
     loadAlbums().catch((error) => console.error(error));
   }, []);
 
+  // Lets screen readers and the browser know which language is shown.
+  const lang = useStore((state) => state.lang);
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
   return (
     <>
       <Scene />

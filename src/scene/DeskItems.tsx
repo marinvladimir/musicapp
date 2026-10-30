@@ -2,6 +2,7 @@ import React, { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { AdditiveBlending, Group, Sprite } from "three";
 import { useStore } from "../store";
+import { useT } from "../i18n";
 import { channels } from "../data/cv";
 import { tuneTo } from "../tv";
 import Interactive from "./Interactive";
@@ -158,6 +159,7 @@ export const Phone: React.FC<{
   rotationY?: number;
 }> = ({ position, rotationY = 0 }) => {
   const goTo = useStore((state) => state.goTo);
+  const t = useT();
   const showing = useRef<boolean | null>(null);
   const group = useRef<Group>(null);
   const channel = useMemo(
@@ -183,7 +185,7 @@ export const Phone: React.FC<{
 
   return (
     <Interactive
-      label="Reformer Studio app: watch it on the TV"
+      label={t.phone}
       onSelect={() => {
         if (channel >= 0) tuneTo(channel);
         goTo("projects");

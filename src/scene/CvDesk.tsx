@@ -1,6 +1,7 @@
 import React from "react";
 import { DoubleSide } from "three";
 import { useStore } from "../store";
+import { useT } from "../i18n";
 import { experience, profile } from "../data/cv";
 import Interactive from "./Interactive";
 import Sign from "./Sign";
@@ -164,6 +165,7 @@ const Lamp: React.FC = () => (
 
 const CvDesk: React.FC = () => {
   const goTo = useStore((state) => state.goTo);
+  const t = useT();
   const paper = useCanvasTexture(PAPER_W, PAPER_H, drawCv);
 
   return (
@@ -196,7 +198,7 @@ const CvDesk: React.FC = () => {
         </mesh>
       </group>
 
-      <Interactive label="Read my CV" onSelect={() => goTo("cv")}>
+      <Interactive label={t.readCv} onSelect={() => goTo("cv")}>
         {(hovered) => (
           <group position={[0, 1.08, -1.82]} rotation-x={-0.42}>
             {/* Stand behind the paper */}

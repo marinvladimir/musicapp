@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Panel from "./Panel";
 import TechTiles from "./TechTiles";
-import { education, experience, ownProducts, profile } from "../data/cv";
+import { useCv, useT } from "../i18n";
 
 const Page = styled.article`
   padding: 0 0 40px;
@@ -220,126 +220,128 @@ const PrintButton = styled.button`
   }
 `;
 
-const CvPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => (
-  <Panel
-    title="cv.pdf"
-    variant="paper"
-    onClose={onClose}
-    print
-    actions={
-      <PrintButton onClick={() => window.print()}>
-        Print / save as PDF
-      </PrintButton>
-    }
-  >
-    <Page>
-      <Header>
-        <div>
-          <h1>{profile.name}</h1>
-          <Title>{profile.title}</Title>
-          <Meta>{profile.stack}</Meta>
-          <Meta>
-            <a href={`mailto:${profile.email}`}>{profile.email}</a> ·{" "}
-            <a href={`tel:${profile.phone.replace(/\s/g, "")}`}>
-              {profile.phone}
-            </a>{" "}
-            · {profile.location}
-            {profile.links.map((link) => (
-              <React.Fragment key={link.url}>
-                {" · "}
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  {link.label}
-                </a>
-              </React.Fragment>
-            ))}
-          </Meta>
-          <Badge>{profile.availability}</Badge>
-        </div>
-        <img src={profile.photo} alt={profile.name} />
-      </Header>
-
-      <Section>
-        <h2>Profile</h2>
-        <p>{profile.summary}</p>
-        <Grid $min={200} style={{ marginTop: 14 }}>
-          {profile.highlights.map((item) => (
-            <Card key={item.title}>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </Card>
-          ))}
-        </Grid>
-      </Section>
-
-      <Section>
-        <h2>Experience</h2>
-        {experience.map((job) => (
-          <Job key={job.company}>
-            <header>
-              <h3>
-                <span>{job.company}</span> · {job.role}
-              </h3>
-              <time>{job.period}</time>
-            </header>
-            <Details>{job.details}</Details>
-            <ul>
-              {job.bullets.map((bullet) => (
-                <li key={bullet}>{bullet}</li>
+const CvPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const t = useT();
+  const { profile, experience, ownProducts, education } = useCv();
+  return (
+    <Panel
+      title="cv.pdf"
+      variant="paper"
+      onClose={onClose}
+      print
+      actions={
+        <PrintButton onClick={() => window.print()}>{t.print}</PrintButton>
+      }
+    >
+      <Page>
+        <Header>
+          <div>
+            <h1>{profile.name}</h1>
+            <Title>{profile.title}</Title>
+            <Meta>{profile.stack}</Meta>
+            <Meta>
+              <a href={`mailto:${profile.email}`}>{profile.email}</a> ·{" "}
+              <a href={`tel:${profile.phone.replace(/\s/g, "")}`}>
+                {profile.phone}
+              </a>{" "}
+              · {profile.location}
+              {profile.links.map((link) => (
+                <React.Fragment key={link.url}>
+                  {" · "}
+                  <a href={link.url} target="_blank" rel="noopener noreferrer">
+                    {link.label}
+                  </a>
+                </React.Fragment>
               ))}
-            </ul>
-            {job.tags.length > 0 && (
-              <Tags>
-                {job.tags.map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
-              </Tags>
-            )}
-          </Job>
-        ))}
-      </Section>
-
-      <Section>
-        <h2>Own products & R&D</h2>
-        <Grid $min={260}>
-          {ownProducts.map((product) => (
-            <Product key={product.name}>
-              <h3>
-                {product.name} <span>{product.status}</span>
-              </h3>
-              <p>{product.description}</p>
-              <small>{product.stack}</small>
-            </Product>
-          ))}
-        </Grid>
-      </Section>
-
-      <Section>
-        <h2>Tech stack</h2>
-        <TechTiles />
-      </Section>
-
-      <Section>
-        <h2>Education, languages & more</h2>
-        <Grid $min={200}>
-          <div>
-            <h3>{education.degree}</h3>
-            <Details>{education.school}</Details>
+            </Meta>
+            <Badge>{profile.availability}</Badge>
           </div>
-          <div>
-            {education.languages.map((language) => (
-              <p key={language.name}>
-                <strong>{language.name}</strong> · {language.level}
-              </p>
+          <img src={profile.photo} alt={profile.name} />
+        </Header>
+
+        <Section>
+          <h2>{t.profileTitle}</h2>
+          <p>{profile.summary}</p>
+          <Grid $min={200} style={{ marginTop: 14 }}>
+            {profile.highlights.map((item) => (
+              <Card key={item.title}>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </Card>
             ))}
-          </div>
-          <div>
-            <h3>{education.more.title}</h3>
-            <Details>{education.more.text}</Details>
-          </div>
-        </Grid>
-      </Section>
-    </Page>
-  </Panel>
-);
+          </Grid>
+        </Section>
+
+        <Section>
+          <h2>{t.experienceTitle}</h2>
+          {experience.map((job) => (
+            <Job key={job.company}>
+              <header>
+                <h3>
+                  <span>{job.company}</span> · {job.role}
+                </h3>
+                <time>{job.period}</time>
+              </header>
+              <Details>{job.details}</Details>
+              <ul>
+                {job.bullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
+              </ul>
+              {job.tags.length > 0 && (
+                <Tags>
+                  {job.tags.map((tag) => (
+                    <span key={tag}>{tag}</span>
+                  ))}
+                </Tags>
+              )}
+            </Job>
+          ))}
+        </Section>
+
+        <Section>
+          <h2>{t.productsTitle}</h2>
+          <Grid $min={260}>
+            {ownProducts.map((product) => (
+              <Product key={product.name}>
+                <h3>
+                  {product.name} <span>{product.status}</span>
+                </h3>
+                <p>{product.description}</p>
+                <small>{product.stack}</small>
+              </Product>
+            ))}
+          </Grid>
+        </Section>
+
+        <Section>
+          <h2>{t.techTitle}</h2>
+          <TechTiles />
+        </Section>
+
+        <Section>
+          <h2>{t.educationTitle}</h2>
+          <Grid $min={200}>
+            <div>
+              <h3>{education.degree}</h3>
+              <Details>{education.school}</Details>
+            </div>
+            <div>
+              {education.languages.map((language) => (
+                <p key={language.name}>
+                  <strong>{language.name}</strong> · {language.level}
+                </p>
+              ))}
+            </div>
+            <div>
+              <h3>{education.more.title}</h3>
+              <Details>{education.more.text}</Details>
+            </div>
+          </Grid>
+        </Section>
+      </Page>
+    </Panel>
+  );
+};
 
 export default CvPanel;

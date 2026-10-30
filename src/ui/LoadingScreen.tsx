@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useLoadingProgress } from "../loading";
+import { useT } from "../i18n";
 
 // How long everything must stay loaded before the screen goes, since some
 // downloads (album covers) only start after others (the album list) finish.
@@ -77,6 +78,7 @@ const Track = styled.div`
 
 const LoadingScreen: React.FC<{ onDone: () => void }> = ({ onDone }) => {
   const { progress, done } = useLoadingProgress();
+  const t = useT();
   const [shownAt] = useState(() => performance.now());
   const [leaving, setLeaving] = useState(false);
 
@@ -103,7 +105,7 @@ const LoadingScreen: React.FC<{ onDone: () => void }> = ({ onDone }) => {
       <Box>
         <Logo aria-hidden>MV</Logo>
         <Label>
-          <span>{percent < 100 ? "Setting up the room…" : "Ready"}</span>
+          <span>{percent < 100 ? t.loading : t.ready}</span>
           <span>{percent}%</span>
         </Label>
         <Track>

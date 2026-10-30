@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import styled, { css, keyframes } from "styled-components";
+import { useT } from "../i18n";
 
 const open = keyframes`
   from { opacity: 0; transform: translateY(12px) scale(0.98); }
@@ -146,6 +147,7 @@ const Panel: React.FC<{
   children: React.ReactNode;
 }> = ({ title, variant, onClose, actions, print, children }) => {
   const dialog = useRef<HTMLElement>(null);
+  const t = useT();
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
@@ -185,7 +187,11 @@ const Panel: React.FC<{
           )}
           <h2>{title}</h2>
           {actions}
-          <CloseButton $variant={variant} onClick={onClose} aria-label="Close">
+          <CloseButton
+            $variant={variant}
+            onClick={onClose}
+            aria-label={t.close}
+          >
             ×
           </CloseButton>
         </TitleBar>

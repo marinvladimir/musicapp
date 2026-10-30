@@ -6,17 +6,19 @@ import { STAND_MARKERS } from "./layout";
 import Interactive from "./Interactive";
 import { neon } from "./neon";
 import { bootLevel } from "../boot";
+import { useT } from "../i18n";
 
-const LABELS: Record<Station, string> = {
-  cv: "Go to the desk: my CV",
-  projects: "Go to the TV: my projects",
-  music: "Go to the shelf: my music",
-};
+const LABELS = {
+  cv: "goToDesk",
+  projects: "goToTv",
+  music: "goToShelf",
+} as const satisfies Record<Station, string>;
 
 // Pulsing ring on the floor that marks where to stand for a station.
 const Marker: React.FC<{ station: Station }> = ({ station }) => {
   const ring = useRef<Group>(null);
   const goTo = useStore((state) => state.goTo);
+  const t = useT();
   const here = useStore(
     (state) => state.location === station && !state.flyTarget,
   );
@@ -38,7 +40,7 @@ const Marker: React.FC<{ station: Station }> = ({ station }) => {
   if (here) return null;
 
   return (
-    <Interactive label={LABELS[station]} onSelect={() => goTo(station)}>
+    <Interactive label={t[LABELS[station]]} onSelect={() => goTo(station)}>
       {(hovered) => (
         <group position={[x, 0.02, z]} rotation-x={-Math.PI / 2}>
           <group ref={ring}>

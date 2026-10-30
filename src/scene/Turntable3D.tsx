@@ -10,6 +10,7 @@ import {
   Vector3,
 } from "three";
 import { useStore } from "../store";
+import { useT } from "../i18n";
 import { togglePlayback } from "../audio/player";
 import { analysis } from "../audio/analysis";
 import {
@@ -206,6 +207,7 @@ const Turntable3D: React.FC = () => {
   const arm = useRef<Group>(null);
   const currentSong = useStore((state) => state.currentSong);
   const goTo = useStore((state) => state.goTo);
+  const t = useT();
   // The record's label is the album cover: one record per album.
   const label = useLabelTexture(
     currentSong ? coverUrl(currentSong.album) : null,
@@ -250,11 +252,7 @@ const Turntable3D: React.FC = () => {
         <Speaker position={[0.55, 0.64, 0]} />
 
         <Interactive
-          label={
-            currentSong
-              ? "Play / pause the record"
-              : "Pick a record from the shelf"
-          }
+          label={currentSong ? t.playPauseRecord : t.pickRecord}
           onSelect={() => (currentSong ? togglePlayback() : goTo("music"))}
         >
           {(hovered) => (
